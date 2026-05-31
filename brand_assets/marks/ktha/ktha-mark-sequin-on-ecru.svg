@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160" fill="none" role="img" aria-label="KTHA maker's mark with Barong calado embroidery">
+  <!--
+    KTHA Maker's Mark — "The Brass Ring"
+    
+    Surrounded by authentic Barong Tagalog embroidery motifs:
+    - Vertical calado drawn-thread ladder strips (left and right borders)
+    - Cascading sampaguita vine embroidery (top and bottom)
+    - Pin-tuck parallel lines framing the composition
+    
+    The embroidery is tone-on-tone (Champagne Heirloom on Piña Ecru)
+    to replicate the sheer ivory-on-ivory quality of real Barong work.
+  -->
+  <defs>
+    <!-- Calado ladder-strip openwork pattern -->
+    <pattern id="calado-ladder" x="0" y="0" width="8" height="12" patternUnits="userSpaceOnUse">
+      <!-- Horizontal rungs of the drawn-thread ladder -->
+      <line x1="1" y1="2" x2="7" y2="2" stroke="#C4B59D" stroke-width="0.5" opacity="0.7"/>
+      <line x1="1" y1="6" x2="7" y2="6" stroke="#C4B59D" stroke-width="0.5" opacity="0.7"/>
+      <line x1="1" y1="10" x2="7" y2="10" stroke="#C4B59D" stroke-width="0.5" opacity="0.7"/>
+      <!-- Vertical side threads -->
+      <line x1="1" y1="0" x2="1" y2="12" stroke="#C4B59D" stroke-width="0.3" opacity="0.5"/>
+      <line x1="7" y1="0" x2="7" y2="12" stroke="#C4B59D" stroke-width="0.3" opacity="0.5"/>
+      <!-- Tiny knot points where threads cross -->
+      <circle cx="1" cy="2" r="0.5" fill="#C4B59D" opacity="0.4"/>
+      <circle cx="7" cy="6" r="0.5" fill="#C4B59D" opacity="0.4"/>
+      <circle cx="1" cy="10" r="0.5" fill="#C4B59D" opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- BARONG EMBROIDERY FRAME                                    -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  
+  <!-- Pin-tuck lines (outermost frame) -->
+  <line x1="16" y1="12" x2="16" y2="148" stroke="#C4B59D" stroke-width="0.6" opacity="0.5"/>
+  <line x1="20" y1="12" x2="20" y2="148" stroke="#C4B59D" stroke-width="0.6" opacity="0.5"/>
+  <line x1="460" y1="12" x2="460" y2="148" stroke="#C4B59D" stroke-width="0.6" opacity="0.5"/>
+  <line x1="464" y1="12" x2="464" y2="148" stroke="#C4B59D" stroke-width="0.6" opacity="0.5"/>
+  
+  <!-- Left calado ladder strip -->
+  <rect x="26" y="20" width="10" height="120" fill="url(#calado-ladder)" rx="1"/>
+  
+  <!-- Right calado ladder strip -->
+  <rect x="444" y="20" width="10" height="120" fill="url(#calado-ladder)" rx="1"/>
+
+  <!-- Top sampaguita vine — cascading jasmine flowers and leaves -->
+  <g stroke="#C4B59D" fill="none" opacity="0.65" stroke-width="0.8" stroke-linecap="round">
+    <!-- Main vine stem (undulating) -->
+    <path d="M 80,22 C 120,18 140,26 180,20 C 220,14 260,28 300,22 C 340,16 360,26 400,20"/>
+    
+    <!-- Sampaguita flower clusters (5-petal star shapes) -->
+    <!-- Cluster 1 -->
+    <circle cx="110" cy="18" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 110,14 L 110,11 M 107,15 L 104,13 M 113,15 L 116,13 M 108,20 L 105,22 M 112,20 L 115,22"/>
+    <!-- Cluster 2 -->
+    <circle cx="190" cy="22" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 190,18 L 190,15 M 187,19 L 184,17 M 193,19 L 196,17 M 188,25 L 185,27 M 192,25 L 195,27"/>
+    <!-- Cluster 3 -->
+    <circle cx="280" cy="18" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 280,14 L 280,11 M 277,15 L 274,13 M 283,15 L 286,13 M 278,21 L 275,23 M 282,21 L 285,23"/>
+    <!-- Cluster 4 -->
+    <circle cx="370" cy="22" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 370,18 L 370,15 M 367,19 L 364,17 M 373,19 L 376,17 M 368,25 L 365,27 M 372,25 L 375,27"/>
+    
+    <!-- Small leaf pairs along vine -->
+    <path d="M 95,20 C 92,16 88,18 90,22" fill="#C4B59D" opacity="0.15"/>
+    <path d="M 145,24 C 142,20 138,22 140,26" fill="#C4B59D" opacity="0.15"/>
+    <path d="M 230,18 C 227,14 223,16 225,20" fill="#C4B59D" opacity="0.15"/>
+    <path d="M 320,24 C 317,20 313,22 315,26" fill="#C4B59D" opacity="0.15"/>
+    <path d="M 390,18 C 387,14 383,16 385,20" fill="#C4B59D" opacity="0.15"/>
+    
+    <!-- Bud dots -->
+    <circle cx="130" cy="22" r="1.2" fill="#C4B59D" opacity="0.3"/>
+    <circle cx="210" cy="16" r="1.2" fill="#C4B59D" opacity="0.3"/>
+    <circle cx="340" cy="20" r="1.2" fill="#C4B59D" opacity="0.3"/>
+  </g>
+
+  <!-- Bottom sampaguita vine (mirrored, slightly different rhythm) -->
+  <g stroke="#C4B59D" fill="none" opacity="0.65" stroke-width="0.8" stroke-linecap="round">
+    <path d="M 80,138 C 120,142 140,134 180,140 C 220,146 260,132 300,138 C 340,144 360,134 400,140"/>
+    
+    <circle cx="120" cy="142" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 120,146 L 120,149 M 117,145 L 114,147 M 123,145 L 126,147 M 118,139 L 115,137 M 122,139 L 125,137"/>
+    <circle cx="240" cy="136" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 240,140 L 240,143 M 237,139 L 234,141 M 243,139 L 246,141 M 238,133 L 235,131 M 242,133 L 245,131"/>
+    <circle cx="360" cy="142" r="3" fill="#C4B59D" opacity="0.25"/>
+    <path d="M 360,146 L 360,149 M 357,145 L 354,147 M 363,145 L 366,147 M 358,139 L 355,137 M 362,139 L 365,137"/>
+    
+    <path d="M 160,136 C 157,140 153,138 155,134" fill="#C4B59D" opacity="0.15"/>
+    <path d="M 300,140 C 297,144 293,142 295,138" fill="#C4B59D" opacity="0.15"/>
+    
+    <circle cx="200" cy="142" r="1.2" fill="#C4B59D" opacity="0.3"/>
+    <circle cx="320" cy="136" r="1.2" fill="#C4B59D" opacity="0.3"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- KTHA LETTERFORMS                                           -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  
+  <g fill="#9C958A">
+    <!-- K -->
+    <rect x="60" y="48" width="6" height="64"/>
+    <polygon points="66,80 66,72 96,48 104,48 104,56"/>
+    <polygon points="66,80 66,88 96,112 104,112 104,104"/>
+    
+    <!-- T -->
+    <rect x="140" y="48" width="44" height="6"/>
+    <rect x="159" y="48" width="6" height="64"/>
+    
+    <!-- H -->
+    <rect x="216" y="48" width="6" height="64"/>
+    <rect x="216" y="76" width="40" height="6"/>
+    <rect x="250" y="48" width="6" height="64"/>
+    
+    <!-- A -->
+    <polygon points="306,112 288,112 318,48 330,48"/>
+    <polygon points="354,112 372,112 342,48 330,48"/>
+    <rect x="300" y="86" width="60" height="6"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- INNER CALADO DETAIL — delicate openwork dots between letters -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <g fill="#C4B59D" opacity="0.35">
+    <!-- Between K and T -->
+    <circle cx="122" cy="76" r="1"/>
+    <circle cx="122" cy="84" r="1"/>
+    <circle cx="122" cy="68" r="1"/>
+    <!-- Between T and H -->
+    <circle cx="198" cy="76" r="1"/>
+    <circle cx="198" cy="84" r="1"/>
+    <circle cx="198" cy="68" r="1"/>
+    <!-- Between H and A -->
+    <circle cx="276" cy="76" r="1"/>
+    <circle cx="276" cy="84" r="1"/>
+    <circle cx="276" cy="68" r="1"/>
+  </g>
+  
+  <!-- Cascading embroidery drops beneath the T crossbar -->
+  <g stroke="#C4B59D" fill="none" opacity="0.4" stroke-width="0.6" stroke-linecap="round">
+    <path d="M 148,54 L 148,60 C 148,63 146,65 148,68"/>
+    <circle cx="148" cy="70" r="1" fill="#C4B59D" opacity="0.3"/>
+    <path d="M 176,54 L 176,62 C 176,65 178,67 176,70"/>
+    <circle cx="176" cy="72" r="1" fill="#C4B59D" opacity="0.3"/>
+  </g>
+</svg>

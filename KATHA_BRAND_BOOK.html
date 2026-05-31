@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katha Photo Booth — Brand Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=EB+Garamond:ital,wght@0,400..600;1,400..500&family=Inter:wght@400..600&family=JetBrains+Mono:wght@400..500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obsidian:#111112; --ecru:#EAE2D5; --sequin:#9C958A; --champagne:#C4B59D; --iron:#241E1A;
+  --knalum:#1A1816; --loko:#8C382A; --terra:#A35C44; --slate:#5A5D5A; --capiz:#B5B8A3;
+  /* Warmed-neutral alternate */
+  --w-alabaster:#FAF6F0; --w-bronze:#7D6E5D; --w-charcoal:#1C1B19; --w-taupe:#A89A88;
+  --serif:'Fraunces',Georgia,serif; --body:'EB Garamond',Georgia,serif; --ui:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ecru); color:var(--iron); font-family:var(--body);
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden;
+}
+/* patina */
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.08;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.wrap{max-width:1200px;margin:0 auto;padding:0 6vw;position:relative;z-index:2;}
+section{padding:9rem 0;border-bottom:1px dashed rgba(36,30,26,.18);}
+h1,h2,h3,h4{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-weight:400;letter-spacing:-.015em;line-height:1.08;}
+.eyebrow{font-family:var(--ui);font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;color:var(--slate);margin-bottom:1.5rem;}
+.meta{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:var(--slate);}
+.lead{font-size:1.2rem;line-height:1.55;max-width:42rem;color:var(--slate);}
+p{max-width:42rem;}
+.k-calado{border:none;height:12px;width:60%;margin:3rem 0;background-image:radial-gradient(circle,var(--champagne) 1px,transparent 1.5px);background-size:10px 12px;background-repeat:repeat-x;opacity:.6;}
+
+/* COVER */
+#cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:9rem 0;}
+#cover h1{font-size:clamp(3.5rem,9vw,8rem);line-height:.98;}
+#cover .tagline{font-family:var(--serif);font-style:italic;font-size:1.5rem;color:var(--slate);margin-top:2rem;}
+
+/* swatches */
+.swatch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1.25rem;margin-top:2rem;}
+.swatch{border:1px solid rgba(36,30,26,.12);}
+.swatch .chip{height:90px;}
+.swatch .info{padding:.7rem .8rem;background:#fff5;}
+.swatch .name{font-family:var(--ui);font-size:.78rem;font-weight:500;}
+.swatch .hex{font-family:var(--mono);font-size:.68rem;color:var(--slate);text-transform:uppercase;}
+.swatch .role{font-family:var(--body);font-size:.74rem;color:var(--slate);font-style:italic;}
+.palette-pair{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:2.5rem;}
+@media(max-width:760px){.palette-pair{grid-template-columns:1fr;}}
+.palette-pair h3{margin-bottom:.4rem;}
+.palette-note{font-size:.95rem;color:var(--slate);margin-bottom:1rem;}
+
+/* type specimens */
+.spec{border-top:1px solid rgba(36,30,26,.12);padding:2rem 0;display:grid;grid-template-columns:160px 1fr;gap:2rem;}
+@media(max-width:760px){.spec{grid-template-columns:1fr;gap:.6rem;}}
+.spec .label{font-family:var(--mono);font-size:.72rem;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;}
+.specimen-display{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:3rem;line-height:1.05;}
+.specimen-body{font-family:var(--body);font-size:1.15rem;line-height:1.55;}
+.specimen-ui{font-family:var(--ui);font-size:1rem;letter-spacing:.04em;}
+.specimen-mono{font-family:var(--mono);font-size:.95rem;letter-spacing:.04em;}
+
+/* marks */
+.mark-row{display:flex;gap:4rem;flex-wrap:wrap;align-items:flex-end;margin-top:2rem;}
+.mark-box{display:flex;flex-direction:column;gap:.8rem;align-items:flex-start;}
+.wordmark{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:3rem;letter-spacing:-.015em;text-transform:lowercase;color:var(--iron);}
+
+/* deckled */
+.deckled{aspect-ratio:4/5;overflow:hidden;background:var(--champagne);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+.texture-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;margin-top:2rem;}
+.texture-demo{border:1px solid rgba(36,30,26,.12);padding:1.5rem;}
+.texture-demo .cap{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--slate);margin-top:1rem;}
+.patina-demo{height:120px;background:var(--ecru);position:relative;overflow:hidden;}
+.patina-demo::after{content:"";position:absolute;inset:0;opacity:.18;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");}
+.sombrado-demo{position:relative;height:120px;}
+.sombrado-demo .plate{position:absolute;inset:0;transform:translate(5px,7px);background:var(--iron);opacity:.18;}
+.sombrado-demo .face{position:absolute;inset:0;background:var(--champagne);}
+
+/* voice */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+@media(max-width:760px){.cols{grid-template-columns:1fr;}}
+.pillar{border-top:1px solid rgba(36,30,26,.12);padding-top:1rem;margin-bottom:1.5rem;}
+.pillar h4{font-size:1.25rem;margin-bottom:.3rem;}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem;}
+.do-dont div{padding:1.2rem;border:1px solid rgba(36,30,26,.12);}
+.do-dont .h{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem;}
+.forbidden{color:var(--loko);}
+.tag{display:inline-block;font-family:var(--mono);font-size:.7rem;background:rgba(140,56,42,.1);color:var(--loko);padding:.2rem .5rem;margin:.2rem .3rem .2rem 0;}
+
+/* social */
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-width:480px;margin-top:2rem;border:1px solid rgba(36,30,26,.12);padding:.5rem;}
+.ig-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.6rem;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;text-align:center;padding:.4rem;}
+.story-row{display:flex;gap:1.5rem;margin-top:2rem;flex-wrap:wrap;}
+.story{width:130px;aspect-ratio:9/16;border:1px solid rgba(36,30,26,.12);display:flex;flex-direction:column;justify-content:flex-end;padding:1rem;}
+
+/* templates */
+.tpl{border:1px solid rgba(36,30,26,.12);padding:2.5rem;margin-top:2rem;background:#fff3;}
+.tpl-hero h1{font-size:clamp(2.5rem,6vw,4.5rem);margin:1rem 0;}
+.sacred{display:inline-block;font-family:var(--ui);background:var(--loko);color:var(--ecru);padding:1rem 2rem;letter-spacing:.04em;text-decoration:none;margin-top:1.5rem;}
+.feature-tpl{display:flex;gap:2.5rem;align-items:center;flex-wrap:wrap;}
+.feature-tpl>div{flex:1 1 280px;}
+
+/* keepsake */
+.keepsake{display:flex;gap:3rem;flex-wrap:wrap;align-items:center;margin-top:2rem;}
+.print-card{width:280px;aspect-ratio:5/7;background:var(--ecru);border:1px solid rgba(36,30,26,.15);position:relative;box-shadow:0 1px 0 rgba(36,30,26,.05);}
+.print-card .stamp{position:absolute;bottom:14px;right:14px;}
+
+/* nav toc */
+.toc{position:fixed;top:50%;right:2rem;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:.5rem;}
+.toc a{width:8px;height:8px;border-radius:50%;background:rgba(36,30,26,.2);transition:background .3s,transform .3s;}
+.toc a:hover{background:var(--loko);transform:scale(1.4);}
+@media(max-width:900px){.toc{display:none;}}
+
+.num{font-family:var(--mono);font-size:.72rem;color:var(--slate);letter-spacing:.2em;}
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <a href="#cover" title="Cover"></a><a href="#story" title="Story"></a><a href="#palette" title="Palette"></a>
+  <a href="#type" title="Typography"></a><a href="#marks" title="Marks"></a><a href="#imagery" title="Imagery"></a>
+  <a href="#voice" title="Voice"></a><a href="#texture" title="Texture"></a><a href="#social" title="Social"></a>
+  <a href="#templates" title="Templates"></a><a href="#keepsake" title="Keepsake"></a><a href="#handoff" title="Handoff"></a>
+</nav>
+
+<!-- 1 COVER -->
+<section id="cover" style="border-bottom:none;">
+  <div class="wrap">
+    <p class="eyebrow">KATHA PHOTO BOOTH · BRAND BOOK · v1 · 2026</p>
+    <h1>katha</h1>
+    <p class="tagline">Rooted by perseverance, crafted for generations.</p>
+    <p class="lead" style="margin-top:3rem;">Premium DSLR photo booth rooted in Filipino heritage and wabi-sabi craft. This book is the single source for the brand: palette, type, marks, voice, imagery, and the handoff that lets the storefront run on Squarespace.</p>
+  </div>
+</section>
+
+<!-- 2 STORY -->
+<section id="story"><div class="wrap">
+  <p class="num">01 — THE STORY</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">The word is a verb.</h2>
+  <p class="lead"><em>Katha</em> (Tagalog) — to compose, to invent, to weave a poem or story. Not a noun. The act of pressing raw earth — fiber, clay, wood — through the patience of the hand until it becomes an heirloom.</p>
+  <hr class="k-calado">
+  <div class="cols">
+    <div>
+      <h4 style="font-size:1.3rem;margin-bottom:.5rem;">Three ancestral parents</h4>
+      <p style="margin-bottom:1rem;"><strong>Barong Nipis</strong> — sheer piña, <em>calado</em> openwork, <em>sombrado</em> shadow appliqué. Piña cannot be spun; every filament is hand-knotted. Transparency is refinement.</p>
+      <p style="margin-bottom:1rem;"><strong>Inabel / Binakul</strong> — Ilocos optical weave; apotropaic geometry of wind and whirlpool, woven to confuse malevolent spirits.</p>
+      <p><strong>T'nalak</strong> — T'boli dream-woven abacá; black/red/white from soil, blood, and raw fiber. When sold, a brass ring is offered — permission to leave the loom.</p>
+    </div>
+    <div>
+      <h4 style="font-size:1.3rem;margin-bottom:.5rem;">The throughline</h4>
+      <p style="margin-bottom:1rem;">Perseverance composed into thread. Every photo is not a captured moment — it is a stroke woven into a passed-down keepsake.</p>
+      <p>The booth is the loom. The print is a <em>Katha</em>. The <strong>KTHA mark</strong> is the brass ring — the seal that says <em>this is ready to leave our hands.</em></p>
+      <p class="meta" style="margin-top:2rem;">ARTURO LUZ · "GOOD DESIGN IS GOOD BUSINESS" · SINGLE CONTINUOUS LINE</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 3 PALETTE A/B -->
+<section id="palette"><div class="wrap">
+  <p class="num">02 — PALETTE</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 1rem;">Two directions, side by side.</h2>
+  <p class="lead">Choose visually. <strong>A — Katha Canon</strong> is earthy, rooted, heritage-true. <strong>B — Warmed Neutrals</strong> softens toward a lighter quiet-luxury register. Both share the same structure; only the warmth differs.</p>
+
+  <div class="palette-pair">
+    <div>
+      <h3>A — Katha Canon</h3>
+      <p class="palette-note">Recommended. Distinct, earthy, unmistakably Katha.</p>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="chip" style="background:#111112"></div><div class="info"><div class="name">Obsidian Weave</div><div class="hex">#111112</div><div class="role">dark base</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#EAE2D5"></div><div class="info"><div class="name">Piña Ecru</div><div class="hex">#EAE2D5</div><div class="role">light ground</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#9C958A"></div><div class="info"><div class="name">Hammered Sequin</div><div class="hex">#9C958A</div><div class="role">catchlight</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#C4B59D"></div><div class="info"><div class="name">Champagne Heirloom</div><div class="hex">#C4B59D</div><div class="role">embroidery</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#241E1A"></div><div class="info"><div class="name">Iron Bark</div><div class="hex">#241E1A</div><div class="role">text / frame</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#1A1816"></div><div class="info"><div class="name">Knalum Ink</div><div class="hex">#1A1816</div><div class="role">narrative dark</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#8C382A"></div><div class="info"><div class="name">Loko Rust</div><div class="hex">#8C382A</div><div class="role">sacred CTA</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#A35C44"></div><div class="info"><div class="name">Terracotta Earth</div><div class="hex">#A35C44</div><div class="role">warm accent</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#5A5D5A"></div><div class="info"><div class="name">Abel Slate</div><div class="hex">#5A5D5A</div><div class="role">muted</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#B5B8A3"></div><div class="info"><div class="name">Capiz Sage</div><div class="hex">#B5B8A3</div><div class="role">success</div></div></div>
+      </div>
+    </div>
+    <div>
+      <h3>B — Warmed Neutrals</h3>
+      <p class="palette-note">Softer, lighter, safe-elegant. Less earthy, more anonymous-premium.</p>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="chip" style="background:#FAF6F0"></div><div class="info"><div class="name">Alabaster Cream</div><div class="hex">#FAF6F0</div><div class="role">light ground</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#1C1B19"></div><div class="info"><div class="name">Muted Charcoal</div><div class="hex">#1C1B19</div><div class="role">text</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#7D6E5D"></div><div class="info"><div class="name">Muted Bronze</div><div class="hex">#7D6E5D</div><div class="role">accent</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#A89A88"></div><div class="info"><div class="name">Soft Taupe</div><div class="hex">#A89A88</div><div class="role">secondary</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#8C382A"></div><div class="info"><div class="name">Loko Rust (kept)</div><div class="hex">#8C382A</div><div class="role">sacred CTA</div></div></div>
+        <div class="swatch"><div class="chip" style="background:#B5B8A3"></div><div class="info"><div class="name">Capiz Sage (kept)</div><div class="hex">#B5B8A3</div><div class="role">success</div></div></div>
+      </div>
+      <p class="palette-note" style="margin-top:1.5rem;"><strong>Jed's note:</strong> B keeps Loko Rust + Capiz Sage so the heritage anchor survives even if we warm the neutrals. My recommendation stays A.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 4 TYPOGRAPHY -->
+<section id="type"><div class="wrap">
+  <p class="num">03 — TYPOGRAPHY</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Carved, slow, precise.</h2>
+  <div class="spec"><div class="label">DISPLAY<br>Fraunces<br>SOFT 100 · WONK 1</div><div><div class="specimen-display">Perseverance into thread.</div></div></div>
+  <div class="spec"><div class="label">BODY<br>EB Garamond</div><div><div class="specimen-body">Piña fiber cannot be spun. Every filament is knotted end-to-end by hand, leaving microscopic knots as the maker's signature — a slow inheritance of patience.</div></div></div>
+  <div class="spec"><div class="label">UI<br>Inter</div><div><div class="specimen-ui">RESERVE THE EVENING · SEE THE PROCESS · BEGIN</div></div></div>
+  <div class="spec"><div class="label">MONO<br>JetBrains Mono</div><div><div class="specimen-mono">KTHA · №034 · 2026.05.29 · REYES</div></div></div>
+  <hr class="k-calado">
+  <p><strong>Rules:</strong> Display always SOFT 100 / WONK 1 (the carved feel). Never weight 700 on display. Tracking — display −0.015em, body 0, UI labels +0.12em uppercase, mono +0.04em. All four are free Google Fonts → identical on Squarespace and Next.js.</p>
+</div></section>
+
+<!-- 5 MARKS -->
+<section id="marks"><div class="wrap">
+  <p class="num">04 — LOGO & MARKS</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Reproducible as one continuous line.</h2>
+  <div class="mark-row">
+    <div class="mark-box" style="width: 180px;">
+      <svg viewBox="0 0 290 80" width="100%" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="katha">
+        <text x="50%" y="54" fill="var(--iron)" font-family="'EB Garamond', Georgia, serif" font-size="48" font-weight="400" letter-spacing="0.12em" text-anchor="middle" style="text-transform: lowercase;">katha</text>
+      </svg>
+      <span class="meta">PRIMARY WORDMARK · quiet Garamond serif</span>
+    </div>
+    <div class="mark-box">
+      <svg width="64" height="64" viewBox="0 0 100 100" fill="none" role="img" aria-label="Katha threshold mark">
+        <path d="M 20,88 L 20,12 L 35,12 L 35,46 L 68,12 L 86,12 L 50,48 L 88,88 L 70,88 L 42,56 L 35,63 L 35,88 Z" fill="#241E1A"/>
+      </svg>
+      <span class="meta">LOGOMARK · The Threshold (bold sans-serif lowercase 'k')</span>
+    </div>
+    <div class="mark-box">
+      <svg viewBox="0 0 160 44" width="180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KTHA maker's mark">
+        <text x="15" y="28" fill="var(--iron)" font-family="'EB Garamond', Georgia, serif" font-size="24" font-weight="400" letter-spacing="0.15em" style="text-transform: lowercase;">ktha</text>
+        <g fill="var(--champagne)" opacity="0.85">
+          <circle cx="120" cy="22" r="1.5"/><circle cx="120" cy="16" r="1.5"/><circle cx="120" cy="28" r="1.5"/><circle cx="114" cy="22" r="1.5"/><circle cx="126" cy="22" r="1.5"/>
+        </g>
+      </svg>
+      <span class="meta">KTHA MAKER'S MARK · quiet lowercase with Barong calado cross</span>
+    </div>
+  </div>
+  <hr class="k-calado">
+  <div class="do-dont">
+    <div><div class="h">DO</div>Keep 1.5× x-height clear space. Iron Bark on Piña Ecru, or Piña Ecru on Obsidian. Plate the wordmark over photography.</div>
+    <div><div class="h forbidden">DON'T</div>No gradients. No drop shadow. No uppercase KATHA wordmark. Never place a mark directly on a busy photo.</div>
+  </div>
+</div></section>
+
+<!-- 6 IMAGERY -->
+<section id="imagery"><div class="wrap">
+  <p class="num">05 — IMAGERY DIRECTION</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Furniture-as-philosophy. Fabric-as-protagonist.</h2>
+  <div class="cols">
+    <div>
+      <div class="deckled" style="max-width:300px;">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800" alt="reference" style="width:100%;height:100%;object-fit:cover;filter:grayscale(100%);mix-blend-mode:multiply;opacity:.85;">
+      </div>
+      <p class="meta" style="margin-top:1rem;">EVERY IMAGE BEHIND A DECKLED EDGE · NEVER SHARP RECTANGLES</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom:.5rem;">Shoot</h4>
+      <p style="margin-bottom:1rem;">Hands at work — tying ribbon, threading paper, the shutter. The booth as object on raw plaster, golden side-light. Keepsakes in domestic context. Real guests, candid.</p>
+      <h4 style="margin-bottom:.5rem;">Don't shoot</h4>
+      <p style="margin-bottom:1rem;" class="forbidden">Sparklers, neon, balloon arches, "fun" props. Retouched skin. Flash-bounce booth interiors. Stock photography, ever.</p>
+      <h4 style="margin-bottom:.5rem;">Treatment</h4>
+      <p>Warm umber midtones, lifted shadows, no crushed blacks. Iron Bark shadows + Champagne highlights. 4:5 / 3:4 vertical; 16:9 hero only.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 7 VOICE -->
+<section id="voice"><div class="wrap">
+  <p class="num">06 — VOICE & TONE</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Rooted, not romantic.</h2>
+  <div class="cols">
+    <div>
+      <div class="pillar"><h4>Rooted, not romantic</h4><p>Speak from craft, not nostalgia. "Hand-knotted piña fiber," not "the soul of our ancestors."</p></div>
+      <div class="pillar"><h4>Quiet confidence</h4><p>Restraint over hyperbole. Never "amazing," "stunning," "unforgettable."</p></div>
+      <div class="pillar"><h4>The maker is present</h4><p>The booth, the loom, the thread are the subjects. First-person sparingly.</p></div>
+    </div>
+    <div>
+      <h4 style="margin-bottom:.6rem;">Three registers</h4>
+      <p style="margin-bottom:.8rem;"><span class="meta">EDITORIAL</span><br><em style="font-family:var(--serif);">"Piña cannot be spun. Every filament is knotted end-to-end by hand — a slow inheritance of patience."</em></p>
+      <p style="margin-bottom:.8rem;"><span class="meta">FUNCTIONAL</span><br>"Reserve your evening. We'll send the questionnaire within 24 hours."</p>
+      <p style="margin-bottom:1.5rem;"><span class="meta">STAMP</span><br><span class="specimen-mono">Katha №034 · Woven for the Reyes Family · 2026</span></p>
+      <h4 style="margin-bottom:.6rem;">Forbidden words</h4>
+      <div>
+        <span class="tag">luxury</span><span class="tag">premium</span><span class="tag">stunning</span><span class="tag">amazing</span><span class="tag">unforgettable</span><span class="tag">journey</span><span class="tag">vibe</span><span class="tag">aesthetic</span><span class="tag">curated</span><span class="tag">authentic</span><span class="tag">Instagrammable</span><span class="tag">once-in-a-lifetime</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 8 TEXTURE -->
+<section id="texture"><div class="wrap">
+  <p class="num">07 — TEXTURE SYSTEM</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">The invisible loom.</h2>
+  <div class="texture-grid">
+    <div class="texture-demo"><div class="patina-demo"></div><div class="cap">PATINA · feTurbulence · 8–12% · global overlay</div></div>
+    <div class="texture-demo"><div class="deckled" style="height:120px;aspect-ratio:auto;background:var(--terra);"></div><div class="cap">DECKLED · hand-torn mask · replaces borders</div></div>
+    <div class="texture-demo"><div style="height:120px;display:flex;align-items:center;"><div style="width:100%;height:12px;background-image:radial-gradient(circle,var(--champagne) 1px,transparent 1.5px);background-size:10px 12px;background-repeat:repeat-x;opacity:.7;"></div></div><div class="cap">CALADO · openwork divider · replaces &lt;hr&gt;</div></div>
+    <div class="texture-demo"><div class="sombrado-demo"><div class="plate"></div><div class="face"></div></div><div class="cap">SOMBRADO · shadow plate · replaces drop-shadow</div></div>
+  </div>
+</div></section>
+
+<!-- 9 SOCIAL -->
+<section id="social"><div class="wrap">
+  <p class="num">08 — SOCIAL MEDIA</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">@kathabooth</h2>
+  <div class="cols">
+    <div>
+      <h4 style="margin-bottom:.5rem;">Grid rhythm (repeat every 9)</h4>
+      <div class="ig-grid">
+        <div class="ig-cell" style="background:var(--champagne)">HANDS<br>AT WORK</div>
+        <div class="ig-cell" style="background:var(--knalum);color:var(--ecru)">QUOTE<br>EDITORIAL</div>
+        <div class="ig-cell" style="background:var(--ecru)">DECKLED<br>KEEPSAKE</div>
+        <div class="ig-cell" style="background:var(--ecru)">BOOTH<br>OBJECT</div>
+        <div class="ig-cell" style="background:var(--terra);color:var(--ecru)">DETAIL<br>TEXTURE</div>
+        <div class="ig-cell" style="background:var(--champagne)">GUEST<br>CANDID</div>
+        <div class="ig-cell" style="background:var(--knalum);color:var(--ecru)">KTHA<br>STAMP</div>
+        <div class="ig-cell" style="background:var(--ecru)">PROCESS<br>STEP</div>
+        <div class="ig-cell" style="background:var(--champagne)">PORTRAIT<br>TONAL</div>
+      </div>
+      <p class="meta" style="margin-top:1rem;">3 TONES NEVER ADJACENT · LET ECRU BREATHE</p>
+    </div>
+    <div>
+      <h4 style="margin-bottom:.5rem;">Stories</h4>
+      <div class="story-row">
+        <div class="story" style="background:var(--knalum);"><span class="meta" style="color:var(--ecru);">behind the loom</span></div>
+        <div class="story" style="background:var(--ecru);"><span class="meta">№ of the week</span></div>
+        <div class="story" style="background:var(--terra);"><span class="meta" style="color:var(--ecru);">reserve →</span></div>
+      </div>
+      <h4 style="margin:2rem 0 .5rem;">Caption pattern</h4>
+      <p class="specimen-body" style="font-size:1rem;">[One craft observation]. [One line of context]. <br>— <span class="specimen-mono" style="font-size:.8rem;">Katha №___ · woven for ___</span></p>
+      <p style="margin-top:1rem;font-size:.95rem;color:var(--slate);">Lowercase, unhurried. No emoji walls. One or two, sparingly. Never hashtag spam — 3 rooted tags max.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 10 TEMPLATES -->
+<section id="templates"><div class="wrap">
+  <p class="num">09 — PAGE & SECTION TEMPLATES</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Live previews. Also the Squarespace snippets.</h2>
+
+  <div class="tpl tpl-hero">
+    <p class="eyebrow">THE BOOTH · KATHABOOTH.COM</p>
+    <h1>Perseverance composed into thread.</h1>
+    <p class="lead">A wooden loom. An unbleached fiber. A hand that knows when to press harder.</p>
+    <a class="sacred" href="#">Begin</a>
+  </div>
+
+  <div class="tpl feature-tpl">
+    <div>
+      <div class="deckled" style="max-width:260px;"><div style="width:100%;height:100%;background:var(--champagne);"></div></div>
+    </div>
+    <div>
+      <p class="eyebrow">THE STRUCTURE</p>
+      <h2 style="font-size:2rem;margin-bottom:1rem;">Built like a loom, not a prop.</h2>
+      <p>Sustainably sourced weathered oak. Raw iron frames. A woven abacá and piña backdrop that holds light the way fabric holds shadow.</p>
+    </div>
+  </div>
+
+  <div class="tpl">
+    <figure style="border-left:2px solid var(--champagne);padding-left:2rem;">
+      <blockquote style="font-family:var(--serif);font-style:italic;font-size:1.6rem;line-height:1.3;">Katha: the act of composing something from earth, through the hand, into an heirloom.</blockquote>
+      <figcaption style="margin-top:1rem;"><span class="meta">MISTY EMERSON</span> · <span class="specimen-mono" style="font-size:.75rem;">Cultural Strategist</span></figcaption>
+    </figure>
+  </div>
+
+  <p class="meta" style="margin-top:1.5rem;">EACH TEMPLATE = ONE FILE IN /squarespace/snippets/ · DROP INTO A CODE BLOCK</p>
+</div></section>
+
+<!-- 11 KEEPSAKE -->
+<section id="keepsake"><div class="wrap">
+  <p class="num">10 — STATIONERY & KEEPSAKE</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">The output is never disposable.</h2>
+  <div class="keepsake">
+    <div class="print-card">
+      <div style="position:absolute;inset:18px;background:var(--champagne);" class="deckled"></div>
+      <div class="stamp">
+        <svg viewBox="0 0 160 44" width="80" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KTHA debossed mark">
+          <text x="15" y="28" fill="#9C958A" font-family="'EB Garamond', Georgia, serif" font-size="24" font-weight="400" letter-spacing="0.15em" style="text-transform: lowercase;">ktha</text>
+          <g fill="#9C958A" opacity="0.85">
+            <circle cx="120" cy="22" r="1.5"/><circle cx="120" cy="16" r="1.5"/><circle cx="120" cy="28" r="1.5"/><circle cx="114" cy="22" r="1.5"/><circle cx="126" cy="22" r="1.5"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div style="flex:1 1 300px;">
+      <p style="margin-bottom:1rem;"><strong>Stock:</strong> archival cotton 308gsm, natural white (matches Piña Ecru). 5×7 standard, 8×10 premium tier.</p>
+      <p style="margin-bottom:1rem;"><strong>Treatment:</strong> matte digital print + blind deboss of the KTHA mark, bottom-right, 0.6mm depth, no ink.</p>
+      <p style="margin-bottom:1rem;"><strong>Folio:</strong> linen-bound, Iron Bark thread, Champagne Heirloom liner. Glassine caption strip, mono metadata, 2mm Hammered Sequin ribbon.</p>
+      <p class="meta">THE DEBOSS IS THE ONLY BRANDING ON THE BACK.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- 12 HANDOFF -->
+<section id="handoff" style="border-bottom:none;"><div class="wrap">
+  <p class="num">11 — THE HANDOFF</p>
+  <h2 style="font-size:2.5rem;margin:.5rem 0 2rem;">Jed builds the shell. Brother manages within.</h2>
+  <p class="lead" style="margin-bottom:2rem;">The Squarespace storefront runs on a three-layer model so the design stays locked while content stays free.</p>
+  <div class="cols">
+    <div>
+      <div class="pillar"><h4>Layer 1 · Locked CSS</h4><p>Paste <span class="specimen-mono" style="font-size:.85rem;">katha-injection.css</span> once into Code Injection → Header. Restyles native Squarespace elements. Never edited.</p></div>
+      <div class="pillar"><h4>Layer 2 · Snippet kit</h4><p>Drop the <span class="specimen-mono" style="font-size:.85rem;">/snippets/</span> Code Blocks for signature moments. Edit only the marked zones.</p></div>
+      <div class="pillar"><h4>Layer 3 · Native sections</h4><p>Everything else in the normal editor. Layer 1 keeps it on-brand automatically.</p></div>
+    </div>
+    <div>
+      <h4 style="margin-bottom:.6rem;">The one rule</h4>
+      <p class="specimen-display" style="font-size:1.6rem;line-height:1.25;">Paste Layer 1 once. Build with native sections. Drop Layer 2 snippets for signature moments. Never edit Layer 1.</p>
+      <p class="meta" style="margin-top:2rem;">FULL INSTRUCTIONS · squarespace/HANDOFF_GUIDE.md</p>
+      <p class="meta" style="margin-top:.4rem;">DEV REFERENCE · DESIGN_SYSTEM.md</p>
+    </div>
+  </div>
+  <hr class="k-calado">
+  <p class="tagline" style="font-family:var(--serif);font-style:italic;font-size:1.4rem;color:var(--slate);">Rooted by perseverance, crafted for generations.</p>
+</div></section>
+
+</body>
+</html>

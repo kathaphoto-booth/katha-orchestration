@@ -1,0 +1,211 @@
+/* ════════════════════════════════════════════════════════════════
+   KATHA — SQUARESPACE LAYER 1: LOCKED DESIGN SYSTEM
+   ────────────────────────────────────────────────────────────────
+   Paste this ONCE into:  Settings → Advanced → Code Injection → HEADER
+   wrapped in a <style> tag (see HANDOFF_GUIDE.md).
+
+   This restyles Squarespace's NATIVE elements so everything the
+   editor produces inherits Katha automatically. Do not edit.
+   Requires a Squarespace plan that allows Code Injection (Business+).
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── Fonts ───────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=EB+Garamond:ital,wght@0,400..600;1,400..500&family=Inter:wght@400..600&family=JetBrains+Mono:wght@400..500&display=swap');
+
+/* ── Tokens ──────────────────────────────────────────────────── */
+:root {
+  /* UI */
+  --katha-obsidian-weave: #111112;
+  --katha-pina-ecru: #EAE2D5;
+  --katha-hammered-sequin: #9C958A;
+  --katha-champagne-heirloom: #C4B59D;
+  --katha-iron-bark: #241E1A;
+  /* Narrative (T'nalak) */
+  --katha-knalum-ink: #1A1816;
+  --katha-loko-rust: #8C382A;
+  --katha-terracotta-earth: #A35C44;
+  --katha-abel-slate: #5A5D5A;
+  --katha-capiz-sage: #B5B8A3;
+
+  /* Semantic */
+  --bg-primary: var(--katha-pina-ecru);
+  --bg-dark: var(--katha-obsidian-weave);
+  --text-primary: var(--katha-iron-bark);
+  --text-on-dark: var(--katha-pina-ecru);
+  --text-muted: var(--katha-abel-slate);
+  --cta-sacred: var(--katha-loko-rust);
+  --frame: var(--katha-iron-bark);
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'EB Garamond', Georgia, serif;
+  --font-ui: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ── Site ground + body type ─────────────────────────────────── */
+body,
+.sqs-layout,
+#siteWrapper,
+.site-wrapper {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-body) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Long-form body copy */
+p, .sqsrte-large, .sqs-block-html p, li {
+  font-family: var(--font-body) !important;
+  font-size: 1.0625rem !important;
+  line-height: 1.55 !important;
+  color: var(--text-primary) !important;
+}
+
+/* ── Headings — Fraunces, carved (SOFT/WONK) ─────────────────── */
+h1, h2, h3, h4,
+.sqsrte-large strong,
+[data-block-type] h1, [data-block-type] h2, [data-block-type] h3 {
+  font-family: var(--font-display) !important;
+  font-variation-settings: "SOFT" 100, "WONK" 1 !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.1 !important;
+  color: var(--text-primary) !important;
+}
+h1 { font-size: clamp(2.75rem, 6vw, 5.5rem) !important; line-height: 1.05 !important; }
+h2 { font-size: 2.5rem !important; }
+h3 { font-size: 1.875rem !important; }
+h4 { font-size: 1.5rem !important; }
+
+/* ── Navigation ──────────────────────────────────────────────── */
+.header-nav-item a,
+.header-nav-folder-title {
+  font-family: var(--font-ui) !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.12em !important;
+  color: var(--text-primary) !important;
+}
+.header-title-text a {
+  font-family: var(--font-display) !important;
+  font-variation-settings: "SOFT" 100, "WONK" 1 !important;
+  letter-spacing: -0.015em !important;
+  text-transform: lowercase !important;
+}
+
+/* ── Buttons — sacred Loko Rust, no radius ───────────────────── */
+.sqs-block-button-element,
+.sqs-block-button-element--medium,
+.sqs-block-button-element--large,
+.btn, button[type="submit"] {
+  font-family: var(--font-ui) !important;
+  background-color: var(--cta-sacred) !important;
+  color: var(--text-on-dark) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+  transition: opacity 0.3s ease !important;
+}
+.sqs-block-button-element:hover,
+.btn:hover, button[type="submit"]:hover { opacity: 0.9 !important; }
+.sqs-block-button-element:focus-visible {
+  outline: 2px solid var(--cta-sacred) !important;
+  outline-offset: 2px !important;
+}
+
+/* ── Links / hairlines ───────────────────────────────────────── */
+a { color: var(--text-primary); }
+hr, .sqs-block-horizontalrule hr {
+  border: none !important;
+  border-top: 1px dashed var(--katha-champagne-heirloom) !important;
+  opacity: 0.5;
+}
+
+/* ── Images — deckled by default ─────────────────────────────── */
+.sqs-block-image img,
+.sqs-image img {
+  border-radius: 0 !important;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+
+/* ── Global patina (CSS-only, no JS) ─────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.10;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BRAND UTILITY CLASSES — use inside Code Blocks (Layer 2)
+   ════════════════════════════════════════════════════════════════ */
+.k-eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+}
+.k-meta {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.k-sacred {
+  display: inline-block;
+  font-family: var(--font-ui);
+  background: var(--cta-sacred);
+  color: var(--text-on-dark);
+  padding: 1rem 2rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 0;
+  transition: opacity 0.3s ease;
+}
+.k-sacred:hover { opacity: 0.9; }
+.k-deckled {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 2,2 Q 50,0 98,3 Q 100,10 97,22 Q 100,33 96,44 Q 100,55 97,67 Q 100,78 96,88 Q 100,95 98,99 Q 75,100 52,98 Q 28,100 5,99 Q 0,90 2,75 Q 0,60 2,45 Q 0,30 2,15 Z' fill='black'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 2,2 Q 50,0 98,3 Q 100,10 97,22 Q 100,33 96,44 Q 100,55 97,67 Q 100,78 96,88 Q 100,95 98,99 Q 75,100 52,98 Q 28,100 5,99 Q 0,90 2,75 Q 0,60 2,45 Q 0,30 2,15 Z' fill='black'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.k-calado {
+  border: none;
+  height: 12px;
+  background-image: radial-gradient(circle, var(--katha-champagne-heirloom) 1px, transparent 1.5px);
+  background-size: 10px 12px;
+  background-repeat: repeat-x;
+  background-position: center;
+  opacity: 0.5;
+  margin: 4rem auto;
+  width: 60%;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  body::after { display: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Optional: CSS-only whisper reveal (no JS, degrades safely) ─ */
+@supports (animation-timeline: view()) {
+  h1, h2 {
+    animation: k-whisper linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 25%;
+  }
+  @keyframes k-whisper {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

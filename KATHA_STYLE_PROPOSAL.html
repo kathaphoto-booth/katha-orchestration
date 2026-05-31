@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katha — Style Proposal & Feature Roadmap</title>
+<meta name="description" content="Shareable brand proposal for Katha Photo Booth — Squarespace layout, marks, features, and integrations.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=EB+Garamond:ital,wght@0,400..600;1,400..500&family=Inter:wght@300..600&family=JetBrains+Mono:wght@400..500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --obsidian:#111112;--ecru:#EAE2D5;--sequin:#9C958A;--champagne:#C4B59D;--iron:#241E1A;
+  --knalum:#1A1816;--loko:#8C382A;--terra:#A35C44;--slate:#5A5D5A;--capiz:#B5B8A3;
+  --serif:'Fraunces',Georgia,serif;--body:'EB Garamond',Georgia,serif;--ui:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--ecru);color:var(--iron);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.w{max-width:1100px;margin:0 auto;padding:0 5vw;position:relative;z-index:2;}
+section{padding:7rem 0;border-bottom:1px dashed rgba(36,30,26,.15);}
+h1,h2,h3,h4{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-weight:400;letter-spacing:-.015em;line-height:1.08;}
+.eye{font-family:var(--ui);font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;color:var(--slate);margin-bottom:1.2rem;font-weight:400;}
+.m{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--slate);}
+.lead{font-size:1.15rem;line-height:1.55;max-width:40rem;color:var(--slate);}
+a{color:var(--iron);}
+.calado{border:none;height:12px;width:50%;margin:3rem 0;background-image:radial-gradient(circle,var(--champagne) 1px,transparent 1.5px);background-size:10px 12px;background-repeat:repeat-x;opacity:.5;}
+.sacred-btn{display:inline-block;font-family:var(--ui);background:var(--loko);color:var(--ecru);padding:.85rem 2rem;letter-spacing:.04em;text-decoration:none;font-size:.85rem;transition:opacity .3s;}
+.sacred-btn:hover{opacity:.85;}
+.cols{display:grid;grid-template-columns:7fr 5fr;gap:3rem;align-items:start;}
+@media(max-width:780px){.cols{grid-template-columns:1fr;}}
+.deckled{overflow:hidden;-webkit-mask-image:url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg preserveAspectRatio='none' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 1,4 Q 8,0 16,3 Q 24,6 32,1 Q 40,0 48,3 Q 55,6 63,2 Q 71,0 79,4 Q 87,7 95,2 Q 99,1 99,8 Q 100,25 98,42 Q 100,60 99,77 Q 100,88 98,95 Q 90,100 78,98 Q 65,100 52,99 Q 39,100 26,98 Q 13,100 2,99 Q 0,90 1,77 Q 0,60 2,42 Q 0,25 1,8 Z' fill='black'/%3E%3C/svg%3E");-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+.tag{display:inline-block;font-family:var(--mono);font-size:.65rem;letter-spacing:.05em;padding:.3rem .7rem;margin:.2rem;text-transform:uppercase;}
+.tag-feature{background:rgba(36,30,26,.06);color:var(--iron);}
+.tag-integration{background:rgba(140,56,42,.08);color:var(--loko);}
+.tag-ready{background:rgba(181,184,163,.2);color:var(--slate);}
+
+/* SQSP mockup wireframe */
+.sqsp-frame{border:1px solid rgba(36,30,26,.12);background:#fff;position:relative;overflow:hidden;}
+.sqsp-bar{height:28px;background:var(--iron);display:flex;align-items:center;gap:5px;padding:0 10px;}
+.sqsp-dot{width:7px;height:7px;border-radius:50%;}
+.sqsp-url{font-family:var(--mono);font-size:.55rem;color:rgba(234,226,213,.5);margin-left:12px;letter-spacing:.02em;}
+.sqsp-body{padding:2rem;}
+.sqsp-nav{display:flex;justify-content:space-between;align-items:center;padding-bottom:1rem;border-bottom:1px solid rgba(36,30,26,.08);}
+.sqsp-logo{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:1.3rem;letter-spacing:-.015em;color:var(--iron);}
+.sqsp-links{display:flex;gap:1.2rem;}
+.sqsp-link{font-family:var(--ui);font-size:.6rem;text-transform:uppercase;letter-spacing:.14em;color:var(--slate);text-decoration:none;}
+.sqsp-btn{font-family:var(--ui);font-size:.6rem;background:var(--loko);color:var(--ecru);padding:.4rem 1rem;letter-spacing:.04em;text-decoration:none;display:inline-block;}
+.sqsp-hero{padding:3rem 0;max-width:500px;}
+.sqsp-hero .eye{font-size:.55rem;margin-bottom:.8rem;}
+.sqsp-hero h2{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:2.2rem;line-height:1.05;margin-bottom:1rem;color:var(--iron);}
+.sqsp-hero p{font-family:var(--body);font-size:.82rem;color:var(--slate);line-height:1.5;margin-bottom:1.2rem;}
+.sqsp-section{padding:1.5rem 0;border-top:1px dashed rgba(36,30,26,.1);}
+.sqsp-section .eye{font-size:.5rem;}
+.sqsp-cols{display:flex;gap:1.5rem;align-items:start;}
+.sqsp-img{width:45%;aspect-ratio:4/5;background:var(--champagne);flex-shrink:0;}
+.sqsp-copy{flex:1;}
+.sqsp-copy h3{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:1.1rem;margin-bottom:.5rem;}
+.sqsp-copy p{font-family:var(--body);font-size:.72rem;color:var(--slate);line-height:1.45;}
+
+/* Marks refinement */
+.mark-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;margin-top:2rem;}
+@media(max-width:780px){.mark-grid{grid-template-columns:1fr;}}
+.mark-cell{display:flex;flex-direction:column;align-items:flex-start;gap:.8rem;}
+.mark-cell .m{margin-top:.3rem;}
+
+/* Features grid */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem;}
+@media(max-width:780px){.feat-grid{grid-template-columns:1fr;}}
+.feat{border-top:1px solid rgba(36,30,26,.12);padding:1.2rem 0;}
+.feat h4{font-family:var(--serif);font-variation-settings:"SOFT" 100,"WONK" 1;font-size:1.15rem;margin-bottom:.4rem;}
+.feat p{font-size:.9rem;color:var(--slate);line-height:1.45;}
+
+/* Integration map */
+.int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem;}
+@media(max-width:780px){.int-grid{grid-template-columns:1fr 1fr;}}
+.int-card{padding:1.2rem;border:1px solid rgba(36,30,26,.1);background:rgba(234,226,213,.3);}
+.int-card h4{font-family:var(--ui);font-size:.78rem;font-weight:500;margin-bottom:.3rem;}
+.int-card p{font-size:.82rem;color:var(--slate);line-height:1.4;}
+.int-card .m{margin-top:.6rem;}
+
+/* Social */
+.ig{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;max-width:360px;margin-top:1.5rem;}
+.ig-c{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.5rem;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;text-align:center;padding:.3rem;line-height:1.3;}
+
+/* TOC */
+.toc{position:fixed;top:50%;right:1.5rem;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:.45rem;}
+.toc a{width:7px;height:7px;border-radius:50%;background:rgba(36,30,26,.18);transition:all .3s;}
+.toc a:hover{background:var(--loko);transform:scale(1.5);}
+@media(max-width:900px){.toc{display:none;}}
+</style>
+</head>
+<body>
+
+<nav class="toc">
+  <a href="#sqsp" title="Squarespace Preview"></a>
+  <a href="#marks" title="Refined Marks"></a>
+  <a href="#palette" title="Palette"></a>
+  <a href="#pages" title="Site Pages"></a>
+  <a href="#features" title="Features"></a>
+  <a href="#integrations" title="Integrations"></a>
+  <a href="#social" title="Social"></a>
+  <a href="#handoff" title="Handoff"></a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     COVER
+     ═══════════════════════════════════════════════════════ -->
+<section style="min-height:80vh;display:flex;flex-direction:column;justify-content:center;border-bottom:none;padding:5rem 0;">
+  <div class="w">
+    <p class="eye">KATHA PHOTO BOOTH · STYLE PROPOSAL · 2026</p>
+    <h1 style="font-size:clamp(3rem,7vw,6rem);line-height:.98;margin-bottom:1.5rem;">katha</h1>
+    <p style="font-family:var(--serif);font-style:italic;font-size:1.4rem;color:var(--slate);max-width:32rem;">Rooted by perseverance, crafted for generations.</p>
+    <p class="lead" style="margin-top:2.5rem;">A premium DSLR photo booth — two physical builds, one identity. This document is for <strong>Vince</strong>, who manages the Squarespace storefront. It shows what kathabooth.com will look like, what it will contain, and what runs behind it. Share freely.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     1. SQUARESPACE PREVIEW (the brother's view first)
+     ═══════════════════════════════════════════════════════ -->
+<section id="sqsp"><div class="w">
+  <p class="eye">01 — SQUARESPACE STOREFRONT PREVIEW</p>
+  <h2 style="font-size:2.2rem;margin-bottom:.8rem;">This is what kathabooth.com looks like.</h2>
+  <p class="lead" style="margin-bottom:2.5rem;">Every heading, every button, every image edge is styled automatically by one CSS file you paste once. You manage content in the normal editor — the design holds.</p>
+
+  <!-- Browser frame mockup -->
+  <div class="sqsp-frame">
+    <div class="sqsp-bar">
+      <div class="sqsp-dot" style="background:#ff5f57;"></div>
+      <div class="sqsp-dot" style="background:#febc2e;"></div>
+      <div class="sqsp-dot" style="background:#28c840;"></div>
+      <span class="sqsp-url">kathabooth.com</span>
+    </div>
+    <div class="sqsp-body" style="background:var(--ecru);">
+      <!-- Nav -->
+      <div class="sqsp-nav">
+        <span class="sqsp-logo">katha</span>
+        <div class="sqsp-links">
+          <a class="sqsp-link" href="#">Home</a>
+          <a class="sqsp-link" href="#">Process</a>
+          <a class="sqsp-link" href="#">Photo Booth</a>
+          <a class="sqsp-link" href="#">Events</a>
+          <a class="sqsp-link" href="#">Founders</a>
+          <a class="sqsp-btn" href="#">Begin</a>
+        </div>
+      </div>
+      <!-- Hero -->
+      <div class="sqsp-hero">
+        <p class="eye">THE BOOTH · KATHABOOTH.COM</p>
+        <h2>Perseverance<br>composed<br>into thread.</h2>
+        <p>Two booths. One discipline. Photographs made slowly, with the gravity of fine portraiture and the warmth of a room someone built by hand.</p>
+        <a class="sqsp-btn" href="#">Begin</a>
+      </div>
+      <!-- Feature row -->
+      <div class="sqsp-section">
+        <p class="eye">THE STRUCTURE</p>
+        <div class="sqsp-cols">
+          <div class="sqsp-img deckled"></div>
+          <div class="sqsp-copy">
+            <h3>Built to last,<br>not to perform.</h3>
+            <p>A wooden booth and a pearl white booth — both DSLR, both structural, both designed to disappear into the room while the portrait happens.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Process teaser -->
+      <div class="sqsp-section">
+        <p class="eye">THE PROCESS</p>
+        <div style="display:flex;gap:2rem;flex-wrap:wrap;">
+          <div style="flex:1 1 120px;border-top:1px solid var(--sequin);padding-top:.6rem;">
+            <span class="m">01</span><h3 style="font-size:.85rem;margin-top:.3rem;">Inquiry</h3>
+          </div>
+          <div style="flex:1 1 120px;border-top:1px solid var(--sequin);padding-top:.6rem;">
+            <span class="m">02</span><h3 style="font-size:.85rem;margin-top:.3rem;">Installation</h3>
+          </div>
+          <div style="flex:1 1 120px;border-top:1px solid var(--sequin);padding-top:.6rem;">
+            <span class="m">03</span><h3 style="font-size:.85rem;margin-top:.3rem;">The Print</h3>
+          </div>
+        </div>
+      </div>
+      <!-- Footer mini -->
+      <div style="padding:1rem 0 0;border-top:1px dashed rgba(36,30,26,.1);display:flex;justify-content:space-between;align-items:center;">
+        <svg viewBox="0 0 160 44" width="60" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KTHA maker's mark"><text x="15" y="28" fill="#241E1A" font-family="'EB Garamond', Georgia, serif" font-size="24" font-weight="400" letter-spacing="0.15em" style="text-transform: lowercase;">ktha</text><g fill="#9C958A" opacity="0.85"><circle cx="120" cy="22" r="1.5"/><circle cx="120" cy="16" r="1.5"/><circle cx="120" cy="28" r="1.5"/><circle cx="114" cy="22" r="1.5"/><circle cx="126" cy="22" r="1.5"/></g></svg>
+        <span class="m">KTHA · WOVEN</span>
+      </div>
+    </div>
+  </div>
+  <p class="m" style="margin-top:1.5rem;">LIVE WIREFRAME · ALL TEXT AND IMAGES EDITABLE IN THE SQUARESPACE EDITOR · DESIGN LOCKED BY CODE INJECTION</p>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     2. REFINED MARKS
+     ═══════════════════════════════════════════════════════ -->
+<section id="marks"><div class="w">
+  <p class="eye">02 — MARKS (REFINED)</p>
+  <h2 style="font-size:2.2rem;margin-bottom:.8rem;">Three marks. One continuous line.</h2>
+  <p class="lead" style="margin-bottom:2rem;">Every mark passes the Arturo Luz test: reproducible as a single strand of stainless steel. The `t` crossbar is deliberately heavier — the one asymmetric terminal that proves a human hand was here.</p>
+
+  <div class="mark-grid">
+    <!-- WORDMARK light -->
+    <div class="mark-cell">
+      <div style="padding:2rem;background:var(--ecru);border:1px solid rgba(36,30,26,.08);display:flex;justify-content:center;align-items:center;">
+        <svg viewBox="0 0 290 80" width="100%" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="katha">
+          <text x="50%" y="54" fill="var(--iron)" font-family="'EB Garamond', Georgia, serif" font-size="48" font-weight="400" letter-spacing="0.12em" text-anchor="middle" style="text-transform: lowercase;">katha</text>
+        </svg>
+      </div>
+      <span class="m">PRIMARY WORDMARK · IRON BARK ON ECRU</span>
+      <p style="font-size:.85rem;color:var(--slate);line-height:1.4;">Quiet elegance. Set in EB Garamond with spacious lowercase letter-spacing (0.12em), achieving ultimate poise, symmetry, and restraint—exactly uniform with the maker's mark.</p>
+    </div>
+
+    <!-- WORDMARK dark -->
+    <div class="mark-cell">
+      <div style="padding:2rem;background:var(--obsidian);border:1px solid rgba(36,30,26,.08);display:flex;justify-content:center;align-items:center;">
+        <svg viewBox="0 0 290 80" width="100%" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="katha">
+          <text x="50%" y="54" fill="var(--ecru)" font-family="'EB Garamond', Georgia, serif" font-size="48" font-weight="400" letter-spacing="0.12em" text-anchor="middle" style="text-transform: lowercase;">katha</text>
+        </svg>
+      </div>
+      <span class="m">PRIMARY WORDMARK · ECRU ON OBSIDIAN</span>
+    </div>
+
+    <!-- LOGOMARK: The Threshold — bold lowercase 'k' (inspired by Cosmos) -->
+    <div class="mark-cell">
+      <div style="padding:2rem;background:var(--ecru);border:1px solid rgba(36,30,26,.08);display:flex;gap:2rem;align-items:center;">
+        <svg viewBox="0 0 100 100" width="72" fill="none" role="img" aria-label="Katha logo mark">
+          <path d="M 20,88 L 20,12 L 35,12 L 35,46 L 68,12 L 86,12 L 50,48 L 88,88 L 70,88 L 42,56 L 35,63 L 35,88 Z" fill="var(--iron)"/>
+        </svg>
+        <svg viewBox="0 0 100 100" width="72" fill="none" role="img" aria-label="Katha logo mark, sacred">
+          <path d="M 20,88 L 20,12 L 35,12 L 35,46 L 68,12 L 86,12 L 50,48 L 88,88 L 70,88 L 42,56 L 35,63 L 35,88 Z" fill="var(--loko)"/>
+        </svg>
+      </div>
+      <span class="m">LOGOMARK · THE THRESHOLD · IRON BARK + LOKO RUST (SACRED)</span>
+      <p style="font-size:.85rem;color:var(--slate);line-height:1.4;">Bold lowercase 'k' shape. Styled in the monumentally iconic and creative geometric style of the Cosmos reference poster curation, forming a completely timeless creative anchor.</p>
+    </div>
+  </div>
+
+  <!-- KTHA -->
+  <div style="margin-top:3rem;padding:2.5rem;border:1px solid rgba(36,30,26,.08);background:rgba(234,226,213,.4);display:flex;flex-wrap:wrap;gap:3rem;align-items:center;">
+    <svg viewBox="0 0 160 44" width="200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KTHA maker's mark">
+      <text x="15" y="28" fill="var(--iron)" font-family="'EB Garamond', Georgia, serif" font-size="24" font-weight="400" letter-spacing="0.15em" style="text-transform: lowercase;">ktha</text>
+      <g fill="var(--champagne)" opacity="0.85">
+        <circle cx="120" cy="22" r="1.5"/><circle cx="120" cy="16" r="1.5"/><circle cx="120" cy="28" r="1.5"/><circle cx="114" cy="22" r="1.5"/><circle cx="126" cy="22" r="1.5"/>
+      </g>
+    </svg>
+    <div>
+      <span class="m">KTHA MAKER'S MARK</span>
+      <p style="font-size:.9rem;color:var(--slate);margin-top:.4rem;max-width:24rem;">The four-letter signature. Tone-on-tone by default; Loko Rust for sacred editions only. Appears blind-debossed on every print.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     3. PALETTE
+     ═══════════════════════════════════════════════════════ -->
+<section id="palette"><div class="w">
+  <p class="eye">03 — PALETTE A · KATHA CANON (LOCKED)</p>
+  <div style="display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1rem;">
+    <div style="width:100px;"><div style="height:60px;background:var(--obsidian);"></div><span class="m">OBSIDIAN<br>#111112</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--ecru);border:1px solid rgba(36,30,26,.1);"></div><span class="m">ECRU<br>#EAE2D5</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--sequin);"></div><span class="m">SEQUIN<br>#9C958A</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--champagne);"></div><span class="m">CHAMPAGNE<br>#C4B59D</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--iron);"></div><span class="m">IRON BARK<br>#241E1A</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--knalum);"></div><span class="m">KNALUM<br>#1A1816</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--loko);"></div><span class="m">LOKO RUST<br>#8C382A</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--terra);"></div><span class="m">TERRACOTTA<br>#A35C44</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--slate);"></div><span class="m">ABEL SLATE<br>#5A5D5A</span></div>
+    <div style="width:100px;"><div style="height:60px;background:var(--capiz);"></div><span class="m">CAPIZ SAGE<br>#B5B8A3</span></div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     4. SITE PAGES
+     ═══════════════════════════════════════════════════════ -->
+<section id="pages"><div class="w">
+  <p class="eye">04 — WHAT THE WEBSITE CONTAINS</p>
+  <h2 style="font-size:2.2rem;margin-bottom:2rem;">Ten pages. Each with a clear job.</h2>
+
+  <div class="feat-grid">
+    <div class="feat"><h4>Home</h4><p>Hero statement, philosophy pull-quote, booth photo with deckled frame, 3-step process teaser, testimonial slider, contact CTA. The front door.</p><span class="tag tag-ready">BUILT</span></div>
+    <div class="feat"><h4>Process</h4><p>Full 3-phase methodology: Inquiry &amp; Blueprint → Structural Installation → The Print. Each phase a feature-row with DeckledCard imagery.</p><span class="tag tag-ready">BUILT</span></div>
+    <div class="feat"><h4>Photo Booth</h4><p>Product specs, the physical build materials, camera &amp; lighting details. Stat bars for footprint, weight, power. The booth as object.</p><span class="tag tag-feature">SCAFFOLD</span></div>
+    <div class="feat"><h4>Events</h4><p>Regional gallery (SoCal focus). Filterable by event type (wedding, corporate, celebration). Each card links to a password-gated vault.</p><span class="tag tag-feature">SCAFFOLD</span></div>
+    <div class="feat"><h4>Founders</h4><p>Jed &amp; Vince origin story. Three ancestral parents narrative. The Katha etymology. Philosophy section with pull-quote.</p><span class="tag tag-feature">SCAFFOLD</span></div>
+    <div class="feat"><h4>In Action</h4><p>Dynamic gallery of past installations with inline FAQ accordion. Real event photos, candid, never staged.</p><span class="tag tag-feature">SCAFFOLD</span></div>
+    <div class="feat"><h4>Weddings</h4><p>SEO service page targeting SoCal couples. Deckled gallery, testimonials, venue-specific packages.</p><span class="tag tag-feature">SEO PAGE</span></div>
+    <div class="feat"><h4>Celebrations</h4><p>SEO service page for intimate micro-weddings and milestone events. Heritage framing.</p><span class="tag tag-feature">SEO PAGE</span></div>
+    <div class="feat"><h4>Corporate</h4><p>SEO service page for architectural activations, brand launches, galas. Minimal, structural tone.</p><span class="tag tag-feature">SEO PAGE</span></div>
+    <div class="feat"><h4>Event Vault</h4><p>Password-protected client galleries. Each event gets a unique slug. QR code on the print links here.</p><span class="tag tag-integration">NEXT.JS PORTAL</span></div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     5. FEATURES BEYOND WEB DESIGN
+     ═══════════════════════════════════════════════════════ -->
+<section id="features"><div class="w">
+  <p class="eye">05 — FEATURES BEYOND WEB DESIGN</p>
+  <h2 style="font-size:2.2rem;margin-bottom:1rem;">What runs behind the storefront.</h2>
+  <p class="lead" style="margin-bottom:2rem;">The Squarespace site is the front of house. These are the systems behind it — some integrate directly with Squarespace; others live on the Next.js portal.</p>
+
+  <div class="feat-grid">
+    <div class="feat">
+      <h4>3-Field Smart Intake</h4>
+      <p>Name, email, event date — that's it. Fires into the CRM pipeline instantly. Conversion-optimized for mobile (thumb-zone fields).</p>
+      <span class="tag tag-integration">HONEYBOOK</span><span class="tag tag-integration">SUPABASE</span>
+    </div>
+    <div class="feat">
+      <h4>Enrichment Email Flow</h4>
+      <p>After intake: a transactional email (Resend) with a tokenized link to the full questionnaire. Client completes at their pace.</p>
+      <span class="tag tag-integration">RESEND</span><span class="tag tag-integration">NEXT.JS</span>
+    </div>
+    <div class="feat">
+      <h4>Smart Contract Auto-Generation</h4>
+      <p>HoneyBook generates a branded contract pre-filled with event parameters. Zero manual data entry.</p>
+      <span class="tag tag-integration">HONEYBOOK</span>
+    </div>
+    <div class="feat">
+      <h4>QR Print Vault</h4>
+      <p>Every physical print carries a debossed QR linking to a password-gated digital gallery. The print becomes its own access point.</p>
+      <span class="tag tag-integration">NEXT.JS</span><span class="tag tag-integration">SUPABASE</span>
+    </div>
+    <div class="feat">
+      <h4>Automated Email Templates</h4>
+      <p>Branded transactional emails (confirmation, reminder, vault access, thank-you). All in the Katha voice, never generic templates.</p>
+      <span class="tag tag-integration">RESEND</span>
+    </div>
+    <div class="feat">
+      <h4>Social Scheduling</h4>
+      <p>Post-event delivery: auto-stage IG grid posts with brand-aligned captions, deckled frame overlay applied to every export.</p>
+      <span class="tag tag-feature">LATER.COM</span><span class="tag tag-feature">CANVA BRAND KIT</span>
+    </div>
+    <div class="feat">
+      <h4>Print Fulfillment API</h4>
+      <p>Archival cotton prints ordered automatically post-event. KTHA deboss, linen folio, glassine caption strip. Shipped to client.</p>
+      <span class="tag tag-feature">PRODIGI / PRINTFUL</span>
+    </div>
+    <div class="feat">
+      <h4>Review & Testimonial Pipeline</h4>
+      <p>30-day post-event: automated review request (Google, The Knot, WeddingWire). Responses feed into the testimonial slider.</p>
+      <span class="tag tag-feature">AFTERSHOOT / MANUAL</span>
+    </div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     6. INTEGRATION MAP
+     ═══════════════════════════════════════════════════════ -->
+<section id="integrations"><div class="w">
+  <p class="eye">06 — INTEGRATION MAP</p>
+  <h2 style="font-size:2.2rem;margin-bottom:2rem;">The stack.</h2>
+
+  <div class="int-grid">
+    <div class="int-card"><h4>HoneyBook CRM</h4><p>Intake pipeline, contract generation, invoicing, client communication. PID: 679039...</p><span class="m">CORE · ACTIVE</span></div>
+    <div class="int-card"><h4>Supabase</h4><p>Lead database, event vault auth, gallery storage, state management (Inquired → Enriched → Contracted).</p><span class="m">CORE · ACTIVE</span></div>
+    <div class="int-card"><h4>Resend</h4><p>Transactional emails: enrichment link, vault access, confirmations. Katha-branded templates.</p><span class="m">CORE · READY</span></div>
+    <div class="int-card"><h4>Squarespace</h4><p>Storefront, SEO, blog, native gallery. Code Injection for brand CSS. Business plan+.</p><span class="m">STOREFRONT · READY</span></div>
+    <div class="int-card"><h4>Vercel</h4><p>Next.js hosting for book.kathabooth.com. Edge functions, ISR, preview deployments.</p><span class="m">PORTAL · READY</span></div>
+    <div class="int-card"><h4>Later / Buffer</h4><p>Social scheduling. IG grid planning with 9-post rhythm (3 tones, never adjacent).</p><span class="m">SOCIAL · PLANNED</span></div>
+    <div class="int-card"><h4>Canva Brand Kit</h4><p>Social templates with locked Katha tokens. Story templates, IG post frames, deckled photo overlays.</p><span class="m">SOCIAL · PLANNED</span></div>
+    <div class="int-card"><h4>Prodigi / Printful</h4><p>Print-on-demand API. Archival cotton stock, KTHA deboss, linen folio packaging.</p><span class="m">FULFILLMENT · PLANNED</span></div>
+    <div class="int-card"><h4>Google Business</h4><p>Review collection, local SEO, Maps listing for Carson/SoCal service area.</p><span class="m">SEO · PLANNED</span></div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     7. SOCIAL GRID
+     ═══════════════════════════════════════════════════════ -->
+<section id="social"><div class="w">
+  <p class="eye">07 — @KATHABOOTH SOCIAL GRID</p>
+  <div class="cols">
+    <div>
+      <h2 style="font-size:2.2rem;margin-bottom:1rem;">Nine-post rhythm.</h2>
+      <p class="lead">Three visual tones, never adjacent. The grid breathes the way the website breathes.</p>
+      <div class="ig">
+        <div class="ig-c" style="background:var(--champagne);">HANDS<br>AT WORK</div>
+        <div class="ig-c" style="background:var(--knalum);color:var(--ecru);">QUOTE<br>EDITORIAL</div>
+        <div class="ig-c" style="background:var(--ecru);border:1px solid rgba(36,30,26,.08);">DECKLED<br>PRINT</div>
+        <div class="ig-c" style="background:var(--ecru);border:1px solid rgba(36,30,26,.08);">BOOTH<br>OBJECT</div>
+        <div class="ig-c" style="background:var(--terra);color:var(--ecru);">DETAIL<br>TEXTURE</div>
+        <div class="ig-c" style="background:var(--champagne);">GUEST<br>CANDID</div>
+        <div class="ig-c" style="background:var(--knalum);color:var(--ecru);">KTHA<br>STAMP</div>
+        <div class="ig-c" style="background:var(--ecru);border:1px solid rgba(36,30,26,.08);">PROCESS<br>STEP</div>
+        <div class="ig-c" style="background:var(--champagne);">PORTRAIT<br>TONAL</div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:1.3rem;margin-bottom:.6rem;">Caption pattern</h3>
+      <p style="font-size:.92rem;color:var(--slate);line-height:1.5;margin-bottom:1.5rem;">[One craft observation]. [One line of context].<br>— <span class="m">Katha №___ · woven for ___</span></p>
+      <p style="font-size:.85rem;color:var(--slate);">Lowercase, unhurried. No emoji walls. One or two, sparingly. Three rooted tags max.</p>
+      <h3 style="font-size:1.3rem;margin:2rem 0 .6rem;">Stories</h3>
+      <div style="display:flex;gap:1rem;">
+        <div style="width:80px;aspect-ratio:9/16;background:var(--knalum);display:flex;align-items:flex-end;padding:.5rem;"><span class="m" style="color:var(--ecru);font-size:.5rem;">behind the booth</span></div>
+        <div style="width:80px;aspect-ratio:9/16;background:var(--ecru);border:1px solid rgba(36,30,26,.08);display:flex;align-items:flex-end;padding:.5rem;"><span class="m" style="font-size:.5rem;">№ of the week</span></div>
+        <div style="width:80px;aspect-ratio:9/16;background:var(--terra);display:flex;align-items:flex-end;padding:.5rem;"><span class="m" style="color:var(--ecru);font-size:.5rem;">reserve →</span></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ═══════════════════════════════════════════════════════
+     8. HANDOFF SUMMARY
+     ═══════════════════════════════════════════════════════ -->
+<section id="handoff" style="border-bottom:none;"><div class="w">
+  <p class="eye">08 — THE HANDOFF</p>
+  <h2 style="font-size:2.2rem;margin-bottom:2rem;">Jed builds the shell. You manage within.</h2>
+
+  <div class="cols">
+    <div>
+      <div style="border-top:1px solid rgba(36,30,26,.12);padding:1rem 0;">
+        <h4 style="font-size:1.15rem;">Layer 1 · Locked CSS</h4>
+        <p style="color:var(--slate);font-size:.92rem;">One file pasted into Code Injection. Restyles all native Squarespace elements. <strong>Never edited.</strong></p>
+      </div>
+      <div style="border-top:1px solid rgba(36,30,26,.12);padding:1rem 0;">
+        <h4 style="font-size:1.15rem;">Layer 2 · Snippet Kit</h4>
+        <p style="color:var(--slate);font-size:.92rem;">7 Code Block snippets for signature moments: hero, feature-row, quote, wordmark, KTHA stamp, deckled image, calado divider. Edit only marked zones.</p>
+      </div>
+      <div style="border-top:1px solid rgba(36,30,26,.12);padding:1rem 0;">
+        <h4 style="font-size:1.15rem;">Layer 3 · Native Editor</h4>
+        <p style="color:var(--slate);font-size:.92rem;">Everything else in the normal Squarespace editor. Galleries, text, spacing, new pages. Layer 1 keeps it on-brand automatically.</p>
+      </div>
+    </div>
+    <div>
+      <div style="padding:2rem;background:rgba(140,56,42,.05);border:1px solid rgba(140,56,42,.12);">
+        <p style="font-family:var(--serif);font-variation-settings:'SOFT' 100,'WONK' 1;font-size:1.3rem;line-height:1.25;">Paste Layer 1 once. Build with native sections. Drop Layer 2 for signature moments. Never edit Layer 1.</p>
+        <p class="m" style="margin-top:1.5rem;">FULL GUIDE · squarespace/HANDOFF_GUIDE.md</p>
+      </div>
+      <div style="margin-top:2rem;">
+        <p class="eye">REQUIREMENTS</p>
+        <p style="font-size:.92rem;color:var(--slate);">Squarespace <strong>Business plan+</strong> (needed for Code Injection).<br>Domain: <strong>kathabooth.com</strong>.<br>All snippets are pure HTML + CSS — no JS dependencies.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="calado" style="margin:4rem 0 2rem;">
+
+  <div style="text-align:center;">
+    <svg viewBox="0 0 160 44" width="100" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:1rem;">
+      <text x="15" y="28" fill="var(--sequin)" font-family="'EB Garamond', Georgia, serif" font-size="24" font-weight="400" letter-spacing="0.15em" style="text-transform: lowercase;">ktha</text>
+      <g fill="var(--sequin)" opacity="0.6">
+        <circle cx="120" cy="22" r="1.5"/><circle cx="120" cy="16" r="1.5"/><circle cx="120" cy="28" r="1.5"/><circle cx="114" cy="22" r="1.5"/><circle cx="126" cy="22" r="1.5"/>
+      </g>
+    </svg>
+    <p style="font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--slate);">Rooted by perseverance, crafted for generations.</p>
+    <p class="m" style="margin-top:1rem;">KATHA · 2026 · KATHABOOTH.COM</p>
+  </div>
+</div></section>
+
+</body>
+</html>
