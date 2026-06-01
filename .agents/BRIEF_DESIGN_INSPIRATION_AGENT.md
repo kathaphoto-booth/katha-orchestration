@@ -15,7 +15,7 @@ The agent receives:
 Using the AGY SDK, the agent is equipped with the following custom tools:
 - `apply_threadline_texture(canvas_color)`: Calculates the exact noise and grain parameters to simulate *Piña Ecru* or *Obsidian Weave*.
 - `generate_foil_spec(metallic_type)`: Outputs the SVG filter coordinates for Rose Gold or Antique Gold stamping.
-- `pair_typography(vibe)`: Selects the optimal combination of monumental display serifs (e.g., Cormorant Garamond) and clinical sans-serifs (e.g., Inter) to balance the grid.
+- `pair_typography(vibe)`: Selects the optimal combination of Katha-mandated display serif (**Fraunces**, SOFT 100, WONK 1) and clinical sans-serifs (Inter) to balance the grid. Never output Cormorant Garamond or Italiana for Signature presets — those are drift D1.
 
 ## 4. Expected Output (Structured)
 The agent uses the SDK's `structured_output` feature (Pydantic schema) to return a reproducible JSON payload:
@@ -25,7 +25,7 @@ The agent uses the SDK's `structured_output` feature (Pydantic schema) to return
   "texture_opacity": 0.12,
   "foil_accent": "rose_gold_double_border",
   "typography": {
-    "display": "Cormorant Garamond",
+    "display": "Fraunces",
     "tracking": "0.05em",
     "caption": "Inter",
     "caption_tracking": "0.2em"
@@ -34,5 +34,8 @@ The agent uses the SDK's `structured_output` feature (Pydantic schema) to return
 }
 ```
 
-## 5. Deployment Strategy
+## 5. Validation Gate
+CC (Claude Code) must validate this agent's output JSON against `npm run guard:templates` (in `photobooth-template-studio/`) before persisting to the catalog or emailing to the client. Any output containing legacy OAX tokens, forbidden hex, or non-Katha fonts is blocked. The palette tokens are locked in `DESIGN_SYSTEM.v2.md` §2; the font mandate is `Fraunces` for display, `Inter` for captions.
+
+## 6. Deployment Strategy
 This agent runs as a background process (invoked via webhook from the Next.js API route `/api/selection`). It intercepts the client's wireframe choice and instantly emails a rendered mockup of their "Finalized Expression" to both the client and Katha.

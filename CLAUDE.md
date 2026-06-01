@@ -84,6 +84,26 @@ This repository has been surgically scrubbed of all legacy `oax` tokens. We are 
 
 ---
 
+## SKILL DELEGATION PROTOCOL (CC + AG Triad)
+
+**The triad:** Jed (final authority) → CC (orchestrator, Claude Code) → AG (Antigravity SDK / Gemini CLI, heavy-lift AI pipelines). Every design and frontend task flows through this chain. AG is NOT autonomous — CC routes work to AG with Katha context pre-loaded, and CC validates AG output against the guard before presenting to Jed.
+
+**Before delegating to ANY design/frontend/review skill** (`/impeccable`, `/design-critique`, `/senior-frontend`, `/epic-design`, `/canvas-design`, `/a11y-audit`, or any AG pipeline):
+1. Read `DESIGN_SYSTEM.v2.md` §2 (11 tokens) + §3 (Fraunces/EB Garamond/Inter/JetBrains Mono) + §6 (forbidden list).
+2. Include the two-tier rule: Katha Signature presets (id `^katha-`) are held to the palette + Fraunces; Classic wedding presets are exempt.
+3. Run `npm run guard` (in `photobooth-template-studio`) after any code changes the skill or AG produces.
+
+**AG-specific enforcement:** When AG runs design agent pipelines (e.g., `.agents/BRIEF_DESIGN_INSPIRATION_AGENT.md`):
+- Pre-inject the Katha palette + Fraunces font mandate into AG's structured output schema.
+- Validate AG's output JSON against `npm run guard:templates` before persisting to the catalog or emailing to the client.
+- Block any AG output containing legacy OAX tokens, forbidden hex, Cormorant/Italiana on Signature presets, or non-Katha fonts.
+
+**Brand guard commands** (run from `photobooth-template-studio/`):
+- `npm run guard` — full pipeline (template guard + layout law + impeccable detect), blocks on P0 only.
+- `npm run guard:ci` — P0-only fast path for CI and pre-commit hooks.
+
+---
+
 ## DEPLOYMENT TOPOLOGY (Dual-Track)
 
 - **Public Storefront / SEO surface** → **Squarespace** at `kathabooth.com`. Brand assets must work via Code Blocks, raster fallbacks for the deckled SVG masks, and CSS-only sequin effect (no canvas).

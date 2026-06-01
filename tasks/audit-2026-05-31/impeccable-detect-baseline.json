@@ -1,0 +1,20 @@
+[
+  {
+    "antipattern": "single-font",
+    "name": "Single font for everything",
+    "description": "Only one font family is used for the entire page. Pair a distinctive display font with a refined body font to create typographic hierarchy.",
+    "severity": "warning",
+    "file": "/Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/layout.tsx",
+    "line": 26,
+    "snippet": "only font used is aboreto"
+  },
+  {
+    "antipattern": "gray-on-color",
+    "name": "Gray text on colored background",
+    "description": "Gray text looks washed out on colored backgrounds. Use a darker shade of the background color instead, or white/near-white for contrast.",
+    "severity": "warning",
+    "file": "/Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/page.tsx",
+    "line": 2122,
+    "snippet": "text-stone-500 on bg-amber-50"
+  }
+]
