@@ -21,6 +21,11 @@ export { KCta } from './KCta';
 export { KFeatureCard } from './KFeatureCard';
 export { KQuoteBlock } from './KQuoteBlock';
 export { KStatBar } from './KStatBar';
+export { KNarrativeThread } from './KNarrativeThread';
+export { KToast } from './KToast';
+export { KFilterChip } from './KFilterChip';
+export { KBinakulField } from './KBinakulField';
+export { SequinCanvas } from './SequinCanvas';
 
 // Marks (re-exported for one-stop importing)
 export { KathaWordmark } from '../marks/KathaWordmark';
@@ -28,4 +33,8 @@ export { KathaLogomark } from '../marks/KathaLogomark';
 export { KthaMark } from '../marks/KthaMark';
 export { KathaThread } from '../marks/KathaThread';
 export { CaladoDivider } from '../marks/CaladoDivider';
-export { DeckledCard } from '../DeckledCard';
+export { DeckledCard, DeckledCardRotator } from '../DeckledCard';
+
+// Enhancements (re-exported for convenience)
+export { ScrollRevealCSS } from '../enhancements/ScrollRevealCSS';
+

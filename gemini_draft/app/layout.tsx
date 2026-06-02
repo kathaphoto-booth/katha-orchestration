@@ -2,6 +2,8 @@ import type {Metadata} from 'next';
 import { Fraunces, EB_Garamond, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { WoodGrainEmboss } from '@/components/WoodGrainEmboss';
+import { KathaThread } from '@/components/marks/KathaThread';
+import { KBinakulField } from '@/components/shell/KBinakulField';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -39,8 +41,11 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang="en" className={`${fraunces.variable} ${garamond.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased min-h-screen flex flex-col tactile-bg bg-bg-primary text-text-primary" suppressHydrationWarning>
         <WoodGrainEmboss />
+        <KathaThread className="fixed inset-0 z-0" />
+        <KBinakulField />
         {children}
       </body>
     </html>
   );
 }
+

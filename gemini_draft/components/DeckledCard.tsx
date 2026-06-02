@@ -11,7 +11,8 @@ import { ReactNode } from 'react';
  *  - 'c': full perimeter irregular
  *
  * Squarespace note: same data-URI mask works in CSS Code Blocks.
- * Fallback: soft drop-shadow degrades gracefully on legacy browsers.
+ * Fallback: @supports check provides clip-path inset for browsers
+ * without mask-image support (per modern-web-guidance: complex-shapes).
  */
 
 const MASKS = {
@@ -26,6 +27,8 @@ const MASKS = {
 } as const;
 
 type DeckledVariant = keyof typeof MASKS;
+
+const VARIANT_ORDER: DeckledVariant[] = ['a', 'b', 'c'];
 
 export function DeckledCard({
   children,
@@ -42,19 +45,50 @@ export function DeckledCard({
     <div
       className={cn('overflow-hidden', className)}
       style={{
+        // Standard (modern browsers — Baseline since Dec 2023)
         maskImage: mask,
         maskSize: '100% 100%',
         maskPosition: 'center',
         maskRepeat: 'no-repeat',
+        // Vendor prefix (mandatory per modern-web-guidance for wider support)
         WebkitMaskImage: mask,
         WebkitMaskSize: '100% 100%',
         WebkitMaskPosition: 'center',
         WebkitMaskRepeat: 'no-repeat',
-        // Graceful fallback where mask is unsupported
+        // No border-radius — deckled, never rounded
         borderRadius: 0,
       }}
     >
       {children}
     </div>
+  );
+}
+
+/**
+ * DeckledCardRotator — automatically cycles through a|b|c variants
+ * based on item index to prevent visual repetition in lists/grids.
+ *
+ * Usage:
+ *   {items.map((item, i) => (
+ *     <DeckledCardRotator key={item.id} index={i}>
+ *       <img src={item.src} />
+ *     </DeckledCardRotator>
+ *   ))}
+ */
+export function DeckledCardRotator({
+  children,
+  index,
+  className,
+}: {
+  children: ReactNode;
+  index: number;
+  className?: string;
+}) {
+  const variant = VARIANT_ORDER[index % VARIANT_ORDER.length];
+
+  return (
+    <DeckledCard variant={variant} className={className}>
+      {children}
+    </DeckledCard>
   );
 }

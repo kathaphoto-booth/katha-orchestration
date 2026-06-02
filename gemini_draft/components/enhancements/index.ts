@@ -14,3 +14,4 @@ export { SpringCursor } from './SpringCursor';
 export { Magnetic } from './Magnetic';
 export { WhisperReveal } from './WhisperReveal';
 export { ScrollReveal } from './ScrollReveal';
+export { ScrollRevealCSS } from './ScrollRevealCSS';

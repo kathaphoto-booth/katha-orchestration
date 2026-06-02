@@ -61,6 +61,58 @@ You have full freedom here. Rearrange, add pages, swap photos. The shell holds i
 
 ---
 
+## Layer 4 — Integrating the Template Gallery (Vercel Integration)
+
+The client-facing design gallery is hosted on Vercel at `book.kathabooth.com/gallery`. There are two ways to connect this gallery to your Squarespace storefront at `kathabooth.com`:
+
+### Option A — The Seamless Iframe Embed (Recommended)
+You can embed the gallery directly inside a page on your Squarespace site so the client never feels like they are leaving your domain.
+
+1. In Squarespace: Add a new blank page. Set the URL slug to `/template-gallery`.
+2. Add a **Code Block** inside the page section.
+3. Paste the following responsive iframe block:
+
+```html
+<div class="katha-gallery-wrapper" style="position:relative; width:100%; min-height:85vh; overflow:hidden; -webkit-overflow-scrolling:touch;">
+  <iframe 
+    src="https://book.kathabooth.com/gallery" 
+    id="katha-gallery-iframe"
+    style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; background:transparent;"
+    allow="geolocation; microphone; camera; midi; encrypted-media;"
+    loading="lazy">
+  </iframe>
+</div>
+
+<script>
+  // Dynamic Lead Token Forwarder:
+  // If a client visits kathabooth.com/template-gallery?lead=123, 
+  // automatically forward the lead token into the Vercel iframe.
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const lead = params.get('lead');
+    if (lead) {
+      const iframe = document.getElementById('katha-gallery-iframe');
+      if (iframe) {
+        iframe.src = `https://book.kathabooth.com/gallery?lead=${encodeURIComponent(lead)}`;
+      }
+    }
+  });
+</script>
+```
+
+### Option B — Direct URL Redirect (Easiest Setup)
+Alternatively, you can set up a automatic link redirect so that `kathabooth.com/template-gallery` instantly bounces users to the Vercel hosted portal.
+
+1. In Squarespace: Go to **Settings → Advanced → URL Redirects**.
+2. Add the following rule to the text box and save:
+   ```text
+   /template-gallery -> https://book.kathabooth.com/gallery 301
+   ```
+3. Update any storefront buttons or menu links ("Choose Your Template") to point to `/template-gallery`. They will dynamically bounce to the active gallery.
+
+---
+
+
 ## Quick do / don't
 
 **Do**

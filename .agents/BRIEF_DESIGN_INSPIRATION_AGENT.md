@@ -37,5 +37,9 @@ The agent uses the SDK's `structured_output` feature (Pydantic schema) to return
 ## 5. Validation Gate
 CC (Claude Code) must validate this agent's output JSON against `npm run guard:templates` (in `photobooth-template-studio/`) before persisting to the catalog or emailing to the client. Any output containing legacy OAX tokens, forbidden hex, or non-Katha fonts is blocked. The palette tokens are locked in `DESIGN_SYSTEM.v2.md` §2; the font mandate is `Fraunces` for display, `Inter` for captions.
 
-## 6. Deployment Strategy
+## 6. External Integrations
+- **Squarespace API** — `SQUARESPACE_API_KEY` in `.env`. Read-only access to the reference storefront (Jed's brother's site) for design inspiration pulls: products, inventory, and page structure. AG may query this to extract layout patterns, product photography styles, and section ordering as input to the Finalized Expression pipeline.
+- **Gemini API** — `GEMINI_API_KEY` in `.env`. Powers `scripts/katha_design_agent.py` and the Antigravity SDK structured output.
+
+## 7. Deployment Strategy
 This agent runs as a background process (invoked via webhook from the Next.js API route `/api/selection`). It intercepts the client's wireframe choice and instantly emails a rendered mockup of their "Finalized Expression" to both the client and Katha.

@@ -13,6 +13,10 @@
   --katha-abel-slate: #5A5D5A;
   --katha-capiz-sage: #B5B8A3;
 
+  /* v2 — Ecru-safe muted text (WCAG AA ≥ 5.0:1 on Piña Ecru) */
+  --katha-ecru-muted: #5A564E;
+  --katha-ecru-muted-soft: #6E6A62;
+
   --bg-primary: var(--katha-pina-ecru);
   --bg-dark: var(--katha-obsidian-weave);
   --text-primary: var(--katha-iron-bark);
@@ -181,6 +185,17 @@
   --dur-base:      700ms;
   --dur-slow:      1100ms;
   --dur-weave:     2400ms;
+
+  /* Physics-based spring easing (modern-web-guidance: linear()) */
+  --ease-spring: linear(0, 0.016 0.5%, 0.06 1%, 0.226 2%, 1.116 5.4%,
+    1.375 6.6%, 1.527 7.7%, 1.565 8.2%, 1.585 8.8%, 1.581 9.3%,
+    1.559 9.8%, 1.458 10.9%, 0.937 14.3%, 0.784 15.5%, 0.693 16.6%,
+    0.67 17.1%, 0.657 17.7%, 0.671 18.7%, 0.729 19.8%, 1.042 23.3%,
+    1.13 24.5%, 1.182 25.6%, 1.201 26.7%, 1.192 27.7%, 1.156 28.8%,
+    0.977 32.2%, 0.925 33.4%, 0.894 34.5%, 0.882 35.6%, 0.887 36.6%,
+    0.907 37.7%, 1.045 42.4%, 1.069 44.5%, 1.059 46.3%, 0.979 50.9%,
+    0.96 53.4%, 0.966 55.3%, 1.013 59.9%, 1.024 62.3%, 0.986 71.2%,
+    1.008 79.9%, 0.995 88.9%, 1);
 }
 
 html {
@@ -221,3 +236,32 @@ body {
 .hairline-b { border-bottom: 0.5px solid var(--color-primary); }
 .hairline-t { border-top: 0.5px solid var(--color-primary); }
 .hairline-l { border-left: 0.5px solid var(--color-primary); }
+
+/* ── Scroll-Driven Section Reveals ──
+   Uses CSS Scroll-Driven Animations (Chrome 115+, Safari 26+).
+   Firefox falls back to IntersectionObserver via ScrollRevealCSS component.
+   Feature detection per modern-web-guidance best practice. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes katha-weave-in {
+      from { opacity: 0; transform: translateY(24px); }
+    }
+    @keyframes katha-weave-out {
+      to { opacity: 0; transform: translateY(-12px); }
+    }
+    .k-reveal {
+      animation:
+        katha-weave-in 1s linear backwards,
+        katha-weave-out 1s linear forwards;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%, exit 60% exit 100%;
+    }
+  }
+}
+
+/* ── Reduced-motion global overrides ── */
+@media (prefers-reduced-motion: reduce) {
+  .k-reveal { animation: none !important; opacity: 1 !important; }
+  .k-thread-animate { stroke-dashoffset: 0 !important; }
+  .k-sequin-canvas { display: none !important; }
+}

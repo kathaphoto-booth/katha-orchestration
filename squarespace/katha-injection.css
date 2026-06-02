@@ -26,6 +26,9 @@
   --katha-terracotta-earth: #A35C44;
   --katha-abel-slate: #5A5D5A;
   --katha-capiz-sage: #B5B8A3;
+  /* v2 — Ecru-safe muted text (WCAG AA ≥ 5.0:1 on Piña Ecru) */
+  --katha-ecru-muted: #5A564E;
+  --katha-ecru-muted-soft: #6E6A62;
 
   /* Semantic */
   --bg-primary: var(--katha-pina-ecru);

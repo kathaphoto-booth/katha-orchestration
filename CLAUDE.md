@@ -104,6 +104,16 @@ This repository has been surgically scrubbed of all legacy `oax` tokens. We are 
 
 ---
 
+## SLASH COMMANDS (KATHA PROTOCOL)
+You can manually evoke the following slash commands to trigger specific operational modes:
+- **`/workflow`**: Forces the agent to strictly follow the 5-step Katha Operational Workflow (Brainstorm -> Spec -> Skills -> Execute -> Enhance). Do this before starting any major feature.
+- **`/verify`**: Forces the agent to run the "Evidence-Before-Claims" protocol. The agent cannot say "looks good" without citing terminal output from `npm run build` or `npm run guard`.
+- **`/handoff`**: Emergency brake for persistent memory. Immediately forces the agent to summarize its context, dump it into `.claude/memory/STATE.md`, and gracefully exit before a token crash.
+- **`/antigravity`**: Forces the agent to wrap AGY SDK Python scripts or subagent definitions with the strict Katha Context (11-token palette, Two-Tier rule, and restricted vocabulary).
+- **`/impeccable`**: Triggers the master UI/UX Pro Max ruleset wrapper. Scans the canvas for technical and accessibility flaws while explicitly protecting Wabi-Sabi aesthetics.
+
+---
+
 ## DEPLOYMENT TOPOLOGY (Dual-Track)
 
 - **Public Storefront / SEO surface** → **Squarespace** at `kathabooth.com`. Brand assets must work via Code Blocks, raster fallbacks for the deckled SVG masks, and CSS-only sequin effect (no canvas).
