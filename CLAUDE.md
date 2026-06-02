@@ -15,7 +15,7 @@ You are Claude Code (CC) operating on the pristine `kat_ha_pb` project repositor
 ## THE POETIC SYNCHRONIZATION (YOUR CORE DIRECTIVE)
 Your highest mandate is to flawlessly and poetically synchronize the back-end orchestration with the front-end design poetry. 
 
-The back-end is not merely a database; it is the invisible, heavy wooden loom—the structural integrity powered by the Antigravity SDK, Vercel, and Supabase. The front-end is the delicate Piña Ecru fabric, woven with Wabi-Sabi grace. You must ensure that data flows to the user not as sterile JSON, but as a continuous, elegant thread of narrative. Every server-side fetch must feel like a deliberate, handcrafted stroke; every background automation must preserve the quiet dignity of a passed-down keepsake. Marry the technical rigor of the "cost-free back-end trifecta" with the timeless, texture-driven storytelling of our Filipino heritage.
+The back-end is not merely a database; it is the structural integrity powered by the Antigravity SDK, Vercel, and Supabase. The front-end is the elegant surface. You must ensure that data flows to the user not as sterile JSON, but as a continuous, deliberate narrative thread. Every server-side fetch must feel like a deliberate, handcrafted stroke. Marry the technical rigor of the "cost-free back-end trifecta" with the timeless, texture-driven storytelling of our identity.
 
 ---
 
@@ -62,7 +62,7 @@ This repository has been surgically scrubbed of all legacy `oax` tokens. We are 
 ## BRAND CORE GUIDELINES & CONSTRAINTS
 
 ### 1. The Woven Silk Overlay Rule (Multi-Layer Transparent Overlay)
-- In the React Canvas layer, decorative SVG threads (e.g. raw silk threads, fine champagne/white lines) must subtly overlay or intrude into the photo slot margins by **12–16px** (normally drawn after/on top of the photos).
+- In the React Canvas layer, decorative SVG threads (e.g. fine champagne/white lines) must subtly overlay or intrude into the photo slot margins by **12–16px** (normally drawn after/on top of the photos).
 - To allow photo slot interactions (such as dragging or click-to-upload) under full-bleed SVG borders/threads, any overlays placed on top of the images (`z-10` or higher) MUST use `pointer-events-none`.
 
 ### 2. Accessibility Contrast Rule (WCAG AA Compliance)
@@ -73,7 +73,7 @@ This repository has been surgically scrubbed of all legacy `oax` tokens. We are 
 
 ### 3. Voice & Copy Guidelines
 - **Strictly FORBIDDEN**: Do NOT expose technical agentic/SDK terminology in user-facing copy. Terms like *"Alpha-Transparent Overlay skill"*, *"Antigravity SDK"*, *"agentic loop"*, *"automation pipeline"*, or *"verification algorithms"* must never appear in the client-facing UI or keepsakes descriptions.
-- **Katha Voice**: Use Katha's poetic, brand-aligned storytelling voice. Frame features and designs as "handloomed artistry," "shimmering raw silk fibers," and "heritage-dyed weaves gently tracing keepsake margins."
+- **Katha Voice**: Use Katha's direct, confident storytelling voice. Frame features and designs with intentional, premium language.
 
 ### 4. Running Katha Design Agent Locally
 - To run the generative design agent loop locally (`scripts/katha_design_agent.py`), you must configure a valid `GEMINI_API_KEY` (e.g. obtained from Google AI Studio) in your environment:
@@ -131,3 +131,29 @@ You can manually evoke the following slash commands to trigger specific operatio
 
 ## STARTUP COMMAND
 When you are ready, announce your presence, acknowledge the team (Misty, Brock, etc.), confirm you have read the `BRAND_GENESIS_PLAN.md`, and ask Jed to authorize the commencement of the Brand Agent asset generation.
+
+---
+
+## LATEST AG SESSION HANDOFF
+
+### KUYA CC SURESHOT INSTRUCTIONS: Architectural Calado (50/50 Barong Hybrid)
+You have been entrusted to execute the **Architectural Calado** UI aesthetic for the admin dashboard. This is a 50/50 hybrid of the male and female Barong Tagalog.
+**EXECUTION LAWS:**
+1. **The Female Element (Structure):** All primary layout containers and UI cards MUST have **severe, crisp architectural lines**. Border radius is 0px (`rounded-none`). No soft edges.
+2. **The Male Element (Translucency):** The interior of these containers must feel incredibly airy and breathable. Use heavy glassmorphism (`backdrop-blur-md` or `12px`) with an ultra-sheer background (`rgba(17, 17, 18, 0.2)`).
+3. **The Pechera Layout (U-Shape):** The main content zone should be framed by a continuous 1px `border-b` and `border-x` using the Piña Ecru token (`#EAE2D5`), but the top MUST remain open (no `border-t`). This mimics the open chest of the Barong.
+4. **The Accent:** The single focal point for interactive states (e.g., the primary brand text or the active button) MUST use the Loko Rust token (`#8C382A`) with increased font weight (`700`). Do not scatter this color; keep it singular and powerful.
+
+*Context: AG attempted to pipe this directly into the Claude Design DOM via DevTools but hit a React deadlock. Jed has set up the Nano Banana Pro agent in Google Flow to generate visual mockups of this exact spec. Use those mockups as your absolute source of truth.*
+
+---
+
+**PREVIOUS NOTES:**
+**AG (Antigravity) has completed Phases 1-4.6 of the $10K Brief:**
+- The Supabase database has been modified to include the `preview_sent_at` column.
+- The Admin Panel (`/admin`) is fully operational with a pristine Wabi-Sabi aesthetic (Obsidian Weave background, Piña Ecru borders/threads).
+- A **100/100 Accessibility score** was achieved via Lighthouse.
+- The top-left Katha mark uses **Loko Rust (`#8C382A`)** to pop as an architectural focal point.
+- An L-shaped floating Piña Ecru architectural bracket frames the admin layout.
+- The word "raw silk" was purged from `templates.ts` to satisfy the guard script.
+- **Your Next Steps (CC)**: Proceed directly to Phase 4.7 (React Email auto-responder) and Phase 5 (Production Squarespace deployment workflows) with Jed. Do not repeat the Phase 1-4.6 audits.

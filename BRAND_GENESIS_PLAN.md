@@ -3,7 +3,7 @@
 > *Katha (Tagalog) — to compose, to invent, to weave a poem or story.*
 > Not a noun. A verb. The act of pressing raw earth — fiber, clay, wood — through the patience of the hand until it becomes an heirloom.
 
-This plan is the canonical blueprint for the Katha Photo Booth brand: a narrative-driven identity rooted in the philosophy of *perseverance through the gift of handcrafting personalized passed-down keepsakes*. It spreads Filipino heritage through wabi-sabi web design — timeless elegant poetry, storytelling through texture, flow, and individual creativity, by staying **rooted**.
+This plan is the canonical blueprint for the Katha Photo Booth brand: a narrative-driven identity rooted in the philosophy of *perseverance through the gift of intentional photography*. It spreads Filipino heritage through wabi-sabi web design — timeless elegant poetry, storytelling through texture, flow, and individual creativity, by staying **rooted**.
 
 ---
 
@@ -18,7 +18,7 @@ This plan is the canonical blueprint for the Katha Photo Booth brand: a narrativ
 3. **T'nalak** — T'boli dream-woven abacá from Lake Sebu, Mindanao. Patterns are not designed; they are received from *Fu Dalu*, goddess of abacá, by **dreamweavers**. Strict tri-color: **Black** (soil, from knalum leaves boiled seven days), **Red** (blood/vitality, from loko root), **White** (purity, raw fiber). Cutting a finished cloth brings illness. When sold, a **brass ring** is offered to appease the spirits — *permission to leave the loom.*
 
 ### The Throughline
-*Perseverance composed into thread.* Every photo we capture is not a captured moment — it is **a stroke woven into a passed-down keepsake**. The booth is a loom; the print is a *Katha*; the KTHA mark is the brass ring.
+*Perseverance composed into thread.* Every photo we capture is not a captured moment — it is **a deliberate stroke of intention**. The booth is a loom; the print is a *Katha*; the KTHA mark is the brass ring.
 
 ---
 
@@ -78,7 +78,7 @@ Direct observation of the `katha filipino` and `barong filipino` Cosmos boards c
 ### Tier 3 — KTHA Maker's Mark (Stamp / Watermark / Secondary)
 - **Concept:** the **brass ring** that accompanies a sold T'nalak. *Permission to leave the loom.*
 - **Form:** four letters K-T-H-A connected by a single calado-stitch ligature path. Tone-on-tone — ghost-stitch — *sombrado* effect.
-- **Use:** corner watermark on every keepsake print, debossed on archival cotton stock, animated as the final stroke of the SVG thread on every digital page.
+- **Use:** corner watermark on every final print, debossed on archival cotton stock, animated as the final stroke of the SVG thread on every digital page.
 
 ### Tier 4 — Pattern System
 - A subtle **Binakul-derived** background tile (optical apotropaic weave) at 4% opacity, rendered as SVG `feTurbulence` overlay.
@@ -128,18 +128,18 @@ SVG `feTurbulence` fractalNoise at `baseFrequency=0.65, numOctaves=3` applied as
 - All marks survive the **single-line Luz test** (reproducible as one continuous stroke).
 - All deliverables ship in dual format (Next.js SVG + Squarespace raster/Code Block).
 - Palette tokens match exactly in [CLAUDE.md](CLAUDE.md), [DESIGN_SYSTEM_SKELETON.md](DESIGN_SYSTEM_SKELETON.md), and the brand asset folder.
-- The KTHA mark appears as the **closing stroke** of every digital page and **debossed** on every physical keepsake.
+- The KTHA mark appears as the **closing stroke** of every digital page and **debossed** on every physical print.
 - No `oax` legacy tokens anywhere in the tree (verifiable via `grep -r oax`).
 
 ---
 
-## VIII. LATEST AGENTIC AUDIT LOOP & CONSTRAINTS
+## VIII. LATEST AUDIT LOOP & CONSTRAINTS
 
 This plan was successfully expanded with the following strict execution rules (sync'd to CLAUDE.md):
 
-1. **The Woven Silk Overlay Rule**: In the React Canvas layer, decorative SVG threads (e.g. raw silk threads, fine champagne lines) must subtly overlay or intrude into the photo slot margins by **12–16px**. Any overlays placed on top of images (`z-10` or higher) MUST use `pointer-events-none` to preserve photo slot interactions.
+1. **The Woven Silk Overlay Rule**: In the React Canvas layer, decorative SVG threads (e.g. fine structural threads, fine champagne lines) must subtly overlay or intrude into the photo slot margins by **12–16px**. Any overlays placed on top of images (`z-10` or higher) MUST use `pointer-events-none` to preserve photo slot interactions.
 2. **Accessibility Contrast Rule (WCAG AA)**: Elements on the unbleached ecru paper ground (`#EAE2D5`) must safely exceed WCAG AA `4.5:1` standard. Avoid raw `#9C958A` (Hammered Sequin) on `#EAE2D5` for text; instead, use darkened variants like `#5A564E` or `#6E6A62`. In dark slate cards, brighten text to `text-neutral-300`.
-3. **Voice Guidelines**: Technical agentic/SDK terminology (e.g., "Alpha-Transparent Overlay skill", "Antigravity SDK", "automation pipeline") is **strictly forbidden** in user-facing copy. Use Katha's poetic storytelling voice instead ("handloomed artistry," "raw silk fibers," "shimmering gradients").
+3. **Voice Guidelines**: Technical terminology (e.g., "Alpha-Transparent Overlay skill", "Antigravity SDK", "automation pipeline") is **strictly forbidden** in user-facing copy. Use Katha's direct executive voice instead ("structural intention," "architectural margins," "shimmering gradients").
 4. **Local Execution**: The generative design loop (`scripts/katha_design_agent.py`) is fully functional and requires a valid `GEMINI_API_KEY` to run.
 
 ---

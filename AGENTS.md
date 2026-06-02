@@ -31,7 +31,7 @@
 ## Collaboration Rules
 - **Jed** is Batman. Final authority on all brand and launch decisions.
 - **CC** is Robin. The orchestrator of agents.
-- **AG (Antigravity)** handles the heavy lifting, deep subagent pipelines, and AI integrations.
+- **AG (Antigravity)** handles the heavy lifting, deep subagent pipelines, and AI integrations. AG strictly adheres to the project charter in `./GEMINI.md`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
