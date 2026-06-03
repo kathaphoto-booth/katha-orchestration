@@ -1,0 +1,47 @@
+<!-- ============================================================================
+     KATHA · HERO          Squarespace Code Block  (Insert → Code, on the homepage)
+     Requires 00_code-injection-header.html to be installed site-wide first.
+     The Void: right-weighted headline, vast empty Obsidian, one Loko Rust CTA.
+============================================================================ -->
+<div class="katha-hero">
+  <div class="katha-hero-inner">
+
+    <!-- Maker's Mark (geometric tattoo diamond + katha wordmark, Loko Rust) -->
+    <div class="katha-mark">
+      <svg viewBox="0 0 100 100" width="66" height="66" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Katha geometric mark">
+        <polygon points="50,10 90,50 50,90 10,50" stroke="#8C382A" stroke-width="1"/>
+        <line x1="30" y1="30" x2="70" y2="70" stroke="#8C382A" stroke-width="1"/>
+        <line x1="70" y1="30" x2="30" y2="70" stroke="#8C382A" stroke-width="1"/>
+        <polyline points="25,65 50,45 75,65" stroke="#8C382A" stroke-width="1" stroke-linejoin="round"/>
+        <line x1="50" y1="45" x2="50" y2="85" stroke="#8C382A" stroke-width="1"/>
+      </svg>
+      <span class="katha-wordmark">katha</span>
+    </div>
+
+    <!-- Right-weighted copy cluster -->
+    <div class="katha-hero-copy">
+      <p class="katha-eyebrow">KATHA — A COMMISSIONED PHOTO BOOTH</p>
+      <h1 class="katha-display katha-hero-h1">Not a photo strip.<br><em>A commission.</em></h1>
+      <p class="katha-lead">A hand-built booth and a digital experience, held to one severe standard. Made for the few who notice the difference.</p>
+      <!-- CTA → point to your booking page / book.kathabooth.com -->
+      <a class="katha-sacred-btn" href="/book">Begin the Commission</a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .katha-hero{ min-height:88vh; display:flex; align-items:center; padding:8rem 6vw 6rem; }
+  .katha-hero-inner{ width:100%; max-width:1100px; margin:0 auto; }
+  .katha-mark{ display:flex; align-items:center; gap:1.3rem; margin-bottom:5rem; }
+  .katha-wordmark{ font-size:3.2rem; }
+  .katha-hero-copy{ max-width:46rem; margin-left:auto; text-align:right; }
+  .katha-hero-h1{ font-size:clamp(2.6rem,6vw,4.6rem); margin-bottom:1.6rem; }
+  .katha-hero-h1 em{ font-style:italic; color:var(--ecru); }
+  .katha-hero-copy .katha-lead{ max-width:34rem; margin:0 0 2.4rem auto; }
+  @media(max-width:640px){
+    .katha-mark{ margin-bottom:3rem; }
+    .katha-hero-copy{ text-align:left; }
+    .katha-hero-copy .katha-lead{ margin-left:0; }
+  }
+</style>

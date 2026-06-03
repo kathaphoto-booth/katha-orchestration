@@ -1,0 +1,85 @@
+<!-- ============================================================================
+     KATHA · SITE-WIDE CODE INJECTION   (Noble Baby Synthesis)
+     PASTE INTO:  Squarespace → Settings → Advanced → Code Injection → HEADER
+     ----------------------------------------------------------------------------
+     Establishes the Obsidian canvas, the Piña Ecru L-frame, the grain patina,
+     and the reusable .katha-* classes that every Code Block depends on.
+     INSTALL THIS FIRST — backdrop-filter needs the dark canvas behind it to read.
+     Every color below is one of the 10 canonical Katha tokens (no legacy OAX hex).
+     L-frame + grain are drawn with html/body pseudo-elements, so no markup needed.
+     (If your theme already styles html::before / body::before / html::after and
+      they collide, ask and I'll switch to a JS-injected-div version.)
+============================================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=EB+Garamond:ital,wght@0,400..600;1,400..500&family=Inter:wght@300..600&family=JetBrains+Mono:wght@400..500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  /* --- UI tokens --- */
+  --obsidian:#111112; --ecru:#EAE2D5; --sequin:#9C958A; --champagne:#C4B59D; --iron:#241E1A;
+  /* --- Narrative tokens --- */
+  --knalum:#1A1816; --loko:#8C382A; --terra:#A35C44; --slate:#5A5D5A; --capiz:#B5B8A3;
+  /* --- Type --- */
+  --serif:'Fraunces',Georgia,serif; --body:'EB Garamond',Georgia,serif;
+  --ui:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+}
+
+/* --- The Obsidian canvas. Sections go transparent so the body shows through —
+       this is exactly what gives .katha-glass a dark layer to blur. --- */
+body{ background:var(--obsidian) !important; color:var(--ecru); }
+#siteWrapper{ position:relative; z-index:1; }              /* content above the grain */
+.page-section,
+.section-background{ background:transparent !important; }   /* unify the dark canvas */
+
+/* --- Grain patina: a near-invisible woven texture, behind all content --- */
+html::after{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  opacity:.06; mix-blend-mode:color-dodge;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- The Piña Ecru L-frame: anchors the TOP + LEFT edges. Decorative matte;
+       pointer-events:none so it never blocks the Squarespace nav beneath it. --- */
+html::before{ /* top bar */
+  content:""; position:fixed; top:0; left:0; right:0; height:16px;
+  background:rgba(234,226,213,.85); z-index:9999; pointer-events:none;
+  box-shadow:0 4px 24px rgba(17,17,18,.4);
+}
+body::before{ /* left bar */
+  content:""; position:fixed; top:0; left:0; bottom:0; width:16px;
+  background:rgba(234,226,213,.85); z-index:9999; pointer-events:none;
+  box-shadow:4px 0 24px rgba(17,17,18,.4);
+}
+
+/* ============================  REUSABLE KATHA COMPONENTS  ==================== */
+
+.katha-eyebrow{ font-family:var(--ui); font-size:.68rem; text-transform:uppercase;
+  letter-spacing:.18em; color:var(--sequin); font-weight:500; }
+
+.katha-display{ font-family:var(--serif); font-variation-settings:"SOFT" 100,"WONK" 1;
+  font-weight:400; letter-spacing:-.015em; line-height:1.05; color:var(--ecru); }
+
+.katha-h2{ font-family:var(--serif); font-variation-settings:"SOFT" 100,"WONK" 1;
+  font-weight:400; letter-spacing:-.01em; line-height:1.1; color:var(--ecru); }
+
+.katha-lead{ font-family:var(--body); font-size:1.35rem; line-height:1.55; color:var(--champagne); }
+
+.katha-wordmark{ font-family:var(--body); line-height:1; color:var(--loko); letter-spacing:.1em; }
+
+/* Sheer Piña card — razor 1px seam always; live blur where supported, clean
+   translucent fallback otherwise (the seam reads identically either way). */
+.katha-glass{ background:rgba(234,226,213,.04); border:1px solid rgba(234,226,213,.2); }
+@supports ((backdrop-filter:blur(24px)) or (-webkit-backdrop-filter:blur(24px))){
+  .katha-glass{ background:rgba(17,17,18,.40);
+    -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px); }
+}
+
+/* The single sacred CTA — Loko Rust, kept to one per page. */
+.katha-sacred-btn{ display:inline-block; font-family:var(--ui); font-size:.8rem;
+  text-transform:uppercase; letter-spacing:.16em; font-weight:600;
+  background:var(--loko); color:var(--ecru); padding:.95rem 2.2rem;
+  text-decoration:none; transition:opacity .3s; }
+.katha-sacred-btn:hover{ opacity:.85; }
+</style>
