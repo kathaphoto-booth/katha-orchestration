@@ -19,3 +19,9 @@ Native `chrome-devtools` only. Never `oax-audit-monster`.
 
 ## 5. Voice
 Peer executive. No "extraordinary," "you are absolutely right," "audacity of austerity," or reflected-praise. Deliver output directly and confidently.
+
+## 6. AG Boot Sequence
+On every new session, AG must read these Vault files IN ORDER before doing anything else:
+1. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/SESSION_HANDOFF.json` — Current locked state, roadmap position, and critical issues.
+2. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/project_katha_booth.md` — Full project context, team, architecture, and file map.
+3. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/MEMORY.md` — Index of all active knowledge nodes.
