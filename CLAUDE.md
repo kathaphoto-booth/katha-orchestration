@@ -19,11 +19,16 @@ The back-end is not merely a database; it is the structural integrity powered by
 
 ---
 
-## YOUR IMMEDIATE MISSION: THE LAST PLAN
-Upon booting this session, you must immediately read the last approved implementation plan detailing the brand genesis and wabi-sabi narrative extraction:
-**Read this file**: `./BRAND_GENESIS_PLAN.md`
+## YOUR IMMEDIATE MISSION: READ THE CURRENT STATE
+Upon booting this session, you must immediately read these files IN ORDER:
 
-Your job is to execute the directives in that plan. Get the whole team on board to generate the KTHA visual assets and establish the front-end architecture.
+1. **`.claude/memory/STATE.md`** — The emergency handoff dump. This is the most current save-game from AG's last session. Read it FIRST.
+2. **`KATHA_BRAND_PROPOSAL.html`** — The locked Phase 1 proposal. This is the definitive all-inclusive blueprint. Read its structure to understand the full roadmap.
+3. **`CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html`** — The TRUE Taheng Grepo baseline. This is the exact CSS architecture to inherit for any HTML or UI work.
+
+> **NOTE on BRAND_GENESIS_PLAN.md:** This file is OUTDATED. It predates the Crème de la Crème Taheng Grepo decisions. Do NOT boot from it. It is preserved for historical context only.
+
+Your job is to execute **Phase 2** (Brand Book V2) and **Phase 3** (Squarespace `katha-injection.css`) as defined in the STATE.md and the Proposal.
 
 ---
 
@@ -134,26 +139,20 @@ When you are ready, announce your presence, acknowledge the team (Misty, Brock, 
 
 ---
 
-## LATEST AG SESSION HANDOFF
+## LATEST AG SESSION HANDOFF (PHASE 1 COMPLETE)
 
-### KUYA CC SURESHOT INSTRUCTIONS: Architectural Calado (50/50 Barong Hybrid)
-You have been entrusted to execute the **Architectural Calado** UI aesthetic for the admin dashboard. This is a 50/50 hybrid of the male and female Barong Tagalog.
-**EXECUTION LAWS:**
-1. **The Female Element (Structure):** All primary layout containers and UI cards MUST have **severe, crisp architectural lines**. Border radius is 0px (`rounded-none`). No soft edges.
-2. **The Male Element (Translucency):** The interior of these containers must feel incredibly airy and breathable. Use heavy glassmorphism (`backdrop-blur-md` or `12px`) with an ultra-sheer background (`rgba(17, 17, 18, 0.2)`).
-3. **The Pechera Layout (U-Shape):** The main content zone should be framed by a continuous 1px `border-b` and `border-x` using the Piña Ecru token (`#EAE2D5`), but the top MUST remain open (no `border-t`). This mimics the open chest of the Barong.
-4. **The Accent:** The single focal point for interactive states (e.g., the primary brand text or the active button) MUST use the Loko Rust token (`#8C382A`) with increased font weight (`700`). Do not scatter this color; keep it singular and powerful.
+### LOCKED DECISIONS — DO NOT REVISIT:
+1. **The True Taheng Grepo**: The CSS Strict 16px Barong L-Frame + Scroll-Settle transition. Source of truth is `CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html`. Do NOT use `l_frame_transparent.png`.
+2. **The Squarespace Media Strategy**: "Preserve and Adjust." We keep ALL existing assets (including `imgg-demo-*` demo placeholders) in their exact positions on Squarespace. We modify them via CSS injection only. We do not rebuild layouts or remove blocks.
+3. **Wordmark**: Pure Volcanic Obsidian (#111112) — the EB Garamond Italic 'K' grafted to Fraunces 'atha'. No split-color wordmark.
+4. **Master CTA**: "Commission KTHA" — This is the final CTA copy.
+5. **Manifesto files must remain at root** — Moving them breaks the CC orchestration chain.
 
-*Context: AG attempted to pipe this directly into the Claude Design DOM via DevTools but hit a React deadlock. Jed has set up the Nano Banana Pro agent in Google Flow to generate visual mockups of this exact spec. Use those mockups as your absolute source of truth.*
+### CURRENT ROADMAP POSITION:
+- **Phase 1: Brand Proposal** → [COMPLETED] `KATHA_BRAND_PROPOSAL.html` is the locked blueprint.
+- **Phase 2: Brand Book V2** → [NEXT] Build `KATHA_BRAND_BOOK_V2.html` (the strict constitutional rulebook).
+- **Phase 3: Squarespace Injection** → [NEXT] Draft `squarespace_injection/katha-injection.css`.
 
----
-
-**PREVIOUS NOTES:**
-**AG (Antigravity) has completed Phases 1-4.6 of the $10K Brief:**
-- The Supabase database has been modified to include the `preview_sent_at` column.
-- The Admin Panel (`/admin`) is fully operational with a pristine Wabi-Sabi aesthetic (Obsidian Weave background, Piña Ecru borders/threads).
-- A **100/100 Accessibility score** was achieved via Lighthouse.
-- The top-left Katha mark uses **Loko Rust (`#8C382A`)** to pop as an architectural focal point.
-- An L-shaped floating Piña Ecru architectural bracket frames the admin layout.
-- The word "raw silk" was purged from `templates.ts` to satisfy the guard script.
-- **Your Next Steps (CC)**: Proceed directly to Phase 4.7 (React Email auto-responder) and Phase 5 (Production Squarespace deployment workflows) with Jed. Do not repeat the Phase 1-4.6 audits.
+### KNOWN CRITICAL ISSUES:
+- `FOLIO.mp4` Hero Video has NO mobile fallback image. Mobile shows blank.
+- Both Squarespace videos are 1920×1080 (1080p). Any replacements must match this spec.
