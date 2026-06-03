@@ -135,7 +135,8 @@ You can manually evoke the following slash commands to trigger specific operatio
 ---
 
 ## STARTUP COMMAND
-When you are ready, announce your presence, acknowledge the team (Misty, Brock, etc.), confirm you have read the `BRAND_GENESIS_PLAN.md`, and ask Jed to authorize the commencement of the Brand Agent asset generation.
+When you are ready, announce your presence, acknowledge the team (Misty, Brock, etc.), confirm you have read `.claude/memory/STATE.md` and `KATHA_BRAND_PROPOSAL.html`, and state the current Phase position before asking Jed to authorize the next step.
+
 
 ---
 
