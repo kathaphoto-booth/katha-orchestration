@@ -1,16 +1,17 @@
 {
-  "checkpoint": "Landmark Phase: Phase 1 Complete. Crème de la Crème Architecture & SS Media Strategy Locked",
+  "checkpoint": "Phase 3 Active — Ghost Injection Deployment",
+  "timestamp": "2026-06-04",
+  "updated_by": "AG (Antigravity)",
   "architectural_state": {
-    "lighting_model": "Radial-gradient bloom (Piña Ecru fabric over Champagne Heirloom skin) with 4% high-frequency SVG grain.",
-    "framing_physics": "The Strict 16px CSS Barong L-Frame. Solid Champagne on top and left edges with complex inset box-shadows. Reacts to scroll (flattens with backdrop blur when moving, deeply embossed when settled).",
-    "calado_grid": "Tone-on-tone Piña Ecru 1px borders with 12x12px star tacks, elevated via delicate drop-shadows to simulate raised silk threads.",
-    "typography": "Strict discipline: Fraunces (Display), EB Garamond (Narrative), Inter (UI Utility). Wordmark uses EB Garamond Italic Capital 'K' grafted to Fraunces 'atha'.",
-    "wordmark_monolith": "Pure Volcanic Obsidian (#111112) wordmark, avoiding splitting colors to preserve monumental, institutional authority.",
-    "cta_interaction": "Embroidered Tag CTA: delicate border (rgba(138,62,49,0.3)) simulating a linen label. Tactile typewriter key hover (translateY(2px)) and deep active validation click (translateY(3px)) with oxidized Loko Rust (#8A3E31) shift. Master CTA text: 'Commission KTHA'.",
-    "photographic_optics": "Archival Matte: Strict, asymmetrical Piña Ecru borders with a microscopic 1px Obsidian hairline border. Existing SS Demo assets will be PRESERVED in their exact structural positions and modified via CSS injections."
+    "true_taheng_grepo": "CSS Strict 16px Barong L-Frame (var(--champagne)) on top + left edges with complex inset box-shadows. Scroll-settle transition: flattens during scroll, deeply embossed when settled.",
+    "canvas": "WebGL Ambient Texture Shader (Background Gradient Glow) from 21st.dev — Piña Ecru to Champagne glow. Injected via Vanilla JS Canvas behind Squarespace native layout.",
+    "calado_grid": "Tone-on-tone 1px Piña Ecru border with 12x12px SVG Calado Star corner tacks.",
+    "typography": "Fraunces (Display) · EB Garamond (Narrative) · Inter (UI Utility)",
+    "wordmark": "Pure Obsidian #111112. Negative Space Calado knockout.",
+    "cta": "Commission KTHA — Embroidered Tag CTA. Delicate border rgba(138,62,49,0.3). Typewriter key hover."
   },
   "palette_mandate": {
-    "rule": "Absolute adherence to the 11 canonical tokens. All colors must be derived from lighting/shadow interactions between these tokens. No pure #fff, no pure #000, no #F9F6F0 (Alabaster). No legacy OAX tokens.",
+    "rule": "11 canonical tokens only. No pure #fff, no pure #000, no #F9F6F0 Alabaster, no legacy OAX tokens.",
     "core": {
       "obsidian_weave": "#111112",
       "pina_ecru": "#EAE2D5",
@@ -26,18 +27,74 @@
       "capiz_sage": "#B5B8A3"
     }
   },
-  "ss_media_strategy": {
-    "rule": "PRESERVE AND ADJUST",
-    "details": "We will KEEP all existing Squarespace assets (including imgg-demo-* placeholders on Gallery, Founders, Installations) in their current structural positions. We will NOT remove or rebuild them. We will target them with CSS injections (Archival Matte, Binakul Shift, custom filtering)."
+  "squarespace_strategy": {
+    "rule": "DIAMOND HEIST (Ghost Injection)",
+    "site": "mayflower-turtle-9br3.squarespace.com",
+    "details": "We build around the pre-set architecture. Clone SS layout locally into KATHA_BRAND_PROPOSAL.html. Hotlink media from images.squarespace-cdn.com. Inject WebGL shader into the local clone. Once verified, port the CSS/JS script to SS Code Injection -> Header. Do not delete native blocks."
+  },
+  "roadmap": {
+    "phase_1": {
+      "status": "COMPLETED",
+      "title": "Crème de la Crème Architecture & Media Strategy",
+      "steps": [
+        "Audit existing SquareSpace site to inventory all assets.",
+        "Lock in 11-token brand color palette.",
+        "Finalize visual strategy: CSS L-Frame, Calado Grid, Typography.",
+        "Generate KATHA_BRAND_PROPOSAL.html as the locked blueprint."
+      ]
+    },
+    "phase_2": {
+      "status": "COMPLETED",
+      "title": "The Diamond Heist (Squarespace Forgery)",
+      "steps": [
+        "Extract live SS DOM structure and CDN links via Chrome DevTools.",
+        "Rebuild exact SS clone locally in KATHA_BRAND_PROPOSAL.html.",
+        "Adapt 21st.dev React shader into Vanilla JS/CSS for local injection.",
+        "Verify multi-page prototype with local navigation and hotfixes."
+      ]
+    },
+    "phase_3": {
+      "status": "ACTIVE",
+      "title": "Ghost Injection Deployment",
+      "steps": [
+        "Port katha_taheng_override.css to Squarespace Custom CSS.",
+        "Inject L-Frame overlay HTML and background canvas JS into Code Injection Header.",
+        "Validate live environment render using chrome-devtools."
+      ]
+    },
+    "phase_4": {
+      "status": "PLANNED",
+      "title": "Next.js / Supabase CRM Integration",
+      "steps": [
+        "Configure Next.js API route to receive SquareSpace webhooks.",
+        "Map lead data payload to Supabase schema.",
+        "Trigger Resend email with CRM sync to HoneyBook.",
+        "Final testing and handoff to Jed."
+      ]
+    }
+  },
+  "project_topography": {
+    "photobooth-template-studio": "The core Next.js application, React canvas, Resend email config, and Supabase integration (book.kathabooth.com). All frontend logic lives here.",
+    "squarespace_injection": "CSS overrides and visual modifications for the public Squarespace site (kathabooth.com).",
+    "scripts": "Agent operational scripts, pipeline execution, and HCL sync tools.",
+    "brand_assets": "Approved, canonical design iterations, SVGs, and brand books.",
+    ".claude": "Local agent persistent memory and state dumps."
   },
   "strict_boundaries": [
-    "Markdown manifestos must remain in the root directory to preserve the CC orchestration chain.",
-    "Do not touch Front End Gallery without permission.",
-    "Do not touch Admin Panel without permission.",
-    "Do not touch Subdomain architecture without permission."
+    "Markdown manifestos must remain in project root — moving them breaks CC orchestration chain",
+    "BRAND_GENESIS_PLAN.md is OUTDATED — preserved for history only, do NOT boot from it",
+    "Do not touch Front End Gallery without permission",
+    "Do not touch Admin Panel without permission",
+    "Do not touch Subdomain architecture without permission"
   ],
   "agent_directives": {
-    "target": "CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html is the Absolute True Taheng Grepo Baseline.",
-    "rule": "Phase 1 is complete (KATHA_BRAND_PROPOSAL.html is locked). Next up: Phase 2 (Brand Book V2) and Phase 3 (Squarespace katha-injection.css)."
+    "cc_boot_order": [
+      "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/HCL.md",
+      "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/HCL_DASHBOARD.html",
+      ".claude/memory/STATE.md",
+      "KATHA_BRAND_PROPOSAL.html",
+      "CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html"
+    ],
+    "ag_vault": "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/ — This is the single source of truth. AG reads and writes here only."
   }
 }

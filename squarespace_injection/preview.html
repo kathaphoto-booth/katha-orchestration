@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katha - The Static Bleed</title>
+  <style>
+    /* =========================================================
+       BASE PARCHMENT TYPOGRAPHY & LAYOUT
+       ========================================================= */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ddd9cd; 
+      color: #111;
+      font-family: "Times New Roman", Times, serif; 
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .content-wrapper {
+      position: relative;
+      z-index: 1; 
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 15vh 2rem;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    p {
+      font-size: 1.25rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    /* =========================================================
+       SVG ORGANIC BLEED INJECTION (STATIC & RESPONSIVE)
+       ========================================================= */
+    .katha-bleed-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none; 
+
+      /* Replaced with the exact Barong texture path */
+      background-image: url('../CD_ITERATION/assets/barong_full_frame.jpg');
+      background-size: cover; 
+      background-position: top right;
+
+      /* Locks the pattern into the strict Obsidian aesthetic */
+      mix-blend-mode: multiply;
+      opacity: 0.25; /* Using 25% opacity so it's a watermark instead of harsh black */
+
+      /* Hardware acceleration */
+      transform: translateZ(0);
+      will-change: mask-image;
+
+      /* THE STATIC, RAZOR-THIN MASK
+         Locks to the absolute right edge (0%) and fades completely at 8%.
+         No structural distortion, no lag.
+      */
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 8%);
+      mask-image: linear-gradient(to left, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 8%);
+    }
+    
+    /* Adding the bottom edge back to maintain the Inverted L-Frame */
+    .katha-bleed-overlay-bottom {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none; 
+
+      background-image: url('../CD_ITERATION/assets/barong_full_frame.jpg');
+      background-size: cover; 
+      background-position: bottom left;
+
+      mix-blend-mode: multiply;
+      opacity: 0.25; 
+
+      transform: translateZ(0);
+      will-change: mask-image;
+
+      /* THE STATIC, RAZOR-THIN MASK (Bottom Edge) */
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 8%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 8%);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="katha-bleed-overlay"></div>
+  <div class="katha-bleed-overlay-bottom"></div>
+
+  <div class="content-wrapper">
+    <h1>Structural Minimalism.</h1>
+    
+    <p>We removed the generative turbulence and locked the mask back down to a strict 8% CSS linear gradient.</p>
+    
+    <p>The pattern now hugs the extreme right periphery without invading the reading space. It requires zero processing power, ensuring smooth scrolling and instant load times across all mobile devices.</p>
+    
+    <p>This allows the photography and the physical booth details to command total attention.</p>
+  </div>
+
+</body>
+</html>

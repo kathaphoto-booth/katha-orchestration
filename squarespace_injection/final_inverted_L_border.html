@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katha - Final Inverted L-Frame</title>
+  <style>
+    /* =========================================================
+       BASE PARCHMENT (For Preview Purposes Only)
+       ========================================================= */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ddd9cd; 
+      color: #111;
+      font-family: "Times New Roman", Times, serif; 
+      height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       THE FINAL SQAURESPACE INJECTION CSS
+       Copy this entire block into Squarespace Custom CSS
+       ========================================================= */
+       
+    /* 1. The Right Barong Embroidery */
+    body::before {
+      content: "";
+      position: fixed; 
+      inset: 0;
+      
+      background-image: url('../CD_ITERATION/assets/barong_full_frame.jpg');
+      
+      /* CROP THE BAKED-IN BORDER: Scale up the image by 80px to push the hard painted edges off-screen */
+      background-size: calc(100vw + 80px) calc(100vh + 80px); 
+      background-position: right -40px top -40px; 
+      
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 8%);
+      mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 8%);
+      
+      mix-blend-mode: multiply;
+      opacity: 0.35; 
+      
+      transform: translateZ(0);
+      will-change: mask-image;
+      z-index: 9999; pointer-events: none;
+    }
+
+    /* 2. The Bottom Barong Embroidery */
+    body::after {
+      content: "";
+      position: fixed; 
+      inset: 0;
+      padding-bottom: env(safe-area-inset-bottom); 
+        
+      background-image: url('../CD_ITERATION/assets/barong_full_frame.jpg');
+      
+      /* CROP THE BAKED-IN BORDER: Scale up and shift down/left */
+      background-size: calc(100vw + 80px) calc(100vh + 80px);
+      background-position: left -40px bottom -40px;
+      
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 8%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 8%);
+      
+      mix-blend-mode: multiply;
+      opacity: 0.35; 
+      
+      transform: translateZ(0);
+      will-change: mask-image;
+      z-index: 9999; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Border is CSS-driven. -->
+</body>
+</html>

@@ -22,9 +22,11 @@ The back-end is not merely a database; it is the structural integrity powered by
 ## YOUR IMMEDIATE MISSION: READ THE CURRENT STATE
 Upon booting this session, you must immediately read these files IN ORDER:
 
-1. **`.claude/memory/STATE.md`** — The emergency handoff dump. This is the most current save-game from AG's last session. Read it FIRST.
-2. **`KATHA_BRAND_PROPOSAL.html`** — The locked Phase 1 proposal. This is the definitive all-inclusive blueprint. Read its structure to understand the full roadmap.
-3. **`CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html`** — The TRUE Taheng Grepo baseline. This is the exact CSS architecture to inherit for any HTML or UI work.
+1. **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/HCL.md`** — The living, programmatic Handoff & Control Ledger and Roadmap.
+2. **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/HCL_DASHBOARD.html`** — The visual HTML equivalent of the HCL. Parse this to understand the visual Kanban and HTML architecture of the brand's tracking system.
+3. **`.claude/memory/STATE.md`** — The emergency handoff dump. This is the most current save-game from AG's last session.
+4. **`KATHA_BRAND_PROPOSAL.html`** — The locked Phase 1 proposal. This is the definitive all-inclusive blueprint.
+5. **`CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html`** — The TRUE Taheng Grepo baseline. This is the exact CSS architecture to inherit for any HTML or UI work.
 
 > **NOTE on BRAND_GENESIS_PLAN.md:** This file is OUTDATED. It predates the Crème de la Crème Taheng Grepo decisions. Do NOT boot from it. It is preserved for historical context only.
 
@@ -109,13 +111,14 @@ This repository has been surgically scrubbed of all legacy `oax` tokens. We are 
 
 ---
 
-## SLASH COMMANDS (KATHA PROTOCOL)
-You can manually evoke the following slash commands to trigger specific operational modes:
-- **`/workflow`**: Forces the agent to strictly follow the 5-step Katha Operational Workflow (Brainstorm -> Spec -> Skills -> Execute -> Enhance). Do this before starting any major feature.
-- **`/verify`**: Forces the agent to run the "Evidence-Before-Claims" protocol. The agent cannot say "looks good" without citing terminal output from `npm run build` or `npm run guard`.
-- **`/handoff`**: Emergency brake for persistent memory. Immediately forces the agent to summarize its context, dump it into `.claude/memory/STATE.md`, and gracefully exit before a token crash.
-- **`/antigravity`**: Forces the agent to wrap AGY SDK Python scripts or subagent definitions with the strict Katha Context (11-token palette, Two-Tier rule, and restricted vocabulary).
-- **`/impeccable`**: Triggers the master UI/UX Pro Max ruleset wrapper. Scans the canvas for technical and accessibility flaws while explicitly protecting Wabi-Sabi aesthetics.
+## SLASH COMMANDS (BACKED BY SKILLS)
+The following commands trigger operational skills installed at `.agents/skills/`:
+- **`/workflow`** → [katha-workflow](.agents/skills/katha-workflow/SKILL.md) — 5-step execution loop (Brainstorm → Spec → Skills → Execute → Verify).
+- **`/verify`** → [katha-verify](.agents/skills/katha-verify/SKILL.md) — Evidence-Before-Claims. No "done" without terminal output or screenshots.
+- **`/handoff`** → [katha-memory](.agents/skills/katha-memory/SKILL.md) — Atomic 9-file handoff sync between AG and CC.
+- **`/antigravity`** → [katha-antigravity](.agents/skills/katha-antigravity/SKILL.md) — CC → AG bridge protocol with pre-injected brand constraints.
+- **`/impeccable`** → [katha-impeccable](.agents/skills/katha-impeccable/SKILL.md) — Master UI/UX audit with Wabi-Sabi protection.
+- **`/katha-protocol`** → [katha-protocol](.agents/skills/katha-protocol/SKILL.md) — Brand law: palette, voice, typography, layout physics.
 
 ---
 
@@ -140,20 +143,44 @@ When you are ready, announce your presence, acknowledge the team (Misty, Brock, 
 
 ---
 
-## LATEST AG SESSION HANDOFF (PHASE 1 COMPLETE)
+## LATEST AG SESSION HANDOFF (PHASE 2 COMPLETE)
 
 ### LOCKED DECISIONS — DO NOT REVISIT:
-1. **The True Taheng Grepo**: The CSS Strict 16px Barong L-Frame + Scroll-Settle transition. Source of truth is `CC_ITERATION/LIGHT_ITERATION/KATHA_STYLE_PROPOSAL.html`. Do NOT use `l_frame_transparent.png`.
-2. **The Squarespace Media Strategy**: "Preserve and Adjust." We keep ALL existing assets (including `imgg-demo-*` demo placeholders) in their exact positions on Squarespace. We modify them via CSS injection only. We do not rebuild layouts or remove blocks.
-3. **Wordmark**: Pure Volcanic Obsidian (#111112) — the EB Garamond Italic 'K' grafted to Fraunces 'atha'. No split-color wordmark.
+1. **The True Taheng Grepo Engine**: The CSS Strict 16px Barong L-Frame + Scroll-Settle transition. `katha_taheng_override.css` is the master override logic over the SS DOM.
+2. **The Squarespace Media Strategy**: "Preserve and Adjust." We map local clone images to SS CDN links and overlay the aesthetic non-destructively.
+3. **Wordmark**: Pure Volcanic Obsidian (#111112) — injected via alpha-transparent base64 JSON assets to retain Debossed Lighting.
 4. **Master CTA**: "Commission KTHA" — This is the final CTA copy.
 5. **Manifesto files must remain at root** — Moving them breaks the CC orchestration chain.
 
 ### CURRENT ROADMAP POSITION:
-- **Phase 1: Brand Proposal** → [COMPLETED] `KATHA_BRAND_PROPOSAL.html` is the locked blueprint.
-- **Phase 2: Brand Book V2** → [NEXT] Build `KATHA_BRAND_BOOK_V2.html` (the strict constitutional rulebook).
-- **Phase 3: Squarespace Injection** → [NEXT] Draft `squarespace_injection/katha-injection.css`.
+- **Phase 1: Brand Proposal** → [COMPLETED] 
+- **Phase 2: The Diamond Heist (Squarespace Forgery)** → [COMPLETED] Multi-page local prototype and override CSS verified.
+- **Phase 3: Ghost Injection Deployment** → [NEXT] Port `katha_taheng_override.css` to live SS Custom CSS and inject L-Frame HTML.
 
-### KNOWN CRITICAL ISSUES:
+### KNOWN CRITICAL ISSUES (TECH DEBT):
+- Prototype rendering differences and live CSS alignment checks are deferred to the live injection phase.
 - `FOLIO.mp4` Hero Video has NO mobile fallback image. Mobile shows blank.
 - Both Squarespace videos are 1920×1080 (1080p). Any replacements must match this spec.
+
+---
+
+## MEMORY EXPORT DIRECTIVE (SUPPLEMENT)
+When requested, export all of my stored memories and any context you've learned about me from past conversations. Preserve my words verbatim where possible, especially for instructions and preferences.
+
+**Categories (output in this order):**
+1. **Instructions**: Rules I've explicitly asked you to follow going forward — tone, format, style, "always do X", "never do Y", and corrections to your behavior. Only include rules from stored memories, not from conversations.
+2. **Identity**: Name, age, location, education, family, relationships, languages, and personal interests.
+3. **Career**: Current and past roles, companies, and general skill areas.
+4. **Projects**: Projects I meaningfully built or committed to. Ideally ONE entry per project. Include what it does, current status, and any key decisions. Use the project name or a short descriptor as the first words of the entry.
+5. **Preferences**: Opinions, tastes, and working-style preferences that apply broadly.
+
+**Format:**
+Use section headers for each category. Within each category, list one entry per line, sorted by oldest date first. Format each line as:
+`[YYYY-MM-DD] - Entry content here.`
+If no date is known, use `[unknown]` instead.
+
+**Output:**
+- Provide the export in two formats that perfectly mirror each other:
+  1. A single simple code block for easy copying.
+  2. A rendered HTML version (visual interpretation) for immediate reading.
+- After providing both formats, state whether this is the complete set or if more remain.

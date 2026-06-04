@@ -1,0 +1,47 @@
+/* 
+ * KATHA BOOTH - SQUARESPACE INJECTION
+ * The Singular Periphery Bleed (Maximum Minimalism)
+ * 
+ * Architecture: Pure CSS Pseudo-elements. No HTML required.
+ * Instructions: Paste this directly into the Squarespace Custom CSS panel.
+ */
+
+:root {
+  --katha-champagne: #C4B59D;
+  --katha-ecru: #EAE2D5;
+}
+
+html { 
+  scrollbar-gutter: stable; 
+} 
+
+/* The Singular Right Barong Embroidery Bleed */
+body::before {
+  content: "";
+  position: fixed; 
+  inset: 0;
+  
+  background-image: url('YOUR_UPLOADED_SQUARESPACE_IMAGE_URL.jpg');
+  background-size: calc(100vw + 80px) calc(100vh + 80px); 
+  background-position: right -40px top -40px; 
+  
+  mix-blend-mode: multiply;
+  opacity: 0.12; /* Threshold of perception */
+  
+  transform: translateZ(0);
+  will-change: mask-image;
+  z-index: 9999; 
+  pointer-events: none;
+  
+  /* Mobile constraint (16px) */
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 16px);
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 16px);
+}
+
+/* DESKTOP SEAMLESS WEAVE: Exactly 0.35 inches wide (Razor thin) */
+@media (min-width: 768px) {
+  body::before {
+    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 0.35in);
+    mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 0.35in);
+  }
+}

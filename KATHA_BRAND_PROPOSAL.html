@@ -31,8 +31,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      /* The Gradient Bloom: Sheer Piña Ecru fabric over warm Champagne skin */
-      background: radial-gradient(circle at 50% 10%, var(--ecru) 0%, var(--champagne) 140%);
+      /* PURE MINIMALISM: Solid Champagne base representing Morena skin. 
+         (Rejected the radial gradient as an anti-pattern). */
+      background-color: var(--champagne);
       background-attachment: fixed;
       color: var(--obsidian);
       font-family: var(--body);
@@ -40,7 +41,7 @@
       line-height: 1.6;
       min-height: 100vh;
       overflow-x: hidden;
-      padding: 40px 5vw 100px 5vw;
+      padding: 100px 5vw 120px 5vw; 
       position: relative;
     }
     
@@ -53,35 +54,32 @@
       mix-blend-mode: multiply;
     }
     
-    /* THE PHYSICAL EMBOSSED BARONG L-FRAME */
-    .barong-l-frame-top, .barong-l-frame-left {
+    /* THE SINGULAR PERIPHERY BLEED (Maximum Minimalism) */
+    .barong-l-frame-right {
       position: fixed; 
-      background: var(--champagne); /* Solid wood/paper base */
-      z-index: 999; pointer-events: none;
-      transition: all 800ms cubic-bezier(0.25, 1, 0.5, 1);
-      /* Initial state: Subtle bevel */
-      box-shadow: 
-        inset 1px 1px 2px var(--ecru), 
-        inset -1px -1px 3px rgba(36, 30, 26, 0.1),
-        0 4px 12px rgba(17, 17, 18, 0.05);
+      inset: 0;
+      background-image: url('CD_ITERATION/assets/barong_full_frame.jpg');
+      background-size: calc(100vw + 80px) calc(100vh + 80px); 
+      background-position: right -40px top -40px; 
+      
+      mix-blend-mode: multiply;
+      opacity: 0.12; /* Threshold of perception */
+      
+      transform: translateZ(0);
+      will-change: mask-image;
+      z-index: 9999; pointer-events: none;
+      
+      /* Mobile constraint (16px) */
+      -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 16px);
+      mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 16px);
     }
-    .barong-l-frame-top { top: 0; left: 0; width: 100vw; height: 16px; }
-    .barong-l-frame-left { top: 0; left: 0; width: 16px; height: 100vh; }
 
-    /* Scroll Settle Transition on L-Frame (Deep Emboss when settled) */
-    body.is-scrolling .barong-l-frame-top, 
-    body.is-scrolling .barong-l-frame-left {
-      background: rgba(196, 181, 157, 0.6); 
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      box-shadow: none;
-    }
-    body.is-settled .barong-l-frame-top, 
-    body.is-settled .barong-l-frame-left {
-      background: var(--champagne);
-      box-shadow: 
-        inset 2px 2px 4px var(--ecru),
-        inset -2px -2px 6px rgba(36, 30, 26, 0.25),
-        0 8px 30px rgba(17, 17, 18, 0.08); 
+    /* DESKTOP SEAMLESS WEAVE: Exactly 0.35 inches wide (Razor thin) */
+    @media (min-width: 768px) {
+      .barong-l-frame-right {
+        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 0.35in);
+        mask-image: linear-gradient(to left, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 0.35in);
+      }
     }
     
     /* THE ELEVATED CALADO GRID (Thread Shadowing) */
@@ -189,8 +187,8 @@
 </head>
 <body class="is-settled">
 
-  <div class="barong-l-frame-top"></div>
-  <div class="barong-l-frame-left"></div>
+  <div class="barong-l-frame-bottom"></div>
+  <div class="barong-l-frame-right"></div>
 
   <div class="katha-global-header">
     <div class="katha-wordmark">

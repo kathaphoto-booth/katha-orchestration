@@ -1,0 +1,100 @@
+/* 
+  KATHA PHOTO BOOTH - SQUARESPACE INJECTION
+  Phase 3: The 10-Year Architecture
+  Philosophy: Loom Silence
+*/
+
+/* 1. THE 10-TOKEN WABI-SABI PALETTE */
+:root {
+  --obsidian: #111112;
+  --ecru: #EAE2D5;
+  --loko: #8C382A;
+  --champagne: #C4B59D;
+  --iron: #241E1A;
+  --sequin: #9C958A;
+  --knalum: #1A1816;
+  --terra: #A35C44;
+  --slate: #5A5D5A;
+  --capiz: #B5B8A3;
+  
+  --display: 'Fraunces', serif;
+  --body: 'EB Garamond', serif;
+  --ui: 'Inter', sans-serif;
+}
+
+/* 2. THE PIÑA GRADIENT BLOOM (Background) */
+body {
+  background: radial-gradient(circle at 50% 10%, var(--ecru) 0%, var(--champagne) 140%) !important;
+  background-attachment: fixed !important;
+  color: var(--obsidian) !important;
+}
+
+/* Subtle Woven Piña Grain */
+body::after {
+  content: ""; 
+  position: fixed; inset: 0; z-index: -2; pointer-events: none;
+  background-image: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  opacity: 0.04; 
+  mix-blend-mode: multiply;
+}
+
+/* 3. THE BARONG L-FRAME */
+/* We inject this into the Squarespace Site Wrapper so it sits on top of all blocks */
+#siteWrapper::before,
+#siteWrapper::after {
+  content: "";
+  position: fixed; 
+  background: var(--champagne); /* Solid wood/paper base */
+  z-index: 9999; 
+  pointer-events: none;
+  transition: all 800ms cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 
+    inset 2px 2px 4px var(--ecru),
+    inset -2px -2px 6px rgba(36, 30, 26, 0.25),
+    0 8px 30px rgba(17, 17, 18, 0.08); 
+}
+
+/* Top Frame */
+#siteWrapper::before {
+  top: 0; left: 0; width: 100vw; height: 16px;
+}
+/* Left Frame */
+#siteWrapper::after {
+  top: 0; left: 0; width: 16px; height: 100vh;
+}
+
+/* 4. THE CALADO CORNER TACKS */
+/* We target the main content containers (Squarespace's .sqs-block or a wrapper) to elevate them */
+.sqs-block {
+  position: relative;
+}
+
+/* Add the 4-corner SVG tack stars to major content sections */
+.sqs-layout:not(.sqs-editing) .sqs-block::before,
+.sqs-layout:not(.sqs-editing) .sqs-block::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Top Left & Top Right Tacks */
+.sqs-layout:not(.sqs-editing) .sqs-block::before {
+  background-image: 
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M6 0 L12 6 L6 12 L0 6 Z" fill="%23C4B59D"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M6 0 L12 6 L6 12 L0 6 Z" fill="%23C4B59D"/></svg>');
+  background-position: top -6px left -6px, top -6px right -6px;
+  background-repeat: no-repeat;
+}
+
+/* Bottom Left & Bottom Right Tacks */
+.sqs-layout:not(.sqs-editing) .sqs-block::after {
+  background-image: 
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M6 0 L12 6 L6 12 L0 6 Z" fill="%23C4B59D"/></svg>'),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M6 0 L12 6 L6 12 L0 6 Z" fill="%23C4B59D"/></svg>');
+  background-position: bottom -6px left -6px, bottom -6px right -6px;
+  background-repeat: no-repeat;
+}
