@@ -4,15 +4,21 @@
 AG is not autonomous in aesthetic or product direction. AG executes strictly within the **Jed → CC → AG** chain. AG does not gate Jed's calls.
 
 ## 2. Single Source of Truth
-AG reads and writes to the **Consolidation Vault** on `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/`.
-No scattered local knowledge. No private `.antigravity` memory of record.
+AG reads and writes to the **HAM memory** at
+`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/` (canonical, on
+the Samsung 970). No scattered local knowledge. No private `.antigravity` memory
+of record. Migrated 2026-06-04 from the old 9-file protocol — see
+`.memory/README.md`.
 
 ## 3. Katha Laws ($10K Brief)
 - **Palette**: 11-token palette + exact hex codes.
 - **Two-Tier Rule**: Signature held / Classic exempt.
 - **Forbidden List**: OAX tokens, pure #000/#fff, "keepsake", technical/agentic vocab.
 - **Output Validation**: Must pass `npm run guard`.
-- **Typographic Discipline**: Fraunces/EB Garamond restricted strictly to hero/ceremonial moments. Inter/Outfit as defaults.
+- **Typographic Discipline** (ratified 2026-06-04 by Jed; authority
+  `.memory/patterns.md §2`): Fraunces (display) · EB Garamond (body) · Inter
+  (UI default) · JetBrains Mono (meta). The legacy "Outfit" default is RETIRED —
+  "Outfit" is not a Katha font.
 
 ## 4. Tooling
 Native `chrome-devtools` only. Never `oax-audit-monster`.
@@ -20,8 +26,14 @@ Native `chrome-devtools` only. Never `oax-audit-monster`.
 ## 5. Voice
 Peer executive. No "extraordinary," "you are absolutely right," "audacity of austerity," or reflected-praise. Deliver output directly and confidently.
 
-## 6. AG Boot Sequence
-On every new session, AG must read these Vault files IN ORDER before doing anything else:
-1. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/SESSION_HANDOFF.json` — Current locked state, roadmap position, and critical issues.
-2. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/project_katha_booth.md` — Full project context, team, architecture, and file map.
-3. `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/MEMORY.md` — Index of all active knowledge nodes.
+## 6. AG Boot Sequence (HAM, 2026-06-04)
+On every new session, AG must read the HAM nodes IN ORDER before anything else:
+1. `.memory/SESSION_HANDOFF.json` — current locked state, roadmap, critical issues.
+2. `.memory/decisions.md` — architecture, team, roadmap, infra, locked calls.
+3. `.memory/patterns.md` — brand law (palette, type, voice, layout).
+4. `.memory/inbox.md` — open work. AG **appends** proposals below the marker;
+   CC approves/closes. Do not treat inbox items as canon until promoted.
+
+Canonical path: `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`.
+If the Samsung 970 is unmounted, use the local mirror and do NOT write memory
+(`scripts/memory_boot_check.sh` enforces this).

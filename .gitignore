@@ -7,3 +7,10 @@ dist/
 .DS_Store
 tsconfig.tsbuildinfo
 .playwright-mcp/
+
+# HAM memory (canonical lives on Samsung 970; these are machine-local)
+.memory
+.memory.mirror/
+
+# Generated State Map dashboard (regenerate from .memory/)
+KATHA_STATE.html

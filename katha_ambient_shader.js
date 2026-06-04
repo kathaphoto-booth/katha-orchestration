@@ -137,8 +137,9 @@
     const uResolution = gl.getUniformLocation(shaderProgram, 'uResolution');
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
       gl.uniform2f(uResolution, gl.drawingBufferWidth, gl.drawingBufferHeight);
     };
@@ -147,12 +148,32 @@
     resize();
 
     let startTime = Date.now();
+    let pausedTime = 0;
+    let pauseStart = 0;
+    let isVisible = true;
+    let animationFrameId;
+
     const render = () => {
-      const time = (Date.now() - startTime) * 0.001;
+      if (!isVisible) return;
+      const time = (Date.now() - startTime - pausedTime) * 0.001;
       gl.uniform1f(uTime, time);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      requestAnimationFrame(render);
+      animationFrameId = requestAnimationFrame(render);
     };
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isVisible = false;
+        pauseStart = Date.now();
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        isVisible = true;
+        if (pauseStart > 0) {
+          pausedTime += Date.now() - pauseStart;
+        }
+        render();
+      }
+    });
 
     render();
   };

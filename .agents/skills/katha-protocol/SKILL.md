@@ -21,7 +21,7 @@ AG and CC are not autonomous in aesthetic decisions. They execute within the **J
 - **CC** — orchestrator (Robin)
 - **AG** — heavy execution, strictly within the chain
 
-The single source of truth resides in `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/`. No scattered local knowledge. No private `.antigravity` memory of record.
+The single source of truth is the HAM memory at `.memory/` (canonical on the Samsung 970; see `.memory/README.md`). No scattered local knowledge. No private `.antigravity` memory of record.
 
 ## §2. The $10K Brief — Palette
 
@@ -134,11 +134,32 @@ Before submitting any brand-touching output:
 - [ ] If new design direction: Adversarial Verify (§6) executed
 ```
 
+## §8. Delegation Protocol (CC → AG)
+
+When tasking AG (or any subagent) with brand-touching work, pre-inject this
+protocol's canon into the agent's instructions:
+- Pass the palette (§2) + typography (§3) + the two-tier rule (Signature `katha-`
+  held to palette + Fraunces; Classic exempt).
+- Require an output-validation step — run `npm run guard` (or `guard:templates`)
+  on generated structured data; reject forbidden hex / Cormorant / off-palette.
+- State the target: Next.js canvas (full SVG/PNG) or a Squarespace Code Block
+  (CSS-only, no commercial web-font load).
+- Never instruct an agent to use forbidden words in client copy (§4).
+
+## §9. Operating Discipline
+
+For any brand-touching build: load this protocol first → spec the deliverable →
+execute → **prove it with evidence before claiming done** (terminal output,
+screenshots, audit scores — feelings are not evidence). Use the built-ins for the
+generic loop (`superpowers:brainstorming`, `superpowers:writing-plans`) and for
+completion evidence (`verify` / `superpowers:verification-before-completion`).
+
 ## Relationship to Other Skills
 
-This skill is the **constraint layer**. It tells you what the rules are.
+This skill is the **constraint layer + delegation + operating discipline**.
+- `katha-impeccable` — the UI/UX audit; reads this for criteria, produces evidence.
+- Built-ins cover generic process: `superpowers:brainstorming` / `writing-plans` /
+  `executing-plans`; `verify` / `superpowers:verification-before-completion`.
 
-- `katha-workflow` reads this at Step 1 (Brainstorm) to load constraints
-- `katha-antigravity` packages this skill's data for AG delegation
-- `katha-impeccable` references this for audit criteria
-- `katha-verify` checks output against this skill's rules
+*(katha-workflow, katha-verify, katha-antigravity were dissolved into this skill
++ katha-impeccable on 2026-06-04 — see `KATHA_SKILLS_LEDGER.md`.)*

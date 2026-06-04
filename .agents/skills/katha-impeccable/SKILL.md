@@ -61,14 +61,28 @@ These are **not bugs**. Do not "fix" them. If another tool or audit flags them, 
 | Staggered content blocks | Asymmetric Void, L-Frame breathing | Align to a uniform grid |
 | Tone-on-tone Calado pattern | Subtle camisa texture | Increase contrast or make more visible |
 
-## Evidence Production
+## Evidence Production (Evidence-Before-Claims)
 
-After completing the audit, produce evidence per `katha-verify`:
+No "done" without cited proof — raw terminal output, screenshot paths, or audit
+scores. Feelings are not evidence. Produce at least one piece per the category:
 
-1. **Desktop screenshot** — save to artifacts, reference by path
-2. **Mobile screenshot** — emulate 375px via `chrome-devtools-mcp/emulate`, save to artifacts
-3. **Lighthouse accessibility score** — run via `chrome-devtools-mcp/lighthouse_audit`
-4. **Console error check** — run `chrome-devtools-mcp/list_console_messages`, confirm zero errors
+**UI / visual:**
+1. **Desktop screenshot** via `chrome-devtools-mcp/take_screenshot` (save to artifacts)
+2. **Mobile screenshot** — `chrome-devtools-mcp/emulate` 375px + screenshot
+3. **Lighthouse accessibility score** via `chrome-devtools-mcp/lighthouse_audit`
+4. **Console error check** via `chrome-devtools-mcp/list_console_messages` (zero errors)
+
+**Brand assets (marks, copy, design directions):**
+- Adversarial Verify — 5-critic simulation per `katha-protocol` §6, OR
+- Hex audit: `grep` output showing no off-palette drift, OR
+- Typography audit: only Fraunces / EB Garamond / Inter / JetBrains Mono present
+
+**CSS injection (Squarespace):**
+- Before/after screenshots of the target page
+- Console check (`list_console_messages`, no errors) + network check (CSS loaded)
+
+Report as: **Task / Evidence (typed, with path or inline output) / Result PASS|FAIL.**
+*(Evidence discipline absorbed from the dissolved katha-verify, 2026-06-04.)*
 
 ## Tools
 
@@ -82,8 +96,8 @@ Never use `oax-audit-monster`. Use `chrome-devtools-mcp` exclusively.
 
 ## Relationship to Other Skills
 
-- Reads constraints from `katha-protocol` (palette, typography, anti-patterns)
+- Reads constraints from `katha-protocol` (palette, typography, anti-patterns, delegation)
 - Reads component specs from `DESIGN_SYSTEM.v2.md` (referenced, not bundled — load when needed)
-- Produces evidence that satisfies `katha-verify`
+- Carries the **evidence-before-claims** discipline (absorbed from the dissolved `katha-verify`)
 - Complements `loom-auditor` (live deploy) and `brass-ring-enforcer` (source tree)
-- Invoked by `katha-workflow` Step 3 when task touches UI
+- Load when a task touches UI / layout / brand assets
