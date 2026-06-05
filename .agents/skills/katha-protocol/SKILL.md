@@ -21,7 +21,9 @@ AG and CC are not autonomous in aesthetic decisions. They execute within the **J
 - **CC** — orchestrator (Robin)
 - **AG** — heavy execution, strictly within the chain
 
-The single source of truth is the HAM memory at `.memory/` (canonical on the Samsung 970; see `.memory/README.md`). No scattered local knowledge. No private `.antigravity` memory of record.
+The single source of truth is the HAM memory at the absolute vault path:
+`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
+No symlink, no mirror, no boot script. No scattered local knowledge. No private `.antigravity` memory of record. View with Obsidian for the visual interface.
 
 ## §2. The $10K Brief — Palette
 

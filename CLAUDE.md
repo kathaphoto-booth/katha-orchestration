@@ -18,25 +18,25 @@ never sterile JSON. Technical rigor married to texture-driven storytelling.
 ---
 
 ## BOOT ORDER (do this first, every session)
-1. Run `scripts/memory_boot_check.sh` — verifies the Samsung 970 canonical
-   memory is mounted (exit 0), or falls back to the local mirror with a warning
-   (exit 2). Never boot blind.
-2. Read, IN ORDER:
-   - `.memory/SESSION_HANDOFF.json` — current locked state + phase
-   - `.memory/decisions.md` — architecture, roadmap, locked calls, infra, team
-   - `.memory/patterns.md` — full brand law (palette, type, voice, layout)
-   - `.memory/inbox.md` — open work (act only on **Accepted** items)
-   - `.memory/artifacts.md` — deep-dive execution records, plans, and walkthroughs from AG
+Memory lives at the absolute vault path (Samsung 970, always mounted):
+**`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
-`.memory/` is a symlink to the Samsung 970 Vault; `.memory.mirror/` is the
-local fallback. See `.memory/README.md` for the HAM model.
+Read these 4 nodes IN ORDER from the vault:
+1. `SESSION_HANDOFF.json` — current locked state + phase
+2. `decisions.md` — architecture, roadmap, locked calls, infra, team
+3. `patterns.md` — full brand law (palette, type, voice, layout)
+4. `inbox.md` — open work (act only on **Accepted** items)
+5. `handoff/*.md` — any unread AG artifacts (skip files prefixed with `_`)
+
+No symlink, no mirror, no boot script. The vault is the single source of truth.
+Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
 
 > Deprecated boots: do NOT read HCL.md, HCL_DASHBOARD.html, STATE.md, or
 > BRAND_GENESIS_PLAN.md (archived in Vault `_deprecated_pre_HAM/`).
 
 ---
 
-## ALWAYS-ON CANON (non-negotiable — full detail in `.memory/patterns.md`)
+## ALWAYS-ON CANON (non-negotiable — full detail in vault `patterns.md`)
 
 **Palette — 10 brand tokens + 2 ecru-safe text.** Core: Obsidian Weave `#111112`
 (base/text/**wordmark**), Piña Ecru `#EAE2D5` (light ground), Loko Rust `#8C382A`
@@ -75,22 +75,22 @@ on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
 - **`/impeccable`** → impeccable (generic UI/UX audit, taught via katha-protocol
   constraints) + loom-auditor + brass-ring-enforcer + playwright-skill.
   Evidence-before-claims discipline per katha-protocol §9.
-- **`/handoff`** → **HAM sync** — update `.memory/` nodes (decisions / patterns /
-  inbox + SESSION_HANDOFF.json), then regenerate the State Map:
-  `node scripts/build_katha_dashboard.mjs`. Reference: `hierarchical-agent-memory`.
+- **`/handoff`** → **HAM sync** — update vault nodes (decisions / patterns /
+  inbox + SESSION_HANDOFF.json) at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`.
+  View live in Obsidian (no dashboard regeneration needed).
 - **`/workflow`** → grill-me first → superpowers:brainstorming → writing-plans +
   katha-protocol §9. Run `stitch-utilities:enhance-prompt` at the top of
   brainstorming AND writing-plans if the prompt is thin (< 2 sentences).
 - **`/verify`** → built-in `superpowers:verification-before-completion` + evidence
   discipline from katha-protocol §9 (chrome-devtools-mcp for visual proof).
 - **`/antigravity`** → katha-protocol §8 Delegation Protocol + §10 Handoff Channel.
-  AG writes to `.memory/handoff/`; CC reads at boot.
+  AG writes to vault `.memory/handoff/`; CC reads at boot.
 - **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
 - **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
 
 ---
 
-## DEPLOYMENT TOPOLOGY (detail in `.memory/decisions.md`)
+## DEPLOYMENT TOPOLOGY (detail in vault `decisions.md`)
 - **kathabooth.com** → Squarespace storefront (SEO). Assets Squarespace-safe:
   CSS-only, raster fallback for deckled masks, no-canvas sequin. Vince owns it.
 - **book.kathabooth.com** → Next.js 15 + Vercel + Supabase (`photobooth-template-studio/`).
@@ -106,9 +106,9 @@ on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
 ---
 
 ## STARTUP COMMAND
-Announce your presence, acknowledge the team, confirm you ran the boot check and
-read the `.memory/` nodes, and state the current Phase position before asking
-Jed to authorize the next step.
+Announce your presence, acknowledge the team, confirm you read the 4 vault HAM
+nodes + any unread `.memory/handoff/` artifacts, and state the current Phase
+position before asking Jed to authorize the next step.
 
 ---
 
