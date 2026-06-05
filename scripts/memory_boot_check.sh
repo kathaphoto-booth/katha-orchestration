@@ -34,6 +34,18 @@ if [ -d "$CANON" ] && [ -r "$CANON/patterns.md" ]; then
     fi
   fi
   echo "   boot from: $LINK"
+
+  # Handoff scanner — flag unread AG artifacts (katha-protocol §10)
+  HANDOFF_DIR="$CANON/handoff"
+  if [ -d "$HANDOFF_DIR" ]; then
+    UNREAD=$(find "$HANDOFF_DIR" -name "[^_]*.md" \
+      -newer "$CANON/SESSION_HANDOFF.json" 2>/dev/null)
+    if [ -n "$UNREAD" ]; then
+      echo "⚠️  UNREAD HANDOFF ARTIFACTS (read before triaging inbox.md):"
+      echo "$UNREAD" | sed 's|^|   |'
+    fi
+  fi
+
   exit 0
 fi
 

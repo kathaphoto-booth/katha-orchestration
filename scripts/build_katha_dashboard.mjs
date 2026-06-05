@@ -7,7 +7,7 @@
 // Usage:  node scripts/build_katha_dashboard.mjs [--stamp "YYYY-MM-DD HH:MM"]
 // Writes to BOTH the Vault (persistent on Samsung 970) and the repo root.
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 
 // Paths overridable via env for portability (new machine / CI).
 const VAULT = process.env.KATHA_VAULT || "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge";
@@ -167,6 +167,30 @@ const archHtml = Object.entries(arch).map(([k, v]) =>
 
 const boundaries = (handoff.strict_boundaries || []).map((b) => `<li>${esc(b)}</li>`).join("");
 
+// Handoff panel — latest AG→CC artifacts from .memory/handoff/
+const handoffDir = `${memDir}/handoff`;
+let handoffPanels = "";
+try {
+  const allDated = readdirSync(handoffDir).filter((f) => /^\d/.test(f) && f.endsWith(".md")).sort().reverse();
+  const visible = allDated.slice(0, 3);
+  const moreCount = allDated.length - 3;
+  handoffPanels = visible.map((f) => {
+    const parts = f.replace(".md", "").split("_");
+    const date = parts[0] || "";
+    const type = parts[parts.length - 1] || "";
+    const slug = parts.slice(1, parts.length - 1).join("-") || "";
+    const body = md2html(readFileSync(`${handoffDir}/${f}`, "utf8"));
+    return `<details class="hoff">
+      <summary class="hoff-hd"><span class="hoff-date">${esc(date)}</span> · <span class="hoff-slug">${esc(slug)}</span> · <span class="hoff-type">${esc(type)}</span></summary>
+      <div class="hoff-body prose">${body}</div>
+    </details>`;
+  }).join("");
+  if (visible.length === 0) handoffPanels = `<p style="font-size:12px;color:var(--abel)">No handoff artifacts yet.</p>`;
+  if (moreCount > 0) handoffPanels += `<p class="hoff-more">+ ${moreCount} more in .memory/handoff/</p>`;
+} catch {
+  handoffPanels = `<p style="font-size:11px;color:var(--abel)">handoff/ not found — create .memory/handoff/ to enable.</p>`;
+}
+
 // ── compose ───────────────────────────────────────────────────────────────
 const html = `<!DOCTYPE html>
 <html lang="en"><head>
@@ -233,6 +257,13 @@ section{margin-top:48px}
 .triad .arrow{color:var(--loko);font-size:14px}
 .triad .node{text-align:center}.triad .node small{display:block;font-family:'Inter';font-size:9px;color:var(--ecrumut);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
 footer{max-width:1180px;margin:60px auto 0;padding:24px 40px 0;border-top:1px solid rgba(196,181,157,.2);font-size:10px;color:var(--abel);font-family:'JetBrains Mono',monospace}
+details.hoff{background:var(--knalum);margin-bottom:12px;border-radius:1px}
+.hoff-hd{padding:14px 18px;cursor:pointer;list-style:none;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--champagne);letter-spacing:.04em;user-select:none}
+.hoff-hd::-webkit-details-marker{display:none}
+details.hoff[open] .hoff-hd{border-bottom:1px dashed rgba(196,181,157,.2)}
+.hoff-date{color:var(--sequin)}.hoff-slug{color:var(--ecru)}.hoff-type{color:var(--terra)}
+.hoff-body{padding:18px 18px 14px;max-height:400px;overflow-y:auto}
+.hoff-more{font-size:10px;color:var(--sequin);font-family:'JetBrains Mono',monospace;margin-top:8px}
 @media(max-width:860px){.phases,.swatches{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}}
 </style></head>
 <body>
@@ -248,6 +279,11 @@ footer{max-width:1180px;margin:60px auto 0;padding:24px 40px 0;border-top:1px so
 <section>
   <div class="eyebrow">Roadmap · ${esc(handoff.checkpoint || "")}</div>
   <div class="phases">${phaseCards}</div>
+</section>
+
+<section>
+  <div class="eyebrow">Latest Handoff · AG → CC</div>
+  ${handoffPanels}
 </section>
 
 <section>

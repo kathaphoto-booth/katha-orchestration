@@ -37,3 +37,25 @@ On every new session, AG must read the HAM nodes IN ORDER before anything else:
 Canonical path: `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`.
 If the Samsung 970 is unmounted, use the local mirror and do NOT write memory
 (`scripts/memory_boot_check.sh` enforces this).
+
+## §10. Handoff Channel
+
+Write all planning artifacts to:
+
+```
+.memory/handoff/<YYYY-MM-DD>_<slug>_<type>.md
+```
+
+Types: `walkthrough` | `task` | `plan` | `verify`
+
+**NEVER write to:** `~/.gemini/antigravity/brain/...` OR repo root.
+Stable (non-dated) files use underscore prefix: `_ag-recovery-prompt.md`.
+
+After writing, append ONE inbox line under `## Pending (AG-proposed)`:
+
+```
+- [ ] <date> <slug> — see .memory/handoff/<date>_<slug>_*.md
+```
+
+If CC references a file you cannot access:
+read and follow `.memory/handoff/_ag-recovery-prompt.md`

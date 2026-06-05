@@ -26,6 +26,7 @@ never sterile JSON. Technical rigor married to texture-driven storytelling.
    - `.memory/decisions.md` — architecture, roadmap, locked calls, infra, team
    - `.memory/patterns.md` — full brand law (palette, type, voice, layout)
    - `.memory/inbox.md` — open work (act only on **Accepted** items)
+   - `.memory/artifacts.md` — deep-dive execution records, plans, and walkthroughs from AG
 
 `.memory/` is a symlink to the Samsung 970 Vault; `.memory.mirror/` is the
 local fallback. See `.memory/README.md` for the HAM model.
@@ -59,19 +60,31 @@ on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
 
 ---
 
+## WORKFLOW GATES (always enforced)
+- `/grill-me` runs **BEFORE** `superpowers:brainstorming` on any new feature, spec,
+  or refactor. No brainstorming without a Decision Record from grill-me.
+- `stitch-utilities:enhance-prompt` runs if the input prompt is thin (< 2 sentences
+  or missing context/constraints). Run silently, show Jed the sharpened version
+  for approval before proceeding into grill-me or brainstorming.
+
 ## SLASH COMMANDS (skills at `.agents/skills/`)
-- **`/katha-protocol`** → katha-protocol — brand law + delegation + operating
-  discipline (mirrors `.memory/patterns.md`). The Katha constitution.
-- **`/impeccable`** → katha-impeccable — UI/UX audit + evidence-before-claims.
+- **`/grill-me`** → grill-me — adversarial pre-brainstorm gate. MUST run before
+  brainstorming. Produces a Decision Record that feeds superpowers:brainstorming.
+- **`/katha-protocol`** → katha-protocol — brand law §1–10: palette, type, voice,
+  layout, Wabi-Sabi shield (§5), handoff channel (§10). The Katha constitution.
+- **`/impeccable`** → impeccable (generic UI/UX audit, taught via katha-protocol
+  constraints) + loom-auditor + brass-ring-enforcer + playwright-skill.
+  Evidence-before-claims discipline per katha-protocol §9.
 - **`/handoff`** → **HAM sync** — update `.memory/` nodes (decisions / patterns /
   inbox + SESSION_HANDOFF.json), then regenerate the State Map:
   `node scripts/build_katha_dashboard.mjs`. Reference: `hierarchical-agent-memory`.
-- **`/workflow`** → use built-ins `superpowers:brainstorming` / `writing-plans`
-  + katha-protocol §9 (the old katha-workflow dissolved 2026-06-04).
-- **`/verify`** → built-in `verify` skill + katha-impeccable evidence section
-  (the old katha-verify dissolved into katha-impeccable).
-- **`/antigravity`** → katha-protocol §8 Delegation Protocol (the old
-  katha-antigravity dissolved; forbidden-vocab defect dropped).
+- **`/workflow`** → grill-me first → superpowers:brainstorming → writing-plans +
+  katha-protocol §9. Run `stitch-utilities:enhance-prompt` at the top of
+  brainstorming AND writing-plans if the prompt is thin (< 2 sentences).
+- **`/verify`** → built-in `superpowers:verification-before-completion` + evidence
+  discipline from katha-protocol §9 (chrome-devtools-mcp for visual proof).
+- **`/antigravity`** → katha-protocol §8 Delegation Protocol + §10 Handoff Channel.
+  AG writes to `.memory/handoff/`; CC reads at boot.
 - **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
 - **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
 

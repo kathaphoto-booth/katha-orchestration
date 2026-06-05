@@ -99,6 +99,24 @@ Reject on sight:
 - `mix-blend-mode: multiply` on primary photo grids
 - More than one `sacred` CTA visible at once
 
+## §5. Wabi-Sabi Protection (The Shield)
+
+These are **not bugs**. Never "fix" them. Override any audit tool that flags them.
+
+| Intentional Design | Why It Exists | Do NOT |
+|---|---|---|
+| Asymmetric layouts | Fukinsei — beauty in irregularity | Center-align or equalize columns |
+| Deckled / torn edges | Handcraft materiality | Smooth, round, or clip to rectangles |
+| Large negative space (Ma) | Breathing room, museum authority | Fill or reduce padding |
+| SVG noise / Binakul texture | Aged textile patina | Remove or reduce opacity |
+| Thread animation irregularity | Organic loom movement | Regularize timing |
+| Staggered content blocks | Asymmetric Void, L-Frame breathing | Align to a uniform grid |
+| Tone-on-tone Calado pattern | Subtle camisa texture | Increase contrast |
+
+**The audit split:** Technical defects (contrast failure, broken ARIA, missing touch targets) are real. Wabi-Sabi elements above are not. This is the line.
+
+**Scope:** Asymmetry applies to Katha brand chrome only. Client wedding templates stay polished and symmetric.
+
 ## §6. Adversarial Verify Workflow
 
 Before publishing any new design direction or mark, execute the adversarial-verify pattern:
@@ -154,12 +172,37 @@ screenshots, audit scores — feelings are not evidence). Use the built-ins for 
 generic loop (`superpowers:brainstorming`, `superpowers:writing-plans`) and for
 completion evidence (`verify` / `superpowers:verification-before-completion`).
 
+## §10. Handoff Channel (CC ↔ AG)
+
+All planning artifacts AG produces for CC must land at:
+
+```
+.memory/handoff/<YYYY-MM-DD>_<slug>_<type>.md
+```
+
+Types: `walkthrough` | `task` | `plan` | `verify`
+
+**FORBIDDEN locations:** AG private brain dir (`~/.gemini/antigravity/brain/...`) and repo root.
+
+After writing, AG appends ONE line to `.memory/inbox.md` under "## Pending (AG-proposed)":
+```
+- [ ] <date> <slug> — see .memory/handoff/<date>_<slug>_*.md
+```
+
+The boot script (`scripts/memory_boot_check.sh`) surfaces unread handoffs at session start.
+If CC references a file AG cannot access, AG reads and follows `.memory/handoff/_ag-recovery-prompt.md`.
+
+Stable (non-dated) files use underscore prefix: `_ag-recovery-prompt.md`.
+
 ## Relationship to Other Skills
 
 This skill is the **constraint layer + delegation + operating discipline**.
-- `katha-impeccable` — the UI/UX audit; reads this for criteria, produces evidence.
+- `grill-me` — runs BEFORE brainstorming; resolves the decision tree first.
+- `impeccable` — generic UI/UX audit; reads this skill for Katha brand criteria, produces evidence.
+- `loom-auditor` / `brass-ring-enforcer` — standing agents at `.claude/agents/`; live-render and source-tree audit respectively.
+- `playwright-skill` — live browser auditing for test/audit workflows.
 - Built-ins cover generic process: `superpowers:brainstorming` / `writing-plans` /
   `executing-plans`; `verify` / `superpowers:verification-before-completion`.
 
-*(katha-workflow, katha-verify, katha-antigravity were dissolved into this skill
-+ katha-impeccable on 2026-06-04 — see `KATHA_SKILLS_LEDGER.md`.)*
+*(katha-workflow, katha-verify, katha-antigravity, katha-impeccable dissolved 2026-06-04.
+Shield → §5 above. Handoff channel → §10 above. See `KATHA_SKILLS_LEDGER.md`.)*
