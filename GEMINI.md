@@ -40,11 +40,69 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
 ## §4. Tooling
 
 - Browser: `chrome-devtools` MCP ONLY. Never `oax-audit-monster`.
-- CLI: `agy` binary at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy`
-  (installed 2026-06-06, v1.0.0).
+- AG IDE: Full VS Code-based IDE at `~/.antigravity-ide/antigravity-ide/`. Runner binary
+  `agy` at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy` (v1.0.6, installed 2026-06-06).
+  Config: `~/.gemini/antigravity-cli/`. PATH has 3 entries (local, vault, IDE bin).
 - Linting: `npm run guard` in `photobooth-template-studio/`.
 - Standing subagents: `loom-auditor` (live render) + `brass-ring-enforcer`
   (source-tree drift). Both at `.claude/agents/`.
+
+---
+
+## §4a. AG IDE — Invocation Guide
+
+**Two modes — Jed runs interactive, CC runs headless:**
+
+**Interactive (requires Jed's terminal — TTY):**
+```bash
+agy --prompt-interactive \
+  --add-dir "/Users/jedg./Desktop/kat_ha_pb" \
+  --add-dir "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge"
+```
+Use for: B1 credential push, Vercel env setup, Cloudflare ops, all high-stakes execution.
+TTY required — cannot be backgrounded or piped by CC.
+
+**Headless execution (CC-invokable via `--print`):**
+```bash
+agy --print "task prompt" \
+  --add-dir "/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge"
+```
+Use for: status checks, vault queries, AND infrastructure execution tasks.
+⚠️ When using `--print` for infrastructure execution (Vercel, Cloudflare, Supabase, git ops):
+- Task prompt MUST include explicit success criteria and expected output format
+- Task prompt MUST state: "Report COMPLETE/FAILED with evidence — do not summarize without proof"
+- Verify output contains concrete evidence (curl result, API response, git log) before accepting as done
+- If output is ambiguous or informational-only, re-invoke with more specific task framing
+
+**Model recommendations:**
+- Heavy execution (B1, Cloudflare, Vercel, Supabase): `--model "Gemini 3.1 Pro (High)"`
+- Quick queries + template work: `--model "Gemini 3.5 Flash (Medium)"` (default)
+- Brand-critical review (palette audit, copy check): `--model "Claude Sonnet 4.6 (Thinking)"`
+
+**Available models (8 total):**
+Gemini 3.1 Pro (Low/High) · Gemini 3.5 Flash (Low/Medium/High) ·
+Claude Sonnet 4.6 (Thinking) · Claude Opus 4.6 (Thinking) · GPT-OSS 120B (Medium)
+
+**AG MCP servers (12 installed at `~/.gemini/antigravity-cli/mcp/`):**
+| Server | Use |
+|--------|-----|
+| `chrome-devtools-mcp` | Browser automation (ONLY browser MCP allowed for Katha work) |
+| `filesystem` | File read/write operations |
+| `firecrawl` | Web scraping + crawling |
+| `context7` | Library documentation queries |
+| `genkit-mcp-server` | Google Genkit integration |
+| `gsap` | Animation library reference |
+| `magic-21st` | Component generation |
+| `StitchMCP` | Design/component system |
+| `sequential-thinking` | Structured reasoning |
+| `oax-audit-monster` | ⛔ BANNED for all Katha work — never invoke on kat_ha_pb |
+
+**Projects tracked (auto-registered):**
+- `/Users/jedg./Desktop/kat_ha_pb` → ID `984a8a3a-...`
+- `/Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio` → ID `d86f27a9-...`
+
+**Keybindings:** `~/.gemini/antigravity-cli/keybindings.json` (customizable)
+**Recent conversations:** `~/.gemini/antigravity-cli/cache/last_conversations.json`
 
 ---
 

@@ -51,7 +51,9 @@ Jed → CC → AG chain. Does NOT gate Jed's calls.
 **Charter:** Full details in `./GEMINI.md`. Boot sequence: same 7-node HAM.
 **Write permissions:** `.memory/handoff/` + `.memory/inbox.md` (append only) +
 `.memory/memory.md` (append only). Nothing else.
-**CLI:** `agy` at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy` (installed 2026-06-06, v1.0.0).
+**IDE:** AG IDE (VS Code-based) at `~/.antigravity-ide/`. Runner: `agy` v1.0.6 at vault `bin/agy`.
+Config: `~/.gemini/antigravity-cli/`. 8 models. 12 MCP servers. See GEMINI.md §4a for full invocation guide.
+Interactive sessions: Jed runs in terminal (TTY). Headless execution: CC uses `agy --print` (queries + infra tasks with explicit framing).
 
 ---
 
@@ -99,7 +101,7 @@ for upgrading Squarespace trial to Business+ and attaching the domain.
 | `chrome-devtools` MCP | CC / AG | ONLY browser automation tool |
 | `loom-auditor` | CC | Live-render audit |
 | `brass-ring-enforcer` | CC | Source-tree drift scan |
-| `agy` CLI | AG | Installed 2026-06-06 — vault bin/agy v1.0.0 |
+| AG IDE (`agy`) | AG | v1.0.6 — IDE: `~/.antigravity-ide/` · Runner: vault `bin/agy` · Config: `~/.gemini/antigravity-cli/` · 8 models · 12 MCP servers · Interactive (Jed/TTY) + headless `--print` (CC) |
 
 **BANNED:** `oax-audit-monster` MCP, `oax-impeccable-bridge` skill.
 
