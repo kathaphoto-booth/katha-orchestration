@@ -21,15 +21,21 @@ never sterile JSON. Technical rigor married to texture-driven storytelling.
 Memory lives at the absolute vault path (Samsung 970, always mounted):
 **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
-Read these 4 nodes IN ORDER from the vault:
+Read these 7 nodes IN ORDER from the vault:
 1. `SESSION_HANDOFF.json` — current locked state + phase
 2. `decisions.md` — architecture, roadmap, locked calls, infra, team
 3. `patterns.md` — full brand law (palette, type, voice, layout)
 4. `inbox.md` — open work (act only on **Accepted** items)
-5. `handoff/*.md` — any unread AG artifacts (skip files prefixed with `_`)
+5. `memory.md` — Jed-confirmed facts (granular, append-only log)
+6. `instructions.md` — auto-capture rules, agent boundaries, anti-hallucination protocol
+7. `handoff/*.md` — any unread AG artifacts (skip files prefixed with `_`)
 
 No symlink, no mirror, no boot script. The vault is the single source of truth.
 Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
+
+**Auto-capture rule:** After every Jed confirmation, correction, or preference,
+append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
+See `instructions.md` for the full protocol. Do not let facts slip through.
 
 > Deprecated boots: do NOT read HCL.md, HCL_DASHBOARD.html, STATE.md, or
 > BRAND_GENESIS_PLAN.md (archived in Vault `_deprecated_pre_HAM/`).
