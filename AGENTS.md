@@ -93,6 +93,63 @@ for upgrading Squarespace trial to Business+ and attaching the domain.
 
 ---
 
+## Tool Tier Router (CC invocation rules — speed optimization)
+
+CC MUST classify every task before choosing a tool. Never send a Tier 0 task
+to a Tier 2+ agent — that's 3 minutes wasted on a 1-second check.
+
+| Tier | Latency | Tool | Use For |
+|------|---------|------|---------|
+| T0 | < 1s | `curl`, `Read`, `bash grep`, `Edit` | HTTP checks, file reads, vault writes, code fixes |
+| T1 | 5-30s | `firecrawl scrape` | Single URL content extraction |
+| T2 | 1-3 min | `agy` with **ALL context pre-staged in brief** | AG execution where AG has zero discovery work |
+| T3 | 5-15 min | `agy` with discovery needed OR `firecrawl agent` | Exploratory tasks (background only) |
+
+**Task Brief Protocol — REVISED 2026-06-07 after CF test (11 min runtime):**
+
+The original protocol assumed agy would honor "do NOT read X" instructions. **It does not.**
+agy follows its base autonomous exploration behavior whenever it lacks data the task requires.
+The CF brief explicitly said "do NOT read vault files" — agy ran 40+ file/grep operations
+across vault, git history, `~/.gemini/`, keychain, shell rc files anyway, searching for
+credentials the brief failed to provide.
+
+**Rule:** A brief is Tier 2 (1-3 min) ONLY if it provides ALL data AG needs to complete the task.
+If AG must discover anything (credentials, file paths, prior state), it becomes Tier 3 (5-15 min).
+
+**Brief checklist (T2 qualification):**
+- [ ] All credentials needed are in the brief OR a referenced env file path
+- [ ] All target file paths are absolute and listed explicitly
+- [ ] All vault facts the task references are pre-extracted (no "consult vault")
+- [ ] Output path is absolute
+- [ ] Acceptance criteria are testable from the output alone
+
+If any box is unchecked, expect Tier 3 latency.
+
+**Output discipline still works:** Even at T3 latency, briefs DO constrain hallucination.
+The CF run was slow but honest — AG said "BLOCKED, missing creds" instead of fabricating.
+Keep using briefs for §19 protection even when latency is unavoidable.
+
+**Parallel Fan-Out:** Independent AG tasks run as parallel `agy` instances via the harness:
+```bash
+scripts/agy-tier-run.sh /tmp/katha-fix-a 5m &
+scripts/agy-tier-run.sh /tmp/katha-fix-b 5m &
+wait
+```
+3 independent tasks = same wall-clock as 1. Each run writes its own `timing.txt`.
+
+**Timing Harness:** `scripts/agy-tier-run.sh <brief-dir> [timeout]` records duration,
+classifies T2/T3/T4, captures full agy stdout, and fails loudly if no `result.md` was
+written. Use this for ALL agy invocations — never call agy directly. Tier metrics
+accumulate in `<brief-dir>/timing.txt` for the loop to learn from.
+
+**Cowork Session Hygiene:** 1 test = 1 Cowork session. Never marathon 10 tasks in
+one session — context doubles by task 6 and speed degrades 2-3x.
+
+**§19 Verification:** After EVERY AG result, CC runs T0 verification (curl/Read/bash).
+No agent output is trusted without independent evidence.
+
+---
+
 ## Tooling
 
 | Tool | Owner | Notes |
