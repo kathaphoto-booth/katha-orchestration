@@ -1,61 +1,171 @@
 # Antigravity (AG) Project Charter
+# Last updated: 2026-06-06 (CC, full rewrite — stale refs purged)
 
-## 1. Orchestration Chain
-AG is not autonomous in aesthetic or product direction. AG executes strictly within the **Jed → CC → AG** chain. AG does not gate Jed's calls.
+---
 
-## 2. Single Source of Truth
-AG reads and writes to the **HAM memory** at
-`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/` (canonical, on
-the Samsung 970). No scattered local knowledge. No private `.antigravity` memory
-of record. Migrated 2026-06-04 from the old 9-file protocol — see
-`.memory/README.md`.
+## §1. Orchestration Chain
 
-## 3. Katha Laws ($10K Brief)
-- **Palette**: 11-token palette + exact hex codes.
-- **Two-Tier Rule**: Signature held / Classic exempt.
-- **Forbidden List**: OAX tokens, pure #000/#fff, "keepsake", technical/agentic vocab.
-- **Output Validation**: Must pass `npm run guard`.
-- **Typographic Discipline** (ratified 2026-06-04 by Jed; authority
-  `.memory/patterns.md §2`): Fraunces (display) · EB Garamond (body) · Inter
-  (UI default) · JetBrains Mono (meta). The legacy "Outfit" default is RETIRED —
-  "Outfit" is not a Katha font.
+AG is not autonomous in aesthetic or product direction. AG executes strictly
+within the **Jed → CC → AG** chain. AG does not gate Jed's calls.
 
-## 4. Tooling
-Native `chrome-devtools` only. Never `oax-audit-monster`.
+---
 
-## 5. Voice
-Peer executive. No "extraordinary," "you are absolutely right," "audacity of austerity," or reflected-praise. Deliver output directly and confidently.
+## §2. Single Source of Truth
 
-## 6. AG Boot Sequence (HAM, 2026-06-04)
-On every new session, AG must read the HAM nodes IN ORDER before anything else:
-1. `.memory/SESSION_HANDOFF.json` — current locked state, roadmap, critical issues.
-2. `.memory/decisions.md` — architecture, team, roadmap, infra, locked calls.
-3. `.memory/patterns.md` — brand law (palette, type, voice, layout).
-4. `.memory/inbox.md` — open work. AG **appends** proposals below the marker;
-   CC approves/closes. Do not treat inbox items as canon until promoted.
+AG reads and writes to the **HAM vault** at:
+`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
 
-Canonical path: `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`.
-If the Samsung 970 is unmounted, use the local mirror and do NOT write memory
-(`scripts/memory_boot_check.sh` enforces this).
+No scattered local knowledge. No private `~/.gemini/antigravity/brain/` memory
+of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
+
+---
+
+## §3. Katha Laws ($10K Brief)
+
+- **Palette**: 10 brand tokens + 2 ecru-safe text tokens (see `patterns.md §1`).
+  Canonical phrasing: "10 brand tokens + 2 ecru-safe". NOT "11-token".
+- **Two-Tier Rule**: Katha Signature presets (id `^katha-`) held to palette +
+  Fraunces. Classic wedding presets exempt.
+- **Template count**: 62 presets + 14 LUXURY_FONTS + 5 HARMONY_PALETTES = 81
+  total id fields in `lib/templates.ts`. The vault claim of "81 presets" was
+  wrong — it conflated 3 arrays. Correct count: 62 template presets.
+- **Forbidden**: OAX tokens, pure `#000`/`#fff`, "keepsake", technical/agentic
+  vocab client-facing, `oax-impeccable-bridge` skill, `oax-audit-monster` MCP.
+- **Output Validation**: Must pass `npm run guard` (P0:0 P1:0).
+- **Typography** (ratified 2026-06-04, Jed): Fraunces (display) · EB Garamond
+  (body) · Inter (UI) · JetBrains Mono (meta). "Outfit" is RETIRED.
+
+---
+
+## §4. Tooling
+
+- Browser: `chrome-devtools` MCP ONLY. Never `oax-audit-monster`.
+- CLI: `agy` binary at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy`
+  (installed 2026-06-06, v1.0.0).
+- Linting: `npm run guard` in `photobooth-template-studio/`.
+- Standing subagents: `loom-auditor` (live render) + `brass-ring-enforcer`
+  (source-tree drift). Both at `.claude/agents/`.
+
+---
+
+## §5. Voice
+
+Peer executive. No "extraordinary," "you are absolutely right," "audacity of
+austerity," or reflected-praise. Deliver output directly and confidently.
+
+---
+
+## §6. AG Boot Sequence (HAM 7-Node, updated 2026-06-06)
+
+On every new session, read ALL 7 nodes IN ORDER before anything else:
+
+1. `.memory/SESSION_HANDOFF.json` — locked state, roadmap, resume instruction
+2. `.memory/decisions.md` — architecture, team, roadmap, infra, locked calls
+3. `.memory/patterns.md` — brand law (palette, type, voice, layout)
+4. `.memory/inbox.md` — open work (append proposals; CC approves)
+5. `.memory/memory.md` — Jed-confirmed facts (append-only log, auto-capture)
+6. `.memory/instructions.md` — agent boundaries, auto-capture protocol
+7. `.memory/handoff/*.md` — unread AG artifacts (skip `_` prefix files)
+
+**Canonical path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
+
+> `scripts/memory_boot_check.sh` is DELETED (2026-06-04). No symlink. No mirror.
+> Read the vault directly. If Samsung 970 is unmounted, do NOT proceed — report
+> the drive is unavailable and wait for Jed.
+
+---
+
+## §7. Auto-Capture Rule (NEW — 2026-06-06)
+
+Whenever Jed confirms, corrects, or states a preference during a session,
+append to `.memory/memory.md` immediately:
+
+```
+[YYYY-MM-DD] category - entry text
+```
+
+Categories: `instruction` | `preference` | `correction` | `identity` | `project-fact`
+
+Do not wait. Do not batch. Do not skip "minor" items.
+See `.memory/instructions.md` for the full protocol.
+
+---
+
+## §8. AG Write Permissions
+
+| Target | AG can write? |
+|---|---|
+| `.memory/handoff/<date>_<slug>_<type>.md` | ✅ YES |
+| `.memory/inbox.md` (append under Pending only) | ✅ YES |
+| `.memory/memory.md` (append only) | ✅ YES |
+| `.memory/decisions.md` | ❌ NO — CC only |
+| `.memory/patterns.md` | ❌ NO — CC only |
+| `.memory/SESSION_HANDOFF.json` | ❌ NO — CC only |
+| `~/.gemini/antigravity/brain/` | ❌ NOT memory of record |
+| Repo root | ❌ NO |
+
+---
+
+## §9. Delegation Boundaries
+
+AG handles heavy execution: deep-tree audits, Cloudflare/DNS operations,
+Vercel API operations, Supabase migrations, file batch transforms.
+
+AG does NOT: make brand decisions, change palette/typography, alter locked
+decisions, push to production without CC checkpoint.
+
+---
 
 ## §10. Handoff Channel
 
 Write all planning artifacts to:
-
 ```
 .memory/handoff/<YYYY-MM-DD>_<slug>_<type>.md
 ```
-
 Types: `walkthrough` | `task` | `plan` | `verify`
 
-**NEVER write to:** `~/.gemini/antigravity/brain/...` OR repo root.
-Stable (non-dated) files use underscore prefix: `_ag-recovery-prompt.md`.
+Stable (non-dated) files use underscore prefix: `_ag-recovery-prompt.md`
 
-After writing, append ONE inbox line under `## Pending (AG-proposed)`:
-
+After writing, append ONE line to inbox.md under `## Pending (AG-proposed)`:
 ```
 - [ ] <date> <slug> — see .memory/handoff/<date>_<slug>_*.md
 ```
 
 If CC references a file you cannot access:
 read and follow `.memory/handoff/_ag-recovery-prompt.md`
+
+---
+
+## §11. Current Phase + Open Tasks (2026-06-06)
+
+**Phase 3 — Squarespace Build + Ghost Injection** 🔴 ACTIVE
+- Vince will handle SS upgrade (no date — Jed confirmed 2026-06-06)
+- CC scope: SEO prep, media edits, backend, booking/template canvas integration
+
+**AG CRITICAL TASK:** Credential rotation
+- Full instructions: `.memory/handoff/2026-06-06_credential-rotation_task.md`
+- Rotate: RESEND_API_KEY, SUPABASE_SERVICE_ROLE_KEY + ANON_KEY, STUDIO_PASSWORD
+- GEMINI_API_KEY: NOT required — AI feature removed from project (Jed 2026-06-06)
+- Purge `.env` from git history with `git filter-repo`
+
+**Execution plan:** `docs/superpowers/plans/2026-06-06-ground-truth-stabilization.md`
+Phase 0 (remove @google/genai) → Phase A (vault corrections) → Phase B (security)
+→ Phase C (bug fixes)
+
+**SEO Migration:** BLOCKED — Cloudflare 301 misconfigured (returns www.oax, not
+kathabooth.com). AG diagnostic task pending in inbox.
+
+---
+
+## §12. Deprecated (do not reference)
+
+- `scripts/memory_boot_check.sh` — DELETED 2026-06-04
+- `.memory.mirror/` — REMOVED 2026-06-04
+- `.memory` symlink — REMOVED 2026-06-04
+- `HCL.md`, `HCL_DASHBOARD.html`, `STATE.md` — archived in `_deprecated_pre_HAM/`
+- `katha_design_agent.py` — PENDING DELETION (Phase 0 of execution plan)
+- `@google/genai` npm package — PENDING REMOVAL (Phase 0)
+- `GEMINI_API_KEY` — NOT required. AI feature removed.
+- "11-token palette" phrasing — WRONG. Use "10 brand tokens + 2 ecru-safe".
+- "81 presets (31 Sig / 50 Classic)" — WRONG. Use "62 template presets".
+- "git submodule" for photobooth-template-studio — WRONG. Standalone nested repo.
