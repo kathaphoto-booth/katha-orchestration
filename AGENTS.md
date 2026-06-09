@@ -1,3 +1,15 @@
+---
+type: "constitution"
+node_id: "AGENTS.md"
+owner: "CC"
+status: "active"
+last_updated: "2026-06-08"
+description: "Katha Booth Ecosystem Personas"
+tags:
+  - katha-booth
+  - core-memory
+  - personas
+---
 # Agent Personas — Katha Booth
 # Last updated: 2026-06-06 (CC, full rewrite — stale refs purged)
 

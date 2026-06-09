@@ -1,3 +1,17 @@
+---
+type: "constitution"
+node_id: "CLAUDE.md"
+owner: "CC"
+status: "active"
+last_updated: "2026-06-08"
+description: "Katha Booth Orchestrator Constitution"
+tags:
+  - katha-booth
+  - core-memory
+---
+
+> **MCP DIRECTIVE:** Use MCP tools to query the `.memory/` vault for historical context rather than requesting manual text injections.
+
 # Katha Booth — CLAUDE.md (HAM Router)
 # CC reads this file automatically on every session startup.
 # Memory architecture: Hierarchical Agent Memory (HAM), migrated 2026-06-04.
@@ -16,6 +30,12 @@ front-end design poetry. Data reaches the user as a deliberate narrative thread,
 never sterile JSON. Technical rigor married to texture-driven storytelling.
 
 ---
+
+## CONTEXT ROUTING
+For deep-dive work, consult these directory-scoped context files:
+- UI Components: [photobooth-template-studio/components/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/components/CLAUDE.md)
+- Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
+- Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
 
 ## BOOT ORDER (do this first, every session)
 Memory lives at the absolute vault path (Samsung 970, always mounted):
