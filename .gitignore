@@ -14,3 +14,4 @@ tsconfig.tsbuildinfo
 
 # Generated State Map dashboard (regenerate from .memory/)
 KATHA_STATE.html
+__pycache__/
