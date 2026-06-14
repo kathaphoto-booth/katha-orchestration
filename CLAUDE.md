@@ -3,7 +3,7 @@ type: "constitution"
 node_id: "CLAUDE.md"
 owner: "CC"
 status: "active"
-last_updated: "2026-06-08"
+last_updated: "2026-06-14"
 description: "Katha Booth Orchestrator Constitution"
 tags:
   - katha-booth
@@ -53,6 +53,16 @@ Read these 7 nodes IN ORDER from the vault:
 No symlink, no mirror, no boot script. The vault is the single source of truth.
 Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
 
+**Staleness check (mandatory):** After reading nodes 1, 4, and 5, compare
+`memory.md`'s newest dated entry and `inbox.md`'s last "Pending (AG-proposed)"
+line against `SESSION_HANDOFF.json`'s `.latest_memory_entry` /
+`.latest_inbox_entry_date`. If either is newer than the recorded checkpoint,
+read the new entries before proceeding — never rely on SESSION_HANDOFF's
+narrative fields (`.session`, `.phase`, `.current_task`) alone; they describe
+intent, not the vault's actual tail. Run `bash .agents/skills/handoff/sync.sh`
+(or `/handoff`) at the end of any session that adds `memory.md`/`inbox.md`
+entries, to refresh the checkpoint for the next session.
+
 **Auto-capture rule:** After every Jed confirmation, correction, or preference,
 append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
 See `instructions.md` for the full protocol. Do not let facts slip through.
@@ -78,11 +88,25 @@ Inter (UI) · JetBrains Mono (meta). Forbidden: Cormorant, Italiana on Signature
 **Voice:** peer-executive, no sentimentality. Forbidden words: keepsake, luxury/
 premium (≤1/page, specs only), stunning, amazing, unforgettable, magic(al),
 journey, vibe, experience, curated, authentic + agentic/SDK/MCP vocab in client
-copy. Describe craft, not luxury. Master CTA: **"Commission KTHA"**.
+copy. Describe craft, not luxury. Master CTA: **"Commission"** (no "KTHA" suffix).
+
+**Marks (LOCKED 2026-06-13 by Jed):** exactly TWO — **word mark** (`katha` Fraunces-flow,
+swash off the k) and **logo mark** (leaf/feather "K"). There is **NO maker's mark / brass
+ring.** Files: `wordmark-{obsidian,ecru}.png`, `logo-{obsidian,ecru}.png`. (The
+`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust/`rounded-` source guard — **keep it**;
+it does NOT enforce any maker's mark. Ignore any stale skill blurb claiming a "KTHA closing stroke.")
 
 **Layout:** Fukinsei = brand chrome only (client templates stay symmetric); Ma
 negative space; deckled edges, no `border-radius`; no 6/6 grids; no drop-shadows
 on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
+
+**Wabi-Sabi Shield:** No gradients, no glassmorphism, no gloss/glow effects, and
+no neon/OLED pure-black grounds — that's generic Awwwards-luxury, not Katha.
+Materiality over polish: paper-weight texture, grain, and deckled/calado edges
+read as intentional imperfection, not bugs. If a component leans on frosted
+glass, radial mesh, or drop-shadow stacks, strip it back to flat tonal fields +
+the Loom Silence elevation already codified in `DESIGN.md` ("Elevation":
+deckled edges, sombrado, calado divider, no drop-shadows on light).
 
 ---
 
@@ -96,21 +120,38 @@ on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
 ## SLASH COMMANDS (skills at `.agents/skills/`)
 - **`/grill-me`** → grill-me — adversarial pre-brainstorm gate. MUST run before
   brainstorming. Produces a Decision Record that feeds superpowers:brainstorming.
-- **`/katha-protocol`** → katha-protocol — brand law §1–10: palette, type, voice,
-  layout, Wabi-Sabi shield (§5), handoff channel (§10). The Katha constitution.
-- **`/impeccable`** → impeccable (generic UI/UX audit, taught via katha-protocol
-  constraints) + loom-auditor + brass-ring-enforcer + playwright-skill.
-  Evidence-before-claims discipline per katha-protocol §9.
-- **`/handoff`** → **HAM sync** — update vault nodes (decisions / patterns /
-  inbox + SESSION_HANDOFF.json) at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`.
-  View live in Obsidian (no dashboard regeneration needed).
-- **`/workflow`** → grill-me first → superpowers:brainstorming → writing-plans +
-  katha-protocol §9. Run `stitch-utilities:enhance-prompt` at the top of
-  brainstorming AND writing-plans if the prompt is thin (< 2 sentences).
-- **`/verify`** → built-in `superpowers:verification-before-completion` + evidence
-  discipline from katha-protocol §9 (chrome-devtools-mcp for visual proof).
-- **`/antigravity`** → katha-protocol §8 Delegation Protocol + §10 Handoff Channel.
-  AG writes to vault `.memory/handoff/`; CC reads at boot.
+- **Brand governance** → `/katha-protocol` was purged 2026-06-13 (per AG's
+  skill-architecture upgrade). **impeccable-looped-kit**
+  (`.agents/skills/impeccable-looped-kit/SKILL.md`) is now the master 4-phase
+  workflow (Start/Iterate/Polish/Maintain). Living law = `DESIGN.md` (root) +
+  vault `patterns.md` (patterns.md wins any conflict, per `PRODUCT.md`).
+  Generation engine = `nano-banana` (Stitch MCP + GenKit). Handoff channel =
+  vault `.memory/handoff/` + `inbox.md`.
+- **`/impeccable`** → impeccable-looped-kit's **Polish phase** (`audit` +
+  `clarify` + `harden`) + loom-auditor + brass-ring-enforcer + playwright-skill,
+  scored against `DESIGN.md` + vault `patterns.md`. Evidence-before-claims via
+  `superpowers:verification-before-completion`.
+- **`/handoff`** → **mechanical HAM sync** (`.agents/skills/handoff/`, runs
+  `sync.sh`): refreshes `SESSION_HANDOFF.json`'s `.session` /
+  `.latest_memory_entry` / `.latest_inbox_entry_date` / `.inbox_pending_count`
+  from the vault `memory.md`/`inbox.md` tails — updates those derived fields
+  ONLY, never overwrites curated fields (`flags_for_jed`,
+  `held_back_pending_jed`, `next_build`, `pending_blockers`, `current_task`,
+  etc.). Emits a drift report of new entries since the last checkpoint. View
+  the vault live in Obsidian — no dashboard regeneration needed.
+- **`/workflow`** → `/grill-me` first → `superpowers:brainstorming` →
+  `writing-plans` + `superpowers:verification-before-completion`. UI/design
+  tasks route into impeccable-looped-kit's 4-phase loop instead of going
+  straight to writing-plans. Run `stitch-utilities:enhance-prompt` at the top
+  of brainstorming AND writing-plans if the prompt is thin (< 2 sentences).
+- **`/verify`** → built-in `superpowers:verification-before-completion`
+  (chrome-devtools-mcp for visual proof), scored against `DESIGN.md` + vault
+  `patterns.md`.
+- **`/antigravity`** → Delegation: pre-inject this file's ALWAYS-ON CANON
+  (palette/type/voice/layout) + vault `patterns.md` into AG's instructions. AG
+  writes to vault `.memory/handoff/<date>_<slug>_<type>.md` and appends a line
+  to `inbox.md`; CC reads at boot (mechanically checked via the staleness check
+  above) — the convention AG's own handoffs already use.
 - **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
 - **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
 

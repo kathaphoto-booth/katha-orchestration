@@ -38,7 +38,7 @@ After all 11 questions are answered, produce a **Decision Record** (3–5 bullet
 - What we're NOT building
 - The riskiest assumption
 - The success check
-- Handoff path (if AG is involved, per katha-protocol §10)
+- Handoff path (if AG is involved): vault `.memory/handoff/<date>_<slug>_<type>.md` + an `inbox.md` Pending line (see CLAUDE.md `/antigravity`)
 
 This record is the direct input to `superpowers:brainstorming`. Do not invoke brainstorming without it.
 
@@ -46,4 +46,4 @@ This record is the direct input to `superpowers:brainstorming`. Do not invoke br
 
 - Feeds into `superpowers:brainstorming` (the Decision Record is the brief)
 - If the session prompt is thin, pair with `stitch-utilities:enhance-prompt` first to sharpen it before starting Round 1
-- Reads katha-protocol §8–9 for delegation and evidence discipline
+- Delegation discipline = CLAUDE.md `/antigravity` + vault `.memory/handoff/` + `inbox.md`; evidence discipline = `superpowers:verification-before-completion` (`katha-protocol` was purged 2026-06-13)

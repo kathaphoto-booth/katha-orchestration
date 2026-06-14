@@ -1,5 +1,19 @@
+---
+type: "constitution"
+node_id: "GEMINI.md"
+owner: "AG"
+status: "active"
+last_updated: "2026-06-14"
+description: "Antigravity Execution Engine Charter"
+tags:
+  - katha-booth
+  - core-memory
+  - execution-layer
+---
 # Antigravity (AG) Project Charter
-# Last updated: 2026-06-06 (CC, full rewrite — stale refs purged)
+# Last updated: 2026-06-14 (CC, HAM-hardening sync — boot staleness check, /handoff
+# mechanical skill, two-marks lock, impeccable-looped-kit routing, 4 service tiers,
+# catalog count. Prior full rewrite: 2026-06-06.)
 
 ---
 
@@ -22,13 +36,27 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
 
 ## §3. Katha Laws ($10K Brief)
 
+- **Living law**: root `DESIGN.md` + vault `patterns.md` — `patterns.md` wins any
+  conflict (per `PRODUCT.md`). `DESIGN.md` is currently HELD with known marks-canon
+  drift (`SESSION_HANDOFF.json flags_for_jed`); when docs disagree on marks,
+  `patterns.md` / `memory.md` are authoritative.
+- **Marks (LOCKED 2026-06-13)**: exactly TWO — word mark (`katha` Fraunces-flow,
+  swash off the k) + logo mark (leaf/feather "K"). There is **NO maker's mark and
+  NO brass ring**. Master CTA = **"Commission"** — never "Commission KTHA", no
+  "KTHA" suffix. Do not reintroduce a maker's mark / KTHA closing stroke.
 - **Palette**: 10 brand tokens + 2 ecru-safe text tokens (see `patterns.md §1`).
   Canonical phrasing: "10 brand tokens + 2 ecru-safe". NOT "11-token".
-- **Two-Tier Rule**: Katha Signature presets (id `^katha-`) held to palette +
-  Fraunces. Classic wedding presets exempt.
-- **Template count**: 62 presets + 14 LUXURY_FONTS + 5 HARMONY_PALETTES = 81
-  total id fields in `lib/templates.ts`. The vault claim of "81 presets" was
-  wrong — it conflated 3 arrays. Correct count: 62 template presets.
+- **Two-Tier Rule** (design tiers): Katha Signature presets (id `^katha-`) held to
+  palette + Fraunces. Classic wedding presets exempt.
+- **Catalog count**: 82 committed presets (33 Signature + 49 Classic) in
+  `lib/templates.ts` since slot-law enforcement (2026-06-12); slot-count law
+  (2/3/4 only) + symmetry enforced by `npm run guard`. (The old "62 presets" /
+  "81 id fields" phrasings are stale.)
+- **Service Installation Tiers** (4 — a DISTINCT axis from the design tiers above):
+  Signature Installation/Oak $949 · Editorial Installation/Oak $1,149 · Modernist
+  Installation/White $749 · Monochrome Installation/White $949. Old tiers (Glam
+  Editorial / Architectural / Katha Booth) are SUPERSEDED. Tier copy needs a voice
+  scrub before any UI (`handoff/2026-06-13_service-tiers-update_spec.md`).
 - **Forbidden**: OAX tokens, pure `#000`/`#fff`, "keepsake", technical/agentic
   vocab client-facing, `oax-impeccable-bridge` skill, `oax-audit-monster` MCP.
 - **Output Validation**: Must pass `npm run guard` (P0:0 P1:0).
@@ -45,7 +73,15 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
   Config: `~/.gemini/antigravity-cli/`. PATH has 3 entries (local, vault, IDE bin).
 - Linting: `npm run guard` in `photobooth-template-studio/`.
 - Standing subagents: `loom-auditor` (live render) + `brass-ring-enforcer`
-  (source-tree drift). Both at `.claude/agents/`.
+  (source-tree drift). Both at `.claude/agents/`. NB: `brass-ring-enforcer` is a
+  forbidden-hex/vocab/rust/`rounded-` source guard — it does **not** enforce any
+  maker's mark (ignore any stale skill blurb claiming a "KTHA closing stroke").
+- **Brand governance / generation**: `impeccable-looped-kit` (master 4-phase
+  Start/Iterate/Polish/Maintain) is the brand-governance workflow; `/impeccable`
+  = its Polish phase. Generation engine = `nano-banana` (Stitch MCP + GenKit) —
+  Stitch is the *generation engine*, NOT the source of truth; all output is
+  validated against `DESIGN.md` + `patterns.md` (patterns.md wins) before code
+  injection. The `katha-protocol` skill was PURGED 2026-06-13 — do not invoke it.
 
 ---
 
@@ -131,6 +167,18 @@ On every new session, read ALL 7 nodes IN ORDER before anything else:
 > Read the vault directly. If Samsung 970 is unmounted, do NOT proceed — report
 > the drive is unavailable and wait for Jed.
 
+**Staleness check (mandatory — added 2026-06-14):** After reading nodes 1, 4, 5,
+compare `memory.md`'s newest dated entry and `inbox.md`'s last "Pending
+(AG-proposed)" line against `SESSION_HANDOFF.json`'s `.latest_memory_entry` /
+`.latest_inbox_entry_date`. If either is newer than the recorded checkpoint, read
+the new entries before proceeding. `SESSION_HANDOFF.json` is a **SENSOR** (a
+point-in-time reading), not source-of-truth; its narrative fields (`.session`,
+`.phase`, `.current_task`) describe intent, not the vault's actual tail. The 7 HAM
+nodes are canonical. CC refreshes the checkpoint with the mechanical `/handoff`
+skill (`.agents/skills/handoff/sync.sh`); AG cannot run that script (different
+filesystem context) — if you find drift, note it in your output or append an
+`inbox.md` Pending line so CC runs `/handoff` next session.
+
 ---
 
 ## §7. Auto-Capture Rule (NEW — 2026-06-06)
@@ -192,26 +240,27 @@ After writing, append ONE line to inbox.md under `## Pending (AG-proposed)`:
 If CC references a file you cannot access:
 read and follow `.memory/handoff/_ag-recovery-prompt.md`
 
+> `SESSION_HANDOFF.json` is refreshed by CC's mechanical `/handoff` skill —
+> derived fields only (`.session` / `.latest_memory_entry` /
+> `.latest_inbox_entry_date` / `.inbox_pending_count`); it never overwrites curated
+> fields (`flags_for_jed`, `held_back_pending_jed`, `next_build`, etc.). Treat it
+> as a sensor, per §6. Thor's Hammer `thors-hammer-sync-*.md` artifacts are
+> likewise SENSOR data, not source-of-truth — the 7 HAM nodes win any conflict.
+
 ---
 
-## §11. Current Phase + Open Tasks (2026-06-06)
+## §11. Current Phase + Open Tasks
 
-**Phase 3 — Squarespace Build + Ghost Injection** 🔴 ACTIVE
-- Vince will handle SS upgrade (no date — Jed confirmed 2026-06-06)
-- CC scope: SEO prep, media edits, backend, booking/template canvas integration
+Phase, current task, and open blockers are **volatile** — do NOT hardcode them
+here (that duplication is exactly the drift the §6 staleness check exists to
+prevent). Read them live at boot from `SESSION_HANDOFF.json` (`.phase`,
+`.current_task`, `.next_build`, `.pending_blockers`, `.flags_for_jed`) plus the
+`memory.md` / `inbox.md` tails.
 
-**AG CRITICAL TASK:** Credential rotation
-- Full instructions: `.memory/handoff/2026-06-06_credential-rotation_task.md`
-- Rotate: RESEND_API_KEY, SUPABASE_SERVICE_ROLE_KEY + ANON_KEY, STUDIO_PASSWORD
-- GEMINI_API_KEY: NOT required — AI feature removed from project (Jed 2026-06-06)
-- Purge `.env` from git history with `git filter-repo`
-
-**Execution plan:** `docs/superpowers/plans/2026-06-06-ground-truth-stabilization.md`
-Phase 0 (remove @google/genai) → Phase A (vault corrections) → Phase B (security)
-→ Phase C (bug fixes)
-
-**SEO Migration:** BLOCKED — Cloudflare 301 misconfigured (returns www.oax, not
-kathabooth.com). AG diagnostic task pending in inbox.
+As of the 2026-06-14 sync: **Phase 4 — HoneyBook Native Ecosystem**; next build =
+Unified Next.js Intake Funnel (V1 manual handoff), **BUILD HELD by Jed** at the
+execution gate. Verify against `SESSION_HANDOFF.json` before acting — this line
+is a convenience pointer, not the source of truth.
 
 ---
 
@@ -225,5 +274,9 @@ kathabooth.com). AG diagnostic task pending in inbox.
 - `@google/genai` npm package — PENDING REMOVAL (Phase 0)
 - `GEMINI_API_KEY` — NOT required. AI feature removed.
 - "11-token palette" phrasing — WRONG. Use "10 brand tokens + 2 ecru-safe".
-- "81 presets (31 Sig / 50 Classic)" — WRONG. Use "62 template presets".
+- "81 presets (31 Sig / 50 Classic)", "62 template presets", "62 presets", "81 id fields" — ALL stale. Catalog = 82 committed presets (33 Signature + 49 Classic).
 - "git submodule" for photobooth-template-studio — WRONG. Standalone nested repo.
+- `katha-protocol` skill — PURGED 2026-06-13. Brand governance → `impeccable-looped-kit` / `/impeccable`.
+- `DESIGN_SYSTEM.v2.md` / `BRAND_GENESIS_PLAN.md` — SUPERSEDED. Living law = root `DESIGN.md` + vault `patterns.md`.
+- Old service tiers "Glam Editorial / Architectural / Katha Booth" — SUPERSEDED by the 4 Installation tiers (§3).
+- Maker's mark / brass ring / "Commission KTHA" — PURGED 2026-06-13. Two marks only; CTA = "Commission".

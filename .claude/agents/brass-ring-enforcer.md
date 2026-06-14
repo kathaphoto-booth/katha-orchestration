@@ -1,6 +1,6 @@
 ---
 name: brass-ring-enforcer
-description: Source-tree enforcement of DESIGN_SYSTEM.v2.md §6 Forbidden. Greps the working tree for forbidden hex, forbidden vocab, forbidden Tailwind classes, forbidden font families, and Loko Rust outside <KCta variant="sacred">. Returns a JSON report. Designed for pre-commit hook + CI.
+description: Source-tree enforcement of DESIGN.md §6 Do's and Don'ts + vault patterns.md Forbidden list. Greps the working tree for forbidden hex, forbidden vocab, forbidden Tailwind classes, forbidden font families, and Loko Rust outside <KCta variant="sacred">. Returns a JSON report. Designed for pre-commit hook + CI.
 tools: Bash, Grep, Glob, Read
 model: haiku
 ---
