@@ -5,6 +5,14 @@
 > `/skill-tester` (trigger/eval) + `/writing-skills` (tighten) runs on KEEPERS.
 > Verdicts marked *(prov.)* await a deep read before final.
 
+> **ARCHIVAL NOTE (2026-06-14):** This ledger is a 2026-06-04 snapshot — several
+> verdicts below are superseded. `katha-protocol` was purged 2026-06-13;
+> `impeccable-looped-kit` (Start/Iterate/Polish/Maintain over the `impeccable`
+> skill) is now the master brand-governance workflow, and `katha-impeccable`
+> below maps to the `impeccable` skill. `DESIGN_SYSTEM.v2.md` is superseded by
+> root `DESIGN.md` + vault `patterns.md` (patterns.md wins conflicts). Treat
+> this file as history — see root `CLAUDE.md` SLASH COMMANDS for live routing.
+
 ## The bar (every skill must clear it)
 1. **Does it serve THIS stack?** Next.js 15 + React 19 + Supabase + Vercel +
    Squarespace storefront. Not native mobile, not someone else's design system.
