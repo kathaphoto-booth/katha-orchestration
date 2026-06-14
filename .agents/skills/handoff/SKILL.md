@@ -17,7 +17,12 @@ Runs `sync.sh`, which:
    chronological after a `consolidate-memory` pass.
 3. Scans vault `inbox.md`'s `## Pending (AG-proposed)` section for its line
    count and the newest dated entry (this is AG's append point — see
-   `instructions.md` Agent Boundaries).
+   `instructions.md` Agent Boundaries). **Scope note:**
+   `.latest_inbox_entry_date` and `.inbox_pending_count` reflect this section
+   **only** — other inbox sections (e.g. `## Pending — 2026-06-11 Vercel
+   Cutover Follow-ups`) are intentionally not counted. The short field names
+   are kept terse for the staleness-check macro; this section is the
+   authoritative scope definition.
 4. Updates `SESSION_HANDOFF.json` in place via `jq`: bumps `.session` to now,
    and sets/refreshes `.latest_memory_entry` (`{date, category, summary}`),
    `.latest_inbox_entry_date`, and `.inbox_pending_count`. Key order and
