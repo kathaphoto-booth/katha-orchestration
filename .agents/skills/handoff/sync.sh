@@ -11,10 +11,31 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
+# --- vault mount preflight (N1) — honor CLAUDE.md's "do not proceed if Samsung 970
+#     is unmounted" contract instead of letting jq fail with a cryptic message ---
+if [[ ! -d "$VAULT" ]]; then
+  echo "vault unreachable: $VAULT" >&2
+  echo "Samsung 970 may be unmounted. Per CLAUDE.md: wait for Jed before re-running." >&2
+  exit 2
+fi
+
+# --- single-writer lock (W2) — prevent concurrent runs from losing each other's
+#     drift signal. Portable noclobber-based lockfile (no flock dependency, which
+#     macOS doesn't ship). Trap cleans up on any exit. ---
+LOCK="$VAULT/.sync.lock"
+if ! (set -C; echo $$ > "$LOCK") 2>/dev/null; then
+  EXISTING_PID=$(cat "$LOCK" 2>/dev/null || echo "?")
+  echo "another /handoff sync in progress (PID $EXISTING_PID, lockfile: $LOCK)" >&2
+  echo "if no such PID is running, the lockfile is stale: rm \"$LOCK\" and retry" >&2
+  exit 3
+fi
+trap 'rm -f "$LOCK"' EXIT
+
 # --- old checkpoint values ---
 OLD_MEM_DATE=$(jq -r '.latest_memory_entry.date // ""' "$HANDOFF")
+OLD_MEM_SUMMARY=$(jq -r '.latest_memory_entry.summary // ""' "$HANDOFF")
 OLD_INBOX_DATE=$(jq -r '.latest_inbox_entry_date // ""' "$HANDOFF")
-OLD_INBOX_COUNT=$(jq -r '.inbox_pending_count // -1' "$HANDOFF")
+OLD_INBOX_COUNT=$(jq -r '.inbox_pending_count // ""' "$HANDOFF")
 
 # --- newest memory.md entry: find the max date (memory.md is not guaranteed
 #     strictly chronological after consolidate-memory), then among entries on
@@ -41,14 +62,26 @@ NEW_INBOX_DATE=$(printf '%s\n' "$PENDING_BLOCK" | grep -oE '[0-9]{4}-[0-9]{2}-[0
 echo "=== /handoff drift report ==="
 DRIFT=0
 
-if [[ -n "$NEW_MEM_DATE" && "$NEW_MEM_DATE" > "$OLD_MEM_DATE" ]]; then
-  echo "memory.md: newest entry now $NEW_MEM_DATE (checkpoint was '${OLD_MEM_DATE:-<none>}')"
+# --- memory.md drift: compare SUMMARY content, not just date. The earlier
+#     date-only check (`NEW_MEM_DATE > OLD_MEM_DATE`) missed same-day appends —
+#     a new entry on the existing checkpoint date would update the field but
+#     not flag drift to the operator. ---
+if [[ -n "$NEW_MEM_SUMMARY" && "$NEW_MEM_SUMMARY" != "$OLD_MEM_SUMMARY" ]]; then
+  if [[ "$NEW_MEM_DATE" == "$OLD_MEM_DATE" ]]; then
+    echo "memory.md: newest entry CHANGED on existing date $NEW_MEM_DATE (same-day append)"
+  else
+    echo "memory.md: newest entry now $NEW_MEM_DATE (checkpoint was '${OLD_MEM_DATE:-<none>}')"
+  fi
   echo "  -> [$NEW_MEM_DATE] $NEW_MEM_CATEGORY - $NEW_MEM_SUMMARY"
   DRIFT=1
 fi
 
-if [[ "$NEW_INBOX_COUNT" != "$OLD_INBOX_COUNT" ]]; then
-  echo "inbox.md Pending (AG-proposed): $NEW_INBOX_COUNT line(s) (checkpoint was '${OLD_INBOX_COUNT}')"
+# --- inbox count drift, with explicit first-run framing (N2) ---
+if [[ -z "$OLD_INBOX_COUNT" ]]; then
+  echo "inbox.md Pending (AG-proposed): $NEW_INBOX_COUNT line(s) (first run; no prior checkpoint)"
+  DRIFT=1
+elif [[ "$NEW_INBOX_COUNT" != "$OLD_INBOX_COUNT" ]]; then
+  echo "inbox.md Pending (AG-proposed): $NEW_INBOX_COUNT line(s) (checkpoint was $OLD_INBOX_COUNT)"
   DRIFT=1
 fi
 
