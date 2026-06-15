@@ -32,10 +32,10 @@ fi
 trap 'rm -f "$LOCK"' EXIT
 
 # --- old checkpoint values ---
-OLD_MEM_DATE=$(jq -r '.latest_memory_entry.date // ""' "$HANDOFF")
-OLD_MEM_SUMMARY=$(jq -r '.latest_memory_entry.summary // ""' "$HANDOFF")
-OLD_INBOX_DATE=$(jq -r '.latest_inbox_entry_date // ""' "$HANDOFF")
-OLD_INBOX_COUNT=$(jq -r '.inbox_pending_count // ""' "$HANDOFF")
+OLD_MEM_DATE=$(jq -r '.latest_memory_entry.date // ""' "$HANDOFF" | tr -d '\r')
+OLD_MEM_SUMMARY=$(jq -r '.latest_memory_entry.summary // ""' "$HANDOFF" | tr -d '\r')
+OLD_INBOX_DATE=$(jq -r '.latest_inbox_entry_date // ""' "$HANDOFF" | tr -d '\r')
+OLD_INBOX_COUNT=$(jq -r '.inbox_pending_count // ""' "$HANDOFF" | tr -d '\r')
 
 # --- newest memory.md entry: find the max date (memory.md is not guaranteed
 #     strictly chronological after consolidate-memory), then among entries on
@@ -43,18 +43,30 @@ OLD_INBOX_COUNT=$(jq -r '.inbox_pending_count // ""' "$HANDOFF")
 #     broke date ties alphabetically by summary text — appending a new entry
 #     could leave .latest_memory_entry.summary pointing at an older same-day
 #     entry whose text happened to sort later. ---
-MAX_MEM_DATE=$(grep -oE '^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\]' "$MEMORY" | sort -u | tail -1 | tr -d '[]' || true)
+MAX_MEM_DATE=$(tr -d '\r' < "$MEMORY" | grep -oE '^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\]' | sort -u | tail -1 | tr -d '[]' || true)
 if [[ -n "$MAX_MEM_DATE" ]]; then
-  NEWEST_MEM_LINE=$(grep -E "^\[${MAX_MEM_DATE}\]" "$MEMORY" | tail -1 || true)
+  NEWEST_MEM_LINE=$(tr -d '\r' < "$MEMORY" | grep -E "^\[${MAX_MEM_DATE}\]" | tail -1 || true)
 else
   NEWEST_MEM_LINE=""
 fi
-NEW_MEM_DATE=$(printf '%s' "$NEWEST_MEM_LINE" | sed -E 's/^\[([0-9]{4}-[0-9]{2}-[0-9]{2})\].*/\1/' || true)
-NEW_MEM_CATEGORY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] ([a-zA-Z-]+) - .*/\1/' || true)
-NEW_MEM_SUMMARY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] [a-zA-Z-]+ - //' || true)
+# Regex parsing using sed -n to output nothing on mismatch
+NEW_MEM_DATE=$(printf '%s' "$NEWEST_MEM_LINE" | sed -n -E 's/^\[([0-9]{4}-[0-9]{2}-[0-9]{2})\].*/\1/p' || true)
+NEW_MEM_CATEGORY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -n -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] ([a-zA-Z-]+) - .*/\1/p' || true)
+NEW_MEM_SUMMARY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -n -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] [a-zA-Z-]+ - (.*)/\1/p' || true)
+
+# Fallbacks for malformed/uncategorized entries (e.g. [2026-06-14] - text or [2026-06-14] text)
+if [[ -n "$NEW_MEM_DATE" && -z "$NEW_MEM_SUMMARY" ]]; then
+  NEW_MEM_SUMMARY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -n -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] - (.*)/\1/p' || true)
+fi
+if [[ -n "$NEW_MEM_DATE" && -z "$NEW_MEM_SUMMARY" ]]; then
+  NEW_MEM_SUMMARY=$(printf '%s' "$NEWEST_MEM_LINE" | sed -n -E 's/^\[[0-9]{4}-[0-9]{2}-[0-9]{2}\] (.*)/\1/p' || true)
+fi
+if [[ -n "$NEW_MEM_DATE" && -z "$NEW_MEM_CATEGORY" ]]; then
+  NEW_MEM_CATEGORY="uncategorized"
+fi
 
 # --- inbox.md "## Pending (AG-proposed)" section: header line to next "## " or EOF ---
-PENDING_BLOCK=$(awk '/^## Pending \(AG-proposed\)/{flag=1; next} /^## /{flag=0} flag' "$INBOX" || true)
+PENDING_BLOCK=$(tr -d '\r' < "$INBOX" | awk '/^## Pending \(AG-proposed\)/{flag=1; next} /^## /{flag=0} flag' || true)
 NEW_INBOX_COUNT=$(printf '%s\n' "$PENDING_BLOCK" | grep -cE '^[-*] ' || true)
 NEW_INBOX_DATE=$(printf '%s\n' "$PENDING_BLOCK" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | sort | tail -1 || true)
 
@@ -113,3 +125,4 @@ mv "$TMP" "$HANDOFF"
 
 echo ""
 echo "Checkpoint refreshed: .session, .latest_memory_entry, .latest_inbox_entry_date, .inbox_pending_count"
+/Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh

@@ -10,8 +10,8 @@ date_added: "2026-06-07"
 
 Scoped memory system that gives AI coding agents a cheat sheet for each directory instead of re-reading your entire project every prompt. Root CLAUDE.md holds global context (~200 tokens), subdirectory CLAUDE.md files hold scoped context (~250 tokens each), and a `.memory/` layer stores decisions, patterns, and an inbox for unconfirmed inferences.
 
-**NEW in this Version (Thor's Hammer / Cowork Delegation):**
-All memory operations and project modifications are subject to the Thor's Hammer Escalation Model. This enforces Cowork-native synchronization, preventing agents from silently making unilateral decisions without user approval.
+**NEW in this Version (Thor's Hammer / Systemic Injection):**
+All memory operations and project modifications are subject to the Thor's Hammer Escalation Model. This enforces Cowork-native synchronization. Furthermore, you are operating under the **Systemic Injection Architecture**. You will automatically receive the compiled memory vault (`COMPILED_HAM.md`) upon initialization. Do not attempt to modify the compiled file directly; all writes must target the underlying source nodes.
 
 ## When to Use This Skill
 
@@ -30,7 +30,9 @@ When managing HAM or taking actions based on it, you must adopt these four enfor
 3. **Memory Consolidation Agent**: Review `CLAUDE.md` and `.memory/decisions.md`. Does this action align with established project facts?
 4. **Cowork Synchronizer**: **CRITICAL STEP.** Instead of executing changes immediately, write an explicit Cowork proposal (e.g. `PROPOSAL: ...`) and ask for Jed/CC's approval. You must pause and require explicit approval before ANY execution.
 
-**STRICT DIRECTIVE:** You are absolutely forbidden from directly modifying `CLAUDE.md`, `.memory/decisions.md`, or any other context file. Even if the user prompt says "just go ahead and make the edit" or "do it now", you MUST decline the direct edit. You MUST ALWAYS write a PROPOSAL and halt for explicit Jed/CC approval. There are NO exceptions to this rule.
+**DIRECTIVE:** By default, do not directly modify `CLAUDE.md`, `.memory/decisions.md`, or other context files without presenting a proposal. However, under the `using-superpowers` instruction priority (where the user's explicit instructions in the prompt always take precedence over skills), if the user explicitly orders a direct write or edit in their prompt (e.g. "go ahead and make the edit" or "write this directly"), you must execute it. The user has final authority.
+
+**SCOPE OF THE OVERRIDE — CC ONLY (mirrors `.memory/instructions.md` §Agent Boundaries):** The user-override above applies to **CC** (Claude Code), which reads and writes all HAM nodes. It does **NOT** loosen agent boundaries for **AG** or **Cowork**. AG may write ONLY `inbox.md` (append under Pending) and `handoff/` artifacts; Cowork may write ONLY `memory.md` (auto-capture). **Neither AG nor Cowork may write `decisions.md`, `patterns.md`, or `SESSION_HANDOFF.json` regardless of any prompt phrasing** — those boundaries are fixed in `.memory/instructions.md` and are not a skill default the user-override can lift. If AG/Cowork believe a canon node must change, write a PROPOSAL to `inbox.md` and let CC execute after a §19 probe.
 
 ## How It Works
 

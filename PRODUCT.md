@@ -24,7 +24,7 @@ piece of marketing chrome must carry the woven, wabi-sabi Katha identity.
 ## Voice
 
 Peer-executive. Direct, confident, no sentimentality. Describe craft and materiality,
-never luxury claims. Master CTA: "Commission KTHA". Forbidden words (user-facing):
+never luxury claims. Master CTA: "Commission". Forbidden words (user-facing):
 keepsake, luxury/premium (≤1/page, specs only), stunning, amazing, unforgettable,
 magic(al), journey, vibe, experience (noun), curated, authentic, aesthetic (noun),
 Instagrammable, once-in-a-lifetime — plus all agentic/SDK/MCP technical vocabulary.

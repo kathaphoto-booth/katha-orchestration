@@ -37,31 +37,30 @@ For deep-dive work, consult these directory-scoped context files:
 - Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
 - Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
 
-## BOOT ORDER (do this first, every session)
+## BOOT ORDER (Systemic Injection)
 Memory lives at the absolute vault path (Samsung 970, always mounted):
 **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
-Read these 7 nodes IN ORDER from the vault:
-1. `SESSION_HANDOFF.json` — current locked state + phase
-2. `decisions.md` — architecture, roadmap, locked calls, infra, team
-3. `patterns.md` — full brand law (palette, type, voice, layout)
-4. `inbox.md` — open work (act only on **Accepted** items)
-5. `memory.md` — Jed-confirmed facts (granular, append-only log)
-6. `instructions.md` — auto-capture rules, agent boundaries, anti-hallucination protocol
-7. `handoff/*.md` — any unread AG artifacts (skip files prefixed with `_`)
+**SYSTEM ENFORCEMENT:** 
+The 7 HAM nodes (`SESSION_HANDOFF.json`, `decisions.md`, `patterns.md`, `inbox.md`, `memory.md`, `instructions.md`, `handoff/*.md`) are now auto-compiled into a single file by the pre-flight `compile-ham.sh` wrapper.
+
+Read the single compiled node IN ORDER from the vault:
+1. `COMPILED_HAM.md` — Contains the entire locked state, decisions, brand law, and memory.
 
 No symlink, no mirror, no boot script. The vault is the single source of truth.
 Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
 
-**Staleness check (mandatory):** After reading nodes 1, 4, and 5, compare
-`memory.md`'s newest dated entry and `inbox.md`'s last "Pending (AG-proposed)"
-line against `SESSION_HANDOFF.json`'s `.latest_memory_entry` /
-`.latest_inbox_entry_date`. If either is newer than the recorded checkpoint,
-read the new entries before proceeding — never rely on SESSION_HANDOFF's
-narrative fields (`.session`, `.phase`, `.current_task`) alone; they describe
-intent, not the vault's actual tail. Run `bash .agents/skills/handoff/sync.sh`
-(or `/handoff`) at the end of any session that adds `memory.md`/`inbox.md`
-entries, to refresh the checkpoint for the next session.
+**Staleness check (mandatory):** After reading `COMPILED_HAM.md`, compare its
+embedded `memory.md` newest dated entry and its `inbox.md` last "Pending
+(AG-proposed)" line against the embedded `SESSION_HANDOFF.json`'s
+`.latest_memory_entry` / `.latest_inbox_entry_date` (inside `COMPILED_HAM.md`
+these are the `## 5. memory.md`, `## 4. inbox.md`, and `## 1. SESSION_HANDOFF.json`
+sections). If either tail is newer than the recorded checkpoint, read the new
+entries before proceeding — never rely on SESSION_HANDOFF's narrative fields
+(`.session`, `.phase`, `.current_task`) alone; they describe intent, not the
+vault's actual tail. Run `bash .agents/skills/handoff/sync.sh` (or `/handoff`)
+at the end of any session that adds `memory.md`/`inbox.md` entries, to refresh
+the checkpoint for the next session.
 
 **Auto-capture rule:** After every Jed confirmation, correction, or preference,
 append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.

@@ -179,6 +179,15 @@ skill (`.agents/skills/handoff/sync.sh`); AG cannot run that script (different
 filesystem context) — if you find drift, note it in your output or append an
 `inbox.md` Pending line so CC runs `/handoff` next session.
 
+**Headless mode (`scripts/agy-tier-run.sh`):** when CC invokes you via the tier
+runner, you do NOT have live-vault filesystem access — you receive the compiled
+`COMPILED_HAM.md` snapshot injected into your prompt. The runner re-compiles that
+snapshot immediately before invoking you, so it is CURRENT at launch. Perform the
+staleness check *within* the injected text: compare the `## 1. SESSION_HANDOFF.json`
+section's `.latest_memory_entry` / `.latest_inbox_entry_date` against the tails of
+the embedded `## 5. memory.md` and `## 4. inbox.md` sections. (You cannot and must
+not write canon — see §8; surface any drift in your handoff output for CC.)
+
 ---
 
 ## §7. Auto-Capture Rule (NEW — 2026-06-06)

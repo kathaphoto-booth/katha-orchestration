@@ -67,8 +67,9 @@ components:
 ## 1. Overview
 
 Katha (Tagalog) — to compose, to weave a poem or story. Not a noun; a verb. The booth
-is a loom; every print is a stroke woven into a passed-down heirloom; the KTHA maker's
-mark is the brass ring offered when a finished cloth leaves the loom. The system is
+is a loom; every print is a stroke woven into a passed-down heirloom. The brand signs
+its work with exactly two marks — the Katha wordmark and the leaf/feather "K" logomark;
+there is no separate maker's mark or brass-ring device. The system is
 rooted in three ancestral parents — **Barong Nipis** (sheer piña, calado openwork),
 **Inabel / Binakul** (Ilocos optical apotropaic weave), and **T'nalak** (T'boli
 dream-woven abacá, the tri-color black/red/white discipline).

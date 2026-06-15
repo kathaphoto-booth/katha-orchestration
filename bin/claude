@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Pre-flight HAM Compiler
+VAULT="/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory"
+
+if [[ ! -d "$VAULT" ]]; then
+  echo "Error: Samsung 970 pro is unmounted. Vault memory is unavailable." >&2
+  echo "Please mount the drive and try again." >&2
+  exit 1
+fi
+
+# Pre-flight HAM Compiler
+/Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh
+
+# Run the global claude binary
+exec /usr/local/bin/claude "SYSTEM ARCHITECTURE INJECTION: Please read the following memory vault and then ask the user what to do next. \n\n $(cat "$VAULT/COMPILED_HAM.md" 2>/dev/null || echo "Vault memory unavailable")" "$@"
