@@ -1,0 +1,109 @@
+<!--
+  KATHA SNIPPET: Testimonial Card
+  ─────────────────────────────────────────────────────────────────────
+  Replaces the "Oax" testimonials in the Squarespace editor.
+
+  INSTALL:  Squarespace → Edit page → + → Code → paste everything below.
+            Duplicate this Code Block for each testimonial.
+  EDIT:     Update the quote, name, and event/role fields below (marked
+            <!-- EDIT -->). Keep voice canon-clean — no "experience",
+            "curated", "luxury", "stunning", "magical", etc.
+  ─────────────────────────────────────────────────────────────────────
+  Requires Layer 1 (katha-brand-tokens.css) in Code Injection → HEADER.
+  Multiple cards: wrap two in a .k-testimonials-grid div to get side-by-side.
+-->
+
+<style>
+  .k-testimonial-card {
+    border-left: 1px solid var(--katha-champagne-heirloom, #C4B59D);
+    padding: 1.75rem 2rem 1.75rem 2rem;
+    margin: 0;
+    max-width: 640px;
+  }
+  .k-testimonial-card blockquote {
+    font-family: var(--font-body, 'EB Garamond', Georgia, serif);
+    font-style: italic;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--katha-iron-bark, #241E1A);
+    margin: 0 0 1.25rem;
+    padding: 0;
+  }
+  .k-testimonial-card blockquote::before {
+    content: '\201C';
+    font-family: var(--font-display, 'Fraunces', Georgia, serif);
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    font-size: 2.5rem;
+    line-height: 0;
+    vertical-align: -0.5rem;
+    color: var(--katha-champagne-heirloom, #C4B59D);
+    margin-right: 0.25rem;
+  }
+  .k-testimonial-card cite {
+    display: block;
+    font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+    font-size: 0.7rem;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--katha-abel-slate, #5A5D5A);
+  }
+  .k-testimonial-card cite strong {
+    display: block;
+    color: var(--katha-ecru-muted, #5A564E);
+    margin-bottom: 0.2rem;
+    font-weight: 500;
+  }
+
+  /* Two-column grid: wrap two cards in this div */
+  .k-testimonials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .k-testimonials-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<figure class="k-testimonial-card">
+  <blockquote>
+    <!-- EDIT: the testimonial text. Keep it canon-clean — no luxury/experience/curated. -->
+    The setup was composed and precise. Every detail — the lighting, the print quality,
+    the booth itself — matched what our photographer was doing across the room.
+    Katha Booth is in a different category entirely.
+  </blockquote>
+  <figcaption>
+    <cite>
+      <!-- EDIT: client name -->
+      <strong>Vivian V.</strong>
+      <!-- EDIT: event type / role -->
+      Bridal reception, Orange County
+    </cite>
+  </figcaption>
+</figure>
+
+<!--
+  USAGE EXAMPLE — two cards side by side:
+
+  <div class="k-testimonials-grid">
+    [paste first card here]
+    [paste second card here]
+  </div>
+
+  Second card example (update all three EDIT sections):
+
+  <figure class="k-testimonial-card">
+    <blockquote>
+      The print quality speaks for itself. Guests were holding them up to the
+      overhead lights — archival cotton, not photo paper. That is the difference.
+    </blockquote>
+    <figcaption>
+      <cite>
+        <strong>Scarleth B.</strong>
+        Wedding, Los Angeles
+      </cite>
+    </figcaption>
+  </figure>
+-->

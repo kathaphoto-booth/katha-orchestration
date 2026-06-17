@@ -1,9 +1,9 @@
 # Katha × Squarespace — Handoff Guide
 ### For: the brother managing kathabooth.com
 
-You manage the content. The design is already locked. You literally cannot make it ugly if you follow three steps.
+You manage the content. The design is already locked. You literally cannot make it ugly if you follow these steps.
 
-> **The one rule:** Paste Layer 1 once. Build with native sections. Drop Layer 2 snippets for signature moments. Never edit Layer 1.
+> **The rule:** Paste Layer 1 + the brand guard once. Build with native sections. Drop Layer 2 snippets for signature moments. Never edit Layer 1 or the guard.
 
 ---
 
@@ -12,12 +12,13 @@ You manage the content. The design is already locked. You literally cannot make 
 This is the part that makes everything automatically look Katha.
 
 1. In Squarespace: **Settings → Advanced → Code Injection**.
-2. In the **Header** box, paste this, then paste the entire contents of `katha-injection.css` between the tags:
+2. In the **Header** box, paste:
 
    ```html
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <style>
-   /* ⬇ paste everything from katha-injection.css here ⬇ */
-
+   /* ⬇ paste everything from katha-brand-tokens.css here ⬇ */
    </style>
    ```
 3. Save.
@@ -30,26 +31,54 @@ That's it. Now every heading you type comes out in carved Fraunces, every paragr
 
 ---
 
+## Layer 1B — Paste the brand guard ONCE (2 minutes)
+
+The brand guard watches the page in real time and fixes any brand violations the moment they render — wrong colors, forbidden words, wrong button labels, rounded corners.
+
+1. Still in **Settings → Advanced → Code Injection**.
+2. In the **Footer** box, paste:
+
+   ```html
+   <script>
+   /* ⬇ paste everything from katha-brand-guard.js here ⬇ */
+   </script>
+   ```
+3. Save.
+
+The guard runs silently. It:
+- Corrects any `#000` pure-black overlays → Obsidian Weave `#111112`
+- Replaces forbidden words ("curated", "timeless", "experience", "OAX") with canon language
+- Corrects wrong CTA button text ("Request Bespoke Proposal" → "Commission")
+- Strips rounded corners from any element that has them
+
+> This fixes the DISPLAY — not the underlying page data. When you update page text in the CMS, you should still write canon-clean copy (see the Do/Don't list below). The guard is a safety net, not a substitute.
+
+---
+
 ## Layer 2 — Drop in signature pieces (as needed)
 
-For the special moments — the hero, the maker's mark, a torn-edge photo, a divider — use the ready-made snippets in the `snippets/` folder.
+For the special moments — the hero, a torn-edge photo, a divider, a testimonial — use the ready-made snippets in the `snippets/` folder.
 
 For each one:
 1. Add a **Code Block** where you want it (Squarespace: `+` → Code).
 2. Open the matching file, copy everything, paste it in.
-3. Change only the bits marked `<!-- EDIT HERE -->`. Leave the rest.
+3. Change only the bits marked `<!-- EDIT -->`. Leave the rest.
 
 | Snippet | What it is | You edit |
 |---|---|---|
-| `wordmark.html` | The lowercase `katha` logo | (usually nothing) |
-| `ktha-stamp.html` | KTHA maker's mark seal | the caption line |
+| `wordmark.html` | The lowercase `katha` wordmark | (usually nothing) |
 | `hero.html` | Full hero block | eyebrow, headline, sentence, button |
 | `feature-row.html` | Image + text side-by-side | image, eyebrow, heading, body, link |
 | `deckled-image.html` | A single torn-edge photo | image src + alt |
 | `quote.html` | Pull quote | quote, author, role |
 | `calado-divider.html` | The openwork divider line | nothing |
+| `commission-cta.html` | **The sacred Loko Rust CTA** — one per page | href, optional eyebrow + heading |
+| `katha-testimonial-card.html` | Testimonial block (replaces old "Oax" cards) | quote text, name, event/role |
 
 > Squarespace strips JavaScript inside Code Blocks — every snippet here is pure HTML + CSS on purpose, so they always work.
+
+### Commission CTA — the one rule
+The red "Commission" button is a **sacred CTA**. Use it exactly once per page — the single booking moment. Never use it for navigation links, hover states, or as a repeating pattern. Its rarity is what gives it weight.
 
 ---
 
