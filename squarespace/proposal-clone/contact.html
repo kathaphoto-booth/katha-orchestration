@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Katha Booth</title>
+  <meta name="description" content="Begin your inquiry with Katha Booth — share your event date, venue, and installation choice, and we reply within 24 hours to plan your editorial portrait installation in Southern California.">
+  <link rel="stylesheet" href="clone.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <div class="nav__links" id="nav-links">
+        <a href="installations.html">Installations</a>
+        <a href="founders.html">Founders</a>
+        <a href="/book">Contact</a>
+      </div>
+      <a class="nav__brand" href="index.html">KATHA BOOTH</a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    </nav>
+  </header>
+
+  <section class="section">
+    <div class="wrap center">
+      <h1>Let's Work Together</h1>
+      <p class="lead" data-annot="BEFORE: 'begin curating your event experience … elevate your celebration.' AFTER: curating→planning; experience removed; elevate→shape." style="max-width: 600px; margin-inline: auto;">
+        To begin planning your event, share a few details below. We review every inquiry with care and reply within 24 hours to discuss how we can shape your celebration.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--beige">
+    <div class="wrap" style="max-width: 600px;">
+      <form id="inquiry-form" class="form" novalidate onsubmit="return false"
+            data-annot="BEFORE: bare inputs carried class='field' (a wrapper class) with placeholder-only labels + an undefined CSS variable for color, and no .form__status, so styling/focus, labels, and the success message all failed. AFTER: each control wrapped in .field with a real <label for>; color fixed to var(--ink); .form__status added.">
+        <div style="display: flex; gap: 16px; width: 100%;">
+          <div class="field" style="flex: 1; min-width: 0;">
+            <label for="firstName">First Name <span class="req">(required)</span></label>
+            <input id="firstName" type="text" name="firstName" autocomplete="given-name" required>
+          </div>
+          <div class="field" style="flex: 1; min-width: 0;">
+            <label for="lastName">Last Name <span class="req">(required)</span></label>
+            <input id="lastName" type="text" name="lastName" autocomplete="family-name" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone <span class="req">(required)</span></label>
+          <input id="phone" type="tel" name="phone" autocomplete="tel" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Email <span class="req">(required)</span></label>
+          <input id="email" type="email" name="email" autocomplete="email" required>
+        </div>
+
+        <div style="display: flex; gap: 16px; width: 100%;">
+          <div class="field" style="flex: 1; min-width: 0;">
+            <label for="eventDate">Event Date <span class="req">(required)</span></label>
+            <input id="eventDate" type="date" name="eventDate" required style="color: var(--ink);">
+          </div>
+          <div class="field" style="flex: 1; min-width: 0;">
+            <label for="eventTime">Event Start Time</label>
+            <input id="eventTime" type="time" name="eventTime" style="color: var(--ink);">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="address">Event / Venue Address <span class="req">(required)</span></label>
+          <input id="address" type="text" name="address" autocomplete="street-address" required>
+        </div>
+
+        <div class="field">
+          <label for="eventType">Event Type</label>
+          <select id="eventType" name="eventType" style="color: var(--ink);">
+            <option value="" disabled selected>Select event type</option>
+            <option value="wedding">Wedding</option>
+            <option value="corporate">Corporate Gala</option>
+            <option value="party">Private Celebration</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="field" data-annot="BEFORE: 'CHOOSE YOUR AESTHETIC' + legacy options (Signature/Editorial/Vintage/Vantage/Portfolio). AFTER: 'Choose Your Installation' + 4 canonical tiers.">
+          <label for="installation">Choose Your Installation <span class="req">(required)</span></label>
+          <select id="installation" name="installation" required style="color: var(--ink);">
+            <option value="" disabled selected>Choose Your Installation</option>
+            <option value="signature">Signature // Oak — $949</option>
+            <option value="editorial">Editorial // Oak — $1,149</option>
+            <option value="modernist">Modernist // White — $749</option>
+            <option value="monochrome">Monochrome // White — $949</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message <span class="req">(required)</span></label>
+          <textarea id="message" name="message" required rows="4"></textarea>
+        </div>
+
+        <p class="form__status" role="status" aria-live="polite"></p>
+
+        <button type="submit" class="cta cta-sacred" style="align-self: flex-start; border: none; cursor: pointer; font-family: inherit; font-size: inherit;">Send Inquiry</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-explore">
+        <h4>Explore</h4>
+        <a href="founders.html">About</a>
+        <a href="installations.html" data-annot="BEFORE: 'Booth Architectures.' AFTER: 'Installations.'">Installations</a>
+        <a href="terms.html">T&amp;C</a>
+        <a href="/book">Contact</a>
+      </div>
+      <div>
+        <h4>Exclusive offers straight to your inbox</h4>
+        <form class="newsletter" onsubmit="return false">
+          <input type="email" placeholder="Email Address" aria-label="Email Address">
+          <button class="cta" type="submit">Sign Me Up</button>
+        </form>
+      </div>
+      <div>
+        <h4>Katha Booth</h4>
+        <p class="footer-tag" data-annot="BEFORE: 'Curating high-end photo experiences … Studio-grade quality.' AFTER: 'Curating' + 'experiences' removed.">
+          High-end photo installations for Southern California's most intentional
+          hosts. Custom builds. Studio-grade prints.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="annot-toggle" aria-pressed="false">What changed</button>
+  <script src="js/clone.js"></script>
+</body>
+</html>
