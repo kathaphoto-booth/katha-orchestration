@@ -1,9 +1,16 @@
 # Katha × Squarespace — Handoff Guide
-### For: the brother managing kathabooth.com
+### For: Vince — the brother managing kathabooth.com
 
-You manage the content. The design is already locked. You literally cannot make it ugly if you follow these steps.
+**Your site is the brand law (Jed, 2026-06-17).** Your design choices stand. The
+files in this folder are a *light coexistence layer*, not enforcement. They
+catch two narrow things on your live site (a pure-black hero overlay and
+residual "OAX Photo Booth" text the prior brand left behind) and give you
+ready-made signature pieces you can drop in. Beyond that, build your site the
+way you want it.
 
-> **The rule:** Paste Layer 1 + the brand guard once. Build with native sections. Drop Layer 2 snippets for signature moments. Never edit Layer 1 or the guard.
+> **The rule:** Paste Layer 1 + the brand guard once. Build native. Drop Layer 2
+> snippets where you want a Katha signature moment. Edit Layer 1 / the guard
+> only if you and Jed agree to.
 
 ---
 
@@ -23,7 +30,11 @@ This is the part that makes everything automatically look Katha.
    ```
 3. Save.
 
-That's it. Now every heading you type comes out in carved Fraunces, every paragraph in EB Garamond, the background becomes Piña Ecru, buttons turn Loko Rust, images get a torn deckled edge, and a soft woven texture sits over the whole site.
+That's it. Layer 1 loads the Katha near-match fonts — Playfair Display + Hanken
+Grotesk (Katha snippets in Layer 2 use them; they hot-swap to licensed IvyMode +
+Proxima Nova once Jed adds the Adobe Fonts kit) — adds a soft woven texture, and
+defines the Katha color tokens. Your native Squarespace fonts, palette, and
+headings render as you designed them — the layer does not override your stack.
 
 > **Plan note:** Code Injection requires a Squarespace **Business plan or higher**. If you're on Personal, upgrade — there's no workaround for site-wide CSS.
 
@@ -45,13 +56,46 @@ The brand guard watches the page in real time and fixes any brand violations the
    ```
 3. Save.
 
-The guard runs silently. It:
-- Corrects any `#000` pure-black overlays → Obsidian Weave `#111112`
-- Replaces forbidden words ("curated", "timeless", "experience", "OAX") with canon language
-- Corrects wrong CTA button text ("Request Bespoke Proposal" → "Commission")
-- Strips rounded corners from any element that has them
+The guard (updated 2026-06-18 under Vince-Alignment 2.0):
+- Corrects any `#000` pure-black overlays → Obsidian Weave `#111112` (palette law)
+- Corrects pure `#fff` → Piña Ecru + the `#F9F6F0` near-miss (palette law)
+- Replaces residual **"OAX Photo Booth"** text + `info@oaxphotobooth.com` →
+  "Katha Booth" / `kathabooth@gmail.com` (legacy brand cleanup)
+- **Auto-rewrites 13 forbidden voice tokens** to canon substitutes: `timeless`,
+  `curation`, `curating`, `experience`, `experiences`, `keepsake`, `journey`,
+  `unforgettable`, `stunning`, `amazing`, `magical`, `elevate`, `elevating`.
+- **Audits the two permitted-but-capped terms** — `Curated` and `Handcrafted`
+  may each appear up to **3 times per page**. The guard counts and logs a
+  `console.warn` if the cap is exceeded — it does NOT rewrite the excess
+  (editorial discipline, not hostile enforcement of your authorship).
 
-> This fixes the DISPLAY — not the underlying page data. When you update page text in the CMS, you should still write canon-clean copy (see the Do/Don't list below). The guard is a safety net, not a substitute.
+It still does **not** rewrite your CTAs ("Request Bespoke Proposal", "Secure An
+Architecture" — yours), your fonts, or your palette. Those are unchanged from
+the 2026-06-17 lift.
+
+> The guard fixes DISPLAY only — it does not edit the CMS data. If you want a
+> change to stick on republish, edit the source text in Squarespace.
+
+### Things the guard WON'T fix — your call to edit in the CMS
+
+These were flagged during the storefront audit. None block launch; surface them
+when you have a moment:
+
+- Home hero typo: `EDITORIAL BOOTH ARCHTECURE` is missing "IT" (should be
+  `ARCHITECTURE`).
+- Architectures page CTA links to `/about`, which is a 404 — point it at an
+  existing page (Contact?) or build the About page.
+- Contact form "CHOOSE YOUR AESTHETIC" dropdown still lists the old tier
+  names (Signature / Editorial / Vintage / Vantage / Portfolio). The current
+  4 canonical Service Installation tiers are: **Signature Installation /
+  Oak ($949)** · **Editorial Installation / Oak ($1,149)** · **Modernist
+  Installation / White ($749)** · **Monochrome Installation / White ($949)**.
+- Process carousel: step `04. DELIVERY` is duplicated — delete the second one.
+- T&C still references "OAX Photo Booth" in §1/3/5/6/8 — the guard masks this
+  in the browser, but consider editing the underlying T&C copy for
+  republishes / search indexing.
+- Footer tagline still reads "Curating high-end photo experiences." — yours
+  to keep or change.
 
 ---
 
@@ -145,17 +189,21 @@ Alternatively, you can set up a automatic link redirect so that `kathabooth.com/
 ## Quick do / don't
 
 **Do**
-- Keep headlines short (3 lines max reads best in Fraunces).
-- Use real event photos, shot warm. Black-and-white or muted color.
-- Leave lots of empty space — Katha breathes (this is *Ma*).
-- Use the `Begin` button sparingly — it's the sacred red. One per screen.
+- Build the way your design instincts tell you to. The 2026-06-17 directive:
+  *"None of his website creations violates any laws. He is the law."*
+- Drop in a `commission-cta.html` snippet at the single booking moment per
+  page if you want a Katha-signature red CTA.
+- Use real event photos.
 
 **Don't**
-- Don't edit `katha-injection.css`.
-- Don't add other fonts or bright colors.
-- Don't use stock-photo clichés (sparklers, neon, balloon arches).
-- Don't write the words *luxury, premium, stunning, amazing, unforgettable*. Say the specific craft instead.
-- Don't round image corners or add drop shadows (the shell handles edges).
+- Don't use pure `#000` or pure `#fff` as a flat background — those are the
+  one palette guardrail (the guard auto-corrects them on render).
+- Don't write *luxury / premium / stunning / amazing / unforgettable / magic /
+  keepsake / timeless / experience / curation / elevate* anywhere — those are
+  forbidden on every Katha surface, including this one. (Words like *Curated*
+  and *Handcrafted* are permitted on your storefront up to 3 times per page.)
+- Don't reintroduce a "KTHA" brass-ring / maker's mark. The marks lock is two
+  marks only — the wordmark and the leaf/feather "K".
 
 ---
 
