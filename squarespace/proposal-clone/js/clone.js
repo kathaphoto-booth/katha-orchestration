@@ -1,6 +1,6 @@
-/* Katha proposal clone — shared interactivity
+/* Katha clone — shared interactivity
    - mobile nav toggle
-   - "What changed" annotation layer
+   - step reveal-on-scroll (progressive enhancement)
    - contact form client-side validation + success state (no backend)
    Works on every page; pages opt in to the form by including #inquiry-form. */
 (function () {
@@ -13,16 +13,6 @@
     navToggle.addEventListener('click', function () {
       var open = header.classList.toggle('open');
       navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-  }
-
-  /* ---- "What changed" annotation layer ----------------------------------- */
-  var annotBtn = document.querySelector('.annot-toggle');
-  if (annotBtn) {
-    annotBtn.addEventListener('click', function () {
-      var on = document.body.classList.toggle('show-annot');
-      annotBtn.textContent = on ? 'Hide changes' : 'What changed';
-      annotBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
   }
 
