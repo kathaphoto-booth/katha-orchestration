@@ -22,9 +22,17 @@
   --walnut:      #574C3F;   /* dark warm brown — body-on-light emphasis */
   --near-black:  #36302A;   /* hero / nav / footer ground */
 
-  /* Sacred accent — exactly one per page */
-  --loko-rust:   #8C382A;
+  /* Sacred CTA accent — exactly one per page.
+     Retired Loko Rust on buttons (red reads as "danger" — Jed/Vince 2026-06-18).
+     Sacred CTA now rides a canon GREEN: Capiz Sage fill, Abel Slate deepen-on-hover. */
+  --cta-green:      #B5B8A3;   /* Capiz Sage — sacred CTA fill */
+  --cta-green-deep: #5A5D5A;   /* Abel Slate — CTA border + hover deepen */
+  --loko-rust:   #8C382A;      /* kept in palette; NOT used on buttons */
   --loko-rust-deep: #6E2C20;
+
+  /* Barong piña/calado texture — used ONLY behind the dark "statement" bands
+     (Philosophy / Our Approach), exactly as Vince places it. */
+  --barong-weave: url('assets/barong-white-canonical.jpg');
 
   /* Functional */
   --ground:      var(--cream);
@@ -35,9 +43,13 @@
   --on-dark-soft:#C4B59D;   /* Champagne — muted on near-black */
   --hairline:    rgba(87, 76, 63, 0.18);
 
-  /* Type */
-  --display: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --body:    'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+  /* Type — Vince-Alignment 2.x. Licensed leads (IvyMode display + Proxima Nova body)
+     sit FIRST in each stack so they auto-resolve the moment the Adobe Fonts kit <link>
+     is added to the page <head> (Jed action — IvyMode via Adobe Fonts, Proxima via Canva/
+     Adobe). Until then the free near-match Playfair Display / Hanken Grotesk render. No
+     code change is needed at swap time — only the kit <link>. */
+  --display: 'ivymode', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --body:    'proxima-nova', 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
   --body-size: 15px;
 
   /* Rhythm */
@@ -67,6 +79,32 @@ body {
 }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
+html { scrollbar-gutter: stable; }
+
+/* ---- Barong statement band (Vince's Philosophy / manifesto treatment) ----
+   A LIGHT ecru ground (--on-dark = #EAE2D5) carrying the piña/calado weave at 0.35
+   multiply, with a radial ecru scrim that keeps the centered text legible while the
+   lace breathes toward the left/right/bottom edges. Dark ink text on light ground.
+   Used ONLY on the two blocks Vince textures — Philosophy (home) + Our Approach. */
+.section--barong { position: relative; background: var(--on-dark); color: var(--ink); overflow: hidden; }
+.section--barong > * { position: relative; z-index: 2; }
+.section--barong::before {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background-image: var(--barong-weave);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0.08;   /* Jed lock 2026-06-19: match the LIVE clone deployment value (his original ~0.08 preference; 0.35 was an AG deviation) */
+  mix-blend-mode: multiply;
+}
+.section--barong::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background-image: radial-gradient(ellipse at center, rgba(234,226,213,0.8) 20%, rgba(234,226,213,0.0) 100%);
+  pointer-events: none;
+}
+.section--barong .eyebrow { color: var(--ink-soft); }
+.section--barong h1, .section--barong h2, .section--barong h3 { color: var(--ink); }
+.section--barong p { color: var(--ink-soft); }
 
 h1, h2, h3, h4 {
   font-family: var(--display);
@@ -115,19 +153,59 @@ p  { margin: 0 0 1.1em; max-width: 64ch; }
   background: transparent;
   color: var(--ink);
   cursor: pointer;
-  transition: background .35s ease, color .35s ease, border-color .35s ease;
+  box-shadow: 0 1px 0 rgba(54, 48, 42, 0.10);
+  transition: background .35s ease, color .35s ease, border-color .35s ease, box-shadow .15s ease, transform .12s ease;
 }
 .cta:hover { background: var(--ink); color: var(--cream); }
+.cta:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(54, 48, 42, 0.18);
+}
 .section--dark .cta { border-color: var(--on-dark); color: var(--on-dark); }
 .section--dark .cta:hover { background: var(--on-dark); color: var(--near-black); }
 
-/* The single sacred CTA — one per page (booking moment) */
-.cta-sacred {
-  background: var(--loko-rust);
-  border-color: var(--loko-rust);
-  color: var(--on-dark);
+/* Keyboard focus ring — WCAG 2.4.7 (AA). Covers the booking CTA, nav, footer nav,
+   newsletter submit, and the annotation toggle, which otherwise had no visible focus.
+   Light-ground default; on dark grounds the ring switches to the ecru on-dark token. */
+.cta:focus-visible,
+.nav__links a:focus-visible,
+.site-footer a:focus-visible,
+.newsletter button:focus-visible,
+.annot-toggle:focus-visible {
+  outline: 2px solid var(--cta-green-deep);
+  outline-offset: 3px;
 }
-.cta-sacred:hover { background: var(--loko-rust-deep); border-color: var(--loko-rust-deep); color: var(--on-dark); }
+.section--dark .cta:focus-visible,
+.nav__links a:focus-visible {
+  outline-color: var(--on-dark);
+}
+
+/* The single sacred CTA — one per page (booking moment).
+   Capiz Sage fill + dark ink text; deepens to Abel Slate (ecru text) on hover.
+   Debossed layered shadow: Pina Ecru highlight on top lip, Abel Slate pool at bottom,
+   walnut grounding shadow on the page. */
+.cta-sacred {
+  background: var(--cta-green);
+  border-color: var(--cta-green-deep);
+  color: var(--near-black);
+  box-shadow:
+    inset 0 1px 0 rgba(234, 226, 213, 0.22),
+    inset 0 -2px 4px rgba(90, 93, 90, 0.45),
+    0 1px 0 rgba(54, 48, 42, 0.12);
+}
+.cta-sacred:hover {
+  background: var(--cta-green-deep);
+  border-color: var(--cta-green-deep);
+  color: var(--on-dark);
+  box-shadow:
+    inset 0 1px 0 rgba(234, 226, 213, 0.18),
+    inset 0 -3px 5px rgba(90, 93, 90, 0.55),
+    0 1px 0 rgba(54, 48, 42, 0.14);
+}
+.cta-sacred:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(90, 93, 90, 0.55);
+}
 
 /* ---- Header / nav ------------------------------------------------------- */
 .site-header {
@@ -222,10 +300,10 @@ p  { margin: 0 0 1.1em; max-width: 64ch; }
   color: var(--ink);
 }
 .field input:focus, .field select:focus, .field textarea:focus {
-  outline: 2px solid var(--loko-rust); outline-offset: 1px; border-bottom-color: var(--loko-rust);
+  outline: 2px solid var(--cta-green-deep); outline-offset: 1px; border-bottom-color: var(--cta-green-deep);
 }
 .field textarea { min-height: 130px; resize: vertical; }
-.form__status { font-size: 0.85rem; color: var(--loko-rust); min-height: 1.2em; margin-top: 10px; }
+.form__status { font-size: 0.85rem; color: var(--ink-soft); min-height: 1.2em; margin-top: 10px; }
 
 /* ---- Footer ------------------------------------------------------------- */
 .site-footer { background: var(--near-black); color: var(--on-dark); padding-block: var(--space-lg); }
@@ -240,7 +318,7 @@ p  { margin: 0 0 1.1em; max-width: 64ch; }
 /* ---- "What changed" annotation layer ------------------------------------ */
 .annot-toggle {
   position: fixed; right: 18px; bottom: 18px; z-index: 80;
-  background: var(--loko-rust); color: var(--on-dark);
+  background: var(--cta-green-deep); color: var(--on-dark);
   font-family: var(--body); font-size: 0.7rem; font-weight: 600;
   letter-spacing: 0.14em; text-transform: uppercase;
   border: 0; padding: 12px 18px; cursor: pointer; box-shadow: 0 6px 24px rgba(54,48,42,.35);
@@ -252,10 +330,10 @@ body.show-annot [data-annot]::after {
   margin-top: 4px; max-width: 320px;
   background: var(--near-black); color: var(--on-dark);
   font-family: var(--body); font-size: 0.72rem; line-height: 1.4; letter-spacing: 0.02em;
-  text-transform: none; padding: 8px 12px; border-left: 3px solid var(--loko-rust);
+  text-transform: none; padding: 8px 12px; border-left: 3px solid var(--cta-green-deep);
   box-shadow: 0 8px 28px rgba(54,48,42,.4);
 }
-body.show-annot [data-annot] { outline: 1px dashed var(--loko-rust); outline-offset: 3px; }
+body.show-annot [data-annot] { outline: 1px dashed var(--cta-green-deep); outline-offset: 3px; }
 
 /* ---- Image placeholders (offline-safe; Vince swaps real photos) --------- */
 .ph {
@@ -313,4 +391,292 @@ body.show-annot [data-annot] { outline: 1px dashed var(--loko-rust); outline-off
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
+}
+
+/* ==========================================================================
+   TIER 1A — visual redesign additions (2026-06-19)
+   Hero refinement, philosophy treatment, step-by-step rows with media,
+   tier-card accordion, manifesto cards. No new images; reuses /assets.
+   ========================================================================== */
+
+/* ---- Hero refinement (subtext removed; rhythm rebalanced) --------------- */
+.hero__title { margin-bottom: 0; }
+.hero h1.hero__title { max-width: 18ch; }
+
+/* Installations hero — full booth visible (was over-cropped) */
+.hero--installations { min-height: clamp(380px, 56vh, 560px); }
+.hero--installations .hero__media img {
+  object-fit: cover;
+  object-position: center 38%;
+}
+@media (max-width: 768px) {
+  .hero--installations { min-height: clamp(340px, 60vh, 480px); }
+  .hero--installations .hero__media img { object-position: center 44%; }
+}
+
+/* ---- Philosophy: pull-quote, calado rule, asymmetric body -------------- */
+.section--philosophy { padding-block: clamp(72px, 11vw, 160px); }
+.philosophy { display: block; }
+.philosophy .eyebrow {
+  display: block;
+  margin-left: 0;
+  color: var(--ink-soft);
+}
+.philosophy__lead {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  margin: 0;
+  max-width: 18ch;
+  color: var(--ink);
+}
+.philosophy__rule {
+  font-family: var(--body);
+  font-size: 0.7rem;
+  letter-spacing: 0.5em;
+  color: var(--ink-soft);           /* dark-on-light, ~6.5:1 on the ecru barong ground (was Champagne, near-invisible) */
+  margin: 36px 0 32px;
+  padding-left: 0;
+  max-width: none;
+}
+.philosophy__body {
+  margin-left: clamp(0px, 18vw, 220px);
+  max-width: 52ch;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+.philosophy__body em {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink);
+  font-size: 1.12em;
+  letter-spacing: 0.005em;
+}
+@media (max-width: 768px) {
+  .philosophy__body { margin-left: 0; }
+  .philosophy__rule { margin: 24px 0; }
+}
+
+/* ---- Step-by-step rows with media -------------------------------------- */
+.steps-flow { display: flex; flex-direction: column; gap: clamp(36px, 5vw, 72px); }
+.step-row {
+  display: grid;
+  grid-template-columns: minmax(140px, 180px) 1fr;
+  gap: clamp(20px, 4vw, 48px);
+  align-items: center;
+}
+.step-row__media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--beige);
+}
+.step-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.step-row__body .step__num { margin-bottom: 4px; }
+.step-row__body p { max-width: 52ch; }
+.step-row:nth-child(even) { grid-template-columns: 1fr minmax(140px, 180px); }
+.step-row:nth-child(even) .step-row__media { order: 2; }
+.step-row:nth-child(even) .step-row__body { order: 1; text-align: right; }
+.step-row:nth-child(even) .step-row__body p { margin-left: auto; }
+
+@media (max-width: 768px) {
+  .step-row,
+  .step-row:nth-child(even) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .step-row:nth-child(even) .step-row__media { order: 0; }
+  .step-row:nth-child(even) .step-row__body { order: 1; text-align: left; }
+  .step-row:nth-child(even) .step-row__body p { margin-left: 0; }
+  .step-row__media { aspect-ratio: 16 / 10; max-height: 280px; }
+}
+
+/* Reveal-on-scroll (gated by prefers-reduced-motion in JS) */
+.step--reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .4s ease, transform .4s ease;
+}
+.step--reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .step--reveal { opacity: 1; transform: none; }
+}
+
+/* ---- Tier accordion (native details/summary) --------------------------- */
+.tier-accordion { display: flex; flex-direction: column; gap: 0; }
+.tier-card {
+  border-top: 1px solid var(--hairline);
+  border-left: 1px solid transparent;
+  background: transparent;
+  transition: border-left-color .35s ease, background .35s ease;
+}
+.tier-card:last-of-type { border-bottom: 1px solid var(--hairline); }
+.tier-card[open] {
+  border-left-color: var(--on-dark-soft);
+  background: rgba(196, 181, 157, 0.06);
+}
+
+.tier-card__summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: minmax(0, 22ch) 1fr auto auto;
+  align-items: baseline;
+  gap: clamp(16px, 3vw, 36px);
+  padding: clamp(22px, 3vw, 32px) clamp(8px, 1.5vw, 16px);
+  outline-offset: 4px;
+}
+.tier-card__summary::-webkit-details-marker { display: none; }
+.tier-card__summary:focus-visible { outline: 2px solid var(--cta-green-deep); }
+
+.tier-card__title {
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  line-height: 1.1;
+  color: var(--ink);
+}
+.tier-card__flag {
+  font-family: var(--body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--walnut);
+  vertical-align: middle;
+  margin-left: 10px;
+}
+.tier-card__hook {
+  font-family: var(--body);
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.tier-card__price {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.tier-card__sign {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+}
+.tier-card__sign::before,
+.tier-card__sign::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 50%;
+  width: 14px; height: 1px;
+  background: var(--ink-soft);
+  transition: transform .3s ease;
+}
+.tier-card__sign::after { transform: rotate(90deg); }
+.tier-card[open] .tier-card__sign::after { transform: rotate(0deg); }
+
+.tier-card__body {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
+  padding: 0 clamp(8px, 1.5vw, 16px) clamp(28px, 4vw, 44px);
+}
+.tier-card__media {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  background: var(--beige);
+}
+.tier-card__amplifier {
+  margin-top: 18px;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+@media (max-width: 768px) {
+  .tier-card__summary {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "title sign"
+      "hook hook"
+      "price price";
+    gap: 8px 16px;
+  }
+  .tier-card__title { grid-area: title; }
+  .tier-card__sign { grid-area: sign; align-self: center; }
+  .tier-card__hook { grid-area: hook; }
+  .tier-card__price { grid-area: price; }
+  .tier-card__body { grid-template-columns: 1fr; }
+}
+
+/* ---- Founders manifesto cards (text-led, no face photos) --------------- */
+.manifesto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-top: 1px solid rgba(87, 76, 63, 0.28);
+  border-bottom: 1px solid rgba(87, 76, 63, 0.28);
+}
+.manifesto-card {
+  padding: clamp(36px, 5vw, 64px) clamp(24px, 4vw, 56px);
+  position: relative;
+  background: transparent;
+}
+.manifesto-card + .manifesto-card {
+  border-left: 1px solid rgba(87, 76, 63, 0.28);
+}
+.manifesto-card__eyebrow {
+  font-family: var(--body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+.manifesto-card__name {
+  font-family: var(--display);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.05;
+  margin: 0;
+  color: var(--ink);
+}
+.manifesto-card__rule {
+  font-family: var(--body);
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--ink-soft);           /* dark-on-light, ~6.5:1 on the beige manifesto ground (was Champagne, near-invisible) */
+  margin: 22px 0;
+  max-width: none;
+}
+.manifesto-card__body {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  max-width: 48ch;
+}
+@media (max-width: 768px) {
+  .manifesto-grid { grid-template-columns: 1fr; }
+  .manifesto-card + .manifesto-card {
+    border-left: 0;
+    border-top: 1px solid rgba(87, 76, 63, 0.28);
+  }
 }
