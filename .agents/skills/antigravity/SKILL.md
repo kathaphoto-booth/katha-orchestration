@@ -40,9 +40,24 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
    never writes it.**
 4. `authority-guard.sh <run>/result.md` — rejects agy-authored text asserting a
    human-authority decision ("Jed approved X"); agy is not a canon witness.
-5. **PASS** ⇒ promote staged handoff, consolidate to HAM, run `handoff/sync.sh`.
+5. `self_eval.sh record --run <run> --repo <repo> [--tokens N]` — append an honest
+   ledger entry graded against git-truth: `honest:false` whenever the run claimed
+   `STATUS: COMPLETE` but the gate said FAIL (the overstatement failure mode,
+   measured). Missing inputs recorded as null, never faked.
+6. **PASS** ⇒ promote staged handoff, consolidate to HAM, run `handoff/sync.sh`.
    **FAIL** ⇒ `checkpoint.sh rollback <run> <repo> <vault>`; log the leak; nothing
    reaches HAM.
+
+## Self-improvement loop (honest, deterministic)
+`self_eval.sh report --repo <repo>` aggregates the ledger: pass rate, **honesty
+rate**, **Token-to-Diff** (tokens/line — surfaces slop/stalling briefs), and
+recurring leak reasons. It emits `→ graduate:` flags when a dishonest run or a
+3×-recurring leak appears. Graduation = CC writes a RED test reproducing it (via
+`/test-driven-development`) + tightens a verdict/authority rule + refines the
+brief (`/senior-prompt-engineer`). So the suite gets stricter every cycle — the
+system grades itself against git, never its own word. (Adversarially reviewed
+2026-06-22; v2 defense-in-depth: a `.verdict.json` provenance check — currently
+mitigated by agy's `--sandbox` write-lockout.)
 
 ## Write boundaries (§ Thor's Hammer)
 agy may write only `inbox.md` (append) + `handoff/`. Canon nodes
