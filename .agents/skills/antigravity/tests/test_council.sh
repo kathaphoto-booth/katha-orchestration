@@ -12,4 +12,6 @@ test_council_is_hardened() {
   assert_contains "$b" "load_vertex_env" "self-loads the Vertex env (no silent broken-tier fallback)"
   assert_contains "$b" "11434/api/generate" "routes the OSS voice via the Ollama HTTP API (codex CLI bypassed)"
   assert_contains "$b" "ABSENT" "marks a voice absent / fails loud rather than degrading silently"
+  assert_contains "$b" "GEMINI_TIER" "gemini voice is billing-tier-aware (vertex/free/off)"
+  assert_contains "$b" "GEMINI_API_KEY" "free path uses a no-cost AI Studio key, not Vertex billing"
 }

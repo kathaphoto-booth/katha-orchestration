@@ -23,10 +23,11 @@ mkdir -p "$OUT"
 TIMEOUT="${COUNCIL_TIMEOUT:-120}"
 OSS_MODEL="${COUNCIL_OSS_MODEL:-qwen2.5-coder:7b}"
 
-# Self-load the Vertex env from ~/.zshrc WITHOUT sourcing the whole file.
+# Self-load the council CLI env from ~/.zshrc WITHOUT sourcing the whole file
+# (a non-interactive shell never sources it). Includes the billing-tier switch.
 load_vertex_env() {
-  if [[ -z "${GOOGLE_GENAI_USE_VERTEXAI:-}" ]]; then
-    eval "$(grep -E '^[[:space:]]*export[[:space:]]+(GOOGLE_GENAI_USE_VERTEXAI|GOOGLE_CLOUD_PROJECT|GOOGLE_CLOUD_LOCATION)=' "$HOME/.zshrc" 2>/dev/null || true)"
+  if [[ -z "${GOOGLE_GENAI_USE_VERTEXAI:-}" && -z "${GEMINI_TIER:-}" && -z "${GEMINI_API_KEY:-}" ]]; then
+    eval "$(grep -E '^[[:space:]]*export[[:space:]]+(GOOGLE_GENAI_USE_VERTEXAI|GOOGLE_CLOUD_PROJECT|GOOGLE_CLOUD_LOCATION|GEMINI_API_KEY|GEMINI_TIER)=' "$HOME/.zshrc" 2>/dev/null || true)"
   fi
   export GOOGLE_GENAI_USE_VERTEXAI="${GOOGLE_GENAI_USE_VERTEXAI:-}"
   export GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT:-}"
@@ -34,14 +35,28 @@ load_vertex_env() {
 }
 
 voice_gemini() {
-  load_vertex_env
-  if [[ -z "$GOOGLE_GENAI_USE_VERTEXAI" || -z "$GOOGLE_CLOUD_PROJECT" ]]; then
-    echo "[ABSENT] gemini: Vertex env unset (GOOGLE_GENAI_USE_VERTEXAI/PROJECT) — refusing silent consumer-tier fallback." > "$OUT/stage1_gemini.txt"
-    return 1
-  fi
   if ! command -v gemini >/dev/null 2>&1; then
     echo "[ABSENT] gemini: CLI not installed." > "$OUT/stage1_gemini.txt"; return 1
   fi
+  load_vertex_env
+  # Billing-aware tier (GEMINI_TIER): `vertex` = the $300 Vertex trial (default
+  # while credit lasts); `free` = consumer AI Studio key, NO cost; `off` = drop
+  # the voice (council runs OSS+CC). At the $290 budget alert, flip ONE env var
+  # in ~/.zshrc — zero code change at cutover.
+  local tier="${GEMINI_TIER:-vertex}"
+  case "$tier" in
+    off)
+      echo "[ABSENT] gemini: disabled (GEMINI_TIER=off) — council runs OSS+CC." > "$OUT/stage1_gemini.txt"; return 1;;
+    free)
+      export GOOGLE_GENAI_USE_VERTEXAI=false   # consumer free tier, never Vertex/billing
+      if [[ -z "${GEMINI_API_KEY:-}" ]]; then
+        echo "[ABSENT] gemini: GEMINI_TIER=free but GEMINI_API_KEY unset (get a free AI Studio key)." > "$OUT/stage1_gemini.txt"; return 1
+      fi ;;
+    *)  # vertex (paid trial)
+      if [[ -z "$GOOGLE_GENAI_USE_VERTEXAI" || -z "$GOOGLE_CLOUD_PROJECT" ]]; then
+        echo "[ABSENT] gemini: Vertex env unset — set GEMINI_TIER=free (+GEMINI_API_KEY) for the no-cost path." > "$OUT/stage1_gemini.txt"; return 1
+      fi ;;
+  esac
   run_with_timeout "$TIMEOUT" gemini -p "$Q" < /dev/null > "$OUT/stage1_gemini.txt" 2>/dev/null
   local rc=$?
   [[ -s "$OUT/stage1_gemini.txt" ]] || echo "[ABSENT] gemini: no output (exit $rc; >=128 = killed at ${TIMEOUT}s bound)." > "$OUT/stage1_gemini.txt"
