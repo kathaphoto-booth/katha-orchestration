@@ -43,3 +43,16 @@ test_checkpoint_rollback_restores_repo_to_snapshot() {
   assert_eq "$(cat "$r/a.txt")" "base" "repo file reverts to snapshot content"
   assert_eq "$([[ -f "$r/untracked.txt" ]] && echo present || echo gone)" "gone" "repo untracked file is cleaned"
 }
+
+test_checkpoint_rollback_is_retry_safe() {        # a retried rollback must not hard-fail
+  source "$SKILL/lib.sh"
+  local r; r=$(mk_repo); local v; v=$(mk_vault)
+  bash "$SKILL/checkpoint.sh" snapshot run5 "$r" "$v" >/dev/null
+  echo "agy edit" >> "$r/a.txt"
+  bash "$SKILL/checkpoint.sh" rollback run5 "$r" "$v" >/dev/null 2>&1
+  assert_exit "$?" 0 "first rollback succeeds"
+  # Retry the SAME rollback on the SAME run_id, with no new snapshot taken in between —
+  # simulates a caller retrying after an interruption. Must not hard-fail.
+  bash "$SKILL/checkpoint.sh" rollback run5 "$r" "$v" >/dev/null 2>&1
+  assert_exit "$?" 0 "retried rollback on the same run_id does not hard-fail"
+}

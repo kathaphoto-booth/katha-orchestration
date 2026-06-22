@@ -80,7 +80,10 @@ do_rollback() {
 
   # --- Repo half of the transaction ---
   git -C "$REPO" reset --hard "$REPO_HEAD"
-  git -C "$REPO" clean -fd
+  # Exclude .orchestration/ so this run's own snapshot survives the clean —
+  # a same-run retry of rollback (e.g. after the orchestrator dies mid-
+  # rollback) can still find it instead of hard-failing on a missing snapshot.
+  git -C "$REPO" clean -fd -e .orchestration
 
   # Purge build caches that survive `clean -fd` because they're gitignored.
   # *.tsbuildinfo anywhere under the repo except inside node_modules.
