@@ -69,7 +69,11 @@ do_rollback() {
   # untracked, so `git clean -fd` below would delete it before the vault
   # half of the transaction gets a chance to read it back. Stage the bits
   # rollback still needs into a holding area OUTSIDE the repo first.
-  local HOLD; HOLD="$(mktemp -d)"
+  # Not `local`: the EXIT trap below is script-global (bash traps are not
+  # function-scoped) and can fire after do_rollback returns, by which point
+  # a `local` would already be unset — HOLD must outlive this function.
+  HOLD="$(mktemp -d)"
+  trap 'rm -rf "$HOLD"' EXIT
   local REPO_HEAD; REPO_HEAD="$(cat "$STATE_DIR/repo_head")"
   if [[ -f "$STATE_DIR/vault/inbox.md" ]]; then
     cp -a "$STATE_DIR/vault/inbox.md" "$HOLD/inbox.md"
@@ -107,7 +111,6 @@ do_rollback() {
     rm -rf "$VAULT/handoff"
     cp -a "$HOLD/handoff" "$VAULT/handoff"
   fi
-  rm -rf "$HOLD"
 }
 
 case "$CMD" in
