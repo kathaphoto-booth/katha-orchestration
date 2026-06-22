@@ -32,3 +32,21 @@ changed_set() {
         fi
       done
 }
+
+# run_with_timeout <secs> <cmd...> -> runs cmd bounded by <secs>; returns cmd's
+# exit code, or a signal exit (e.g. 137 = 128+SIGKILL) if it was killed at the
+# bound. Portable + zero-dependency: macOS ships no coreutils timeout/gtimeout,
+# so the council/CLI wrappers otherwise run UNBOUNDED (codex once hung 7.5min).
+# Pure-bash background-watcher pattern (council-recommended).
+run_with_timeout() {
+  local secs="$1"; shift
+  "$@" &
+  local pid=$!
+  ( sleep "$secs"; kill -9 "$pid" 2>/dev/null ) &
+  local watcher=$!
+  local rc=0
+  wait "$pid" 2>/dev/null || rc=$?
+  kill "$watcher" 2>/dev/null
+  wait "$watcher" 2>/dev/null || true
+  return "$rc"
+}
