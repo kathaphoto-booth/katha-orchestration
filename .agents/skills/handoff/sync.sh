@@ -125,4 +125,4 @@ mv "$TMP" "$HANDOFF"
 
 echo ""
 echo "Checkpoint refreshed: .session, .latest_memory_entry, .latest_inbox_entry_date, .inbox_pending_count"
-/Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh
+COMPILE_HAM_NESTED=1 /Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh
