@@ -36,3 +36,16 @@ test_verdict_passes_when_claims_match_reality() {
   assert_exit "$code" 0 "verdict PASSes when claims match git reality"
   assert_contains "$(cat "$r/.verdict.json")" '"status": "PASS"' "verdict.json records PASS"
 }
+
+test_verdict_ignores_its_own_prior_output() {     # idempotency: a 2nd run must not self-FAIL
+  source "$SKILL/lib.sh"
+  local r; r=$(mk_repo)
+  local dg; dg=$(mktemp)
+  printf '{"files_touched":[],"external_effects":[]}' > "$dg"
+  bash "$SKILL/verdict.sh" --repo "$r" --digest "$dg" --gate none >/dev/null 2>&1
+  assert_exit "$?" 0 "first run passes cleanly"
+  # .verdict.json now exists as an untracked file in $r. Run again with the SAME
+  # (still-accurate) digest — must still PASS, not self-FAIL on its own output file.
+  bash "$SKILL/verdict.sh" --repo "$r" --digest "$dg" --gate none >/dev/null 2>&1
+  assert_exit "$?" 0 "second run does not self-FAIL on its own .verdict.json"
+}

@@ -44,6 +44,17 @@ read_into() {
 REAL=()
 read_into REAL < <(changed_set "$REPO")
 
+# Exclude verdict.sh's own output file from the changed-set comparison — it's
+# this script's bookkeeping artifact from a prior run, not something agy or
+# any external actor touched. Without this, a second run against the same
+# repo would self-FAIL on its own previous .verdict.json.
+REAL_FILTERED=()
+for _f in "${REAL[@]:-}"; do
+  [[ "$_f" == ".verdict.json" ]] && continue
+  REAL_FILTERED+=("$_f")
+done
+REAL=("${REAL_FILTERED[@]:-}")
+
 # Claims from the digest. `// empty` so a missing/null field doesn't blow up
 # under set -e (jq would otherwise emit `null` or error on a missing key).
 CLAIMED=()
