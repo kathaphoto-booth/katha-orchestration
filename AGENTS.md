@@ -213,3 +213,14 @@ Feature was unused. Removal tracked in execution plan Phase 0.
 - "81 presets (31 Sig / 50 Classic)", "62 template presets", "62 presets", "81 id fields" — ALL stale. Catalog = 82 committed presets (33 Signature + 49 Classic).
 - Geometric `k` logomark — RETIRED. Calado diamond/tent is canonical.
 - 5-dot calado cross maker's mark — PURGED. Under redesign.
+
+## Delegation Digest Contract (orchestration v1)
+
+Every `agy` delegation MUST return a JSON digest:
+- `files_touched[]` — claim of files edited (verified as a superset of git reality; never used as verification scope).
+- `commands_run[]`, `self_reported_result`, `assumptions[]`, `unfinished[]` — advisory; never trusted as truth.
+- `external_effects[]` — MUST enumerate any non-git mutation attempted (DB migration, deploy, email). Non-empty ⇒ run rejected.
+
+agy runs `--sandbox` with NO access to apply_migration/execute_sql/deploy/email tools. Those are CC-only, behind the human gate. agy may only WRITE migration `.sql` files (git-tracked, reversible); applying them is a separate confirmed CC step against a Supabase preview branch.
+
+agy is NOT a valid witness for human-authority claims ("Jed approved/decided X"). authority-guard.sh rejects such text in agy output.

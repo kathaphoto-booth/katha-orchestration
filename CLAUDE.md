@@ -81,31 +81,65 @@ Iron Bark `#241E1A` (frame/text-on-light, **not** the wordmark), Hammered Sequin
 Abel Slate `#5A5D5A`, Capiz Sage `#B5B8A3`. Ecru-safe text: `#5A564E`, `#6E6A62`.
 **Forbidden hex:** pure `#000`/`#fff`, `#F9F6F0`, legacy OAX `#0a0806`/`#bf9d2c`/`#c4c1b8`.
 
-**Type:** Fraunces (display, SOFT 100 WONK 1, never 700) · EB Garamond (body) ·
-Inter (UI) · JetBrains Mono (meta). Forbidden: Cormorant, Italiana on Signature.
+**Type (Vince-Alignment 2.1, 2026-06-18 — full portal bend):**
+- **Both surfaces lead pair:** **IvyMode (display) + Proxima Nova (body @ 15px)** —
+  the portal (`book.kathabooth.com`) now BENDS FULLY toward Vince's stack so the
+  funnel handoff feels like one brand. **Free near-match used NOW** until license
+  procurement: **Playfair Display (display) + Hanken Grotesk (body)** — hot-swap to
+  licensed IvyMode/Proxima Nova when the Adobe Fonts kit lands (Jed action).
+- **Fraunces + EB Garamond are FULLY RETIRED** (Vince-Alignment 2.2). Playfair Display and Hanken Grotesk lead the portal chrome, templates, and emails. Fraunces and EB Garamond have been completely purged from the repository.
+- **UI + meta everywhere:** Inter (UI) · JetBrains Mono (meta) — unchanged.
+- **Forbidden:** Cormorant, Italiana on Signature.
 
-**Voice:** peer-executive, no sentimentality. Forbidden words: keepsake, luxury/
-premium (≤1/page, specs only), stunning, amazing, unforgettable, magic(al),
-journey, vibe, experience, curated, authentic + agentic/SDK/MCP vocab in client
-copy. Describe craft, not luxury. Master CTA: **"Commission"** (no "KTHA" suffix).
+**Voice (Vince-Alignment 2.0, updated 2026-06-18 — re-narrowed):**
+- **Permitted on BOTH surfaces — ≤3 uses MAX per page each:** `Curated`,
+  `Handcrafted`. (Vince granted Jed permission to refine; we narrowed the
+  previously-broader Squarespace carve-out to just these two terms with the
+  cap.) The brand-guard counts occurrences and logs a `console.warn` when
+  threshold exceeded — does NOT auto-rewrite excess; editorial discipline.
+- **Forbidden EVERYWHERE (both surfaces):** keepsake, luxury/premium (≤1/page
+  specs-only carve-out), stunning, amazing, unforgettable, magic(al), journey,
+  vibe, authentic, Instagrammable, **timeless, experience, experiences,
+  curating, curation, elevate, elevating** + agentic/SDK/MCP vocab in client
+  copy. (The 2026-06-17 Squarespace-side permission for timeless/experience/
+  curating/curation is RESCINDED; only Curated + Handcrafted remain permitted.)
+- **Redundancy (2026-06-18 Jed):** reduce the "architecture/-al/-es" saturation in
+  Vince's copy (nav, hero, every tier, the "Secure An Architecture" CTA, body) and
+  de-duplicate repeated tier boilerplate. Vary with installation, booth, build,
+  frame, form, shell, setup.
+- **Unified CTA system (2026-06-18 Jed — SUPERSEDES preserve-verbatim + Commission-master):**
+  ONE refined CTA set across BOTH surfaces. **"Commission" is RETIRED** as the master
+  verb. Refined-keep-intent labels: **"Request a Proposal"** (was "Request Bespoke
+  Proposal"), **"Reserve Your Date"** (was "Secure An Architecture"), **"Begin Your
+  Inquiry"** (was "Inquire Now"), **"Send Inquiry"** (was "Submit"), keep "Sign Me Up".
+  The portal adopts these same labels — it bends toward Vince's surface. Tone stays
+  peer-executive. (Flag for Jed: confirm Commission fully retired vs kept as one option.)
+- **Filipino heritage register (both surfaces, 2026-06-18 Jed lock):** STAYS
+  VERY QUIET. Heritage vocabulary (Barong piña, calado, T'nalak, Inabel,
+  Taheng Grepo, Tagalog word-origin) does NOT lead surface-facing copy. It
+  lives as deep background in design-system docs and materials but never as
+  primary register on hero/philosophy/tier/CTA copy.
 
-**Marks (LOCKED 2026-06-13 by Jed):** exactly TWO — **word mark** (`katha` Fraunces-flow,
-swash off the k) and **logo mark** (leaf/feather "K"). There is **NO maker's mark / brass
-ring.** Files: `wordmark-{obsidian,ecru}.png`, `logo-{obsidian,ecru}.png`. (The
-`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust/`rounded-` source guard — **keep it**;
+**Marks (LOCKED 2026-06-13 by Jed; scope 2026-06-18):** exactly TWO — **word mark**
+(`katha` Playfair-flow, swash off the k) and **logo mark** (leaf/feather "K"). There is
+**NO maker's mark / brass ring.** Files: `wordmark-{obsidian,ecru}.png`,
+`logo-{obsidian,ecru}.png`. **Marks are used ONLY in the Next.js portal
+(`book.kathabooth.com`)** — they are NOT placed on Vince's Squarespace storefront or the
+proposal clone, which use his text "KATHA BOOTH" header (Jed 2026-06-18). (The
+`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust source guard — **keep it**;
 it does NOT enforce any maker's mark. Ignore any stale skill blurb claiming a "KTHA closing stroke.")
 
-**Layout:** Fukinsei = brand chrome only (client templates stay symmetric); Ma
-negative space; deckled edges, no `border-radius`; no 6/6 grids; no drop-shadows
-on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
+**Layout:** Ma negative space preferred; deckled edges and calado dividers preferred.
+No layout restrictions enforced — the Squarespace storefront is the reference aesthetic.
+Guard: `npm run guard`.
 
-**Wabi-Sabi Shield:** No gradients, no glassmorphism, no gloss/glow effects, and
-no neon/OLED pure-black grounds — that's generic Awwwards-luxury, not Katha.
-Materiality over polish: paper-weight texture, grain, and deckled/calado edges
-read as intentional imperfection, not bugs. If a component leans on frosted
-glass, radial mesh, or drop-shadow stacks, strip it back to flat tonal fields +
-the Loom Silence elevation already codified in `DESIGN.md` ("Elevation":
-deckled edges, sombrado, calado divider, no drop-shadows on light).
+**Wabi-Sabi Shield (UPDATED 2026-06-17 — Jed override: full lift):** All Wabi-Sabi
+visual restrictions are **LIFTED**. Gradients, gloss, metallic, glassmorphism, frosted
+glass, drop-shadows, border-radius, neon/OLED grounds — all **PERMITTED**. The
+Squarespace storefront Vince builds is the reference aesthetic; his design decisions are
+authoritative. Deckled edges, calado dividers, and paper-weight texture remain *preferred*
+Katha hallmarks — not enforced. Core brand law (palette/type/marks/voice/CTA) is unchanged.
+Palette forbidden-hex rule still governs (no pure `#000`/`#fff`, no legacy OAX hex).
 
 ---
 

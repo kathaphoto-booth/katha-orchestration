@@ -195,7 +195,7 @@ p  { margin: 0 0 1.1em; max-width: 64ch; }
 
 /* ---- Hero --------------------------------------------------------------- */
 .hero {
-  position: relative; min-height: clamp(420px, 70vh, 720px);
+  position: relative; min-height: 88vh; padding: 8rem 6vw 6rem;
   display: flex; align-items: center;
   color: var(--on-dark); overflow: hidden;
 }
