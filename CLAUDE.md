@@ -180,11 +180,16 @@ Palette forbidden-hex rule still governs (no pure `#000`/`#fff`, no legacy OAX h
 - **`/verify`** → built-in `superpowers:verification-before-completion`
   (chrome-devtools-mcp for visual proof), scored against `DESIGN.md` + vault
   `patterns.md`.
-- **`/antigravity`** → Delegation: pre-inject this file's ALWAYS-ON CANON
-  (palette/type/voice/layout) + vault `patterns.md` into AG's instructions. AG
-  writes to vault `.memory/handoff/<date>_<slug>_<type>.md` and appends a line
-  to `inbox.md`; CC reads at boot (mechanically checked via the staleness check
-  above) — the convention AG's own handoffs already use.
+- **`/antigravity`** → **executable skill** `.agents/skills/antigravity/SKILL.md`
+  (no longer prose). Leak-proof delegation to `agy`: `checkpoint.sh` snapshots
+  repo+vault → `delegate_agy.sh` runs agy **sandboxed** with a completion sentinel
+  → `verdict.sh` decides PASS/FAIL from **git reality, never agy's self-report**
+  (unclaimed change or declared `external_effects[]` ⇒ leak) → `authority-guard.sh`
+  blocks agy-authored human-authority claims → PASS promotes to HAM + `sync.sh`,
+  FAIL rolls back transactionally. agy still writes ONLY `inbox.md`+`handoff/`;
+  canon needs a `PROPOSAL:` + Jed/CC approval. Multi-model *opinion* (distinct from
+  agentic delegation) = the `gemini`+OSS-`qwen` council, CC chairman; `agy` is never
+  a council voice on its own work. Tests: `bash .agents/skills/antigravity/tests/run.sh`.
 - **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
 - **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
 
