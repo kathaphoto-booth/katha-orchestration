@@ -15,6 +15,10 @@ assert_contains() { # <haystack> <needle> <msg>
   if [[ "$1" == *"$2"* ]]; then PASS_COUNT=$((PASS_COUNT+1)); echo "  ok: $3";
   else FAIL_COUNT=$((FAIL_COUNT+1)); echo "  FAIL: $3 (missing '$2')"; fi
 }
+assert_not_contains() { # <haystack> <needle> <msg>
+  if [[ "$1" != *"$2"* ]]; then PASS_COUNT=$((PASS_COUNT+1)); echo "  ok: $3";
+  else FAIL_COUNT=$((FAIL_COUNT+1)); echo "  FAIL: $3 (unexpectedly present: '$2')"; fi
+}
 
 # Build a throwaway git repo with one committed file; echoes its path.
 mk_repo() {
