@@ -210,6 +210,6 @@ Feature was unused. Removal tracked in execution plan Phase 0.
 - `katha-memory` skill — ARCHIVED. HAM replaced it.
 - `@google/genai` package — PENDING REMOVAL (Phase 0 of plan)
 - "11-token palette" — WRONG. "10 brand tokens + 2 ecru-safe".
-- "81 presets (31 Sig / 50 Classic)" — WRONG. "62 template presets".
+- "81 presets (31 Sig / 50 Classic)", "62 template presets", "62 presets", "81 id fields" — ALL stale. Catalog = 82 committed presets (33 Signature + 49 Classic).
 - Geometric `k` logomark — RETIRED. Calado diamond/tent is canonical.
 - 5-dot calado cross maker's mark — PURGED. Under redesign.

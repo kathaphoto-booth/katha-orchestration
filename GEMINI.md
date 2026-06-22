@@ -40,14 +40,17 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
   conflict (per `PRODUCT.md`). `DESIGN.md` is currently HELD with known marks-canon
   drift (`SESSION_HANDOFF.json flags_for_jed`); when docs disagree on marks,
   `patterns.md` / `memory.md` are authoritative.
-- **Marks (LOCKED 2026-06-13)**: exactly TWO — word mark (`katha` Fraunces-flow,
-  swash off the k) + logo mark (leaf/feather "K"). There is **NO maker's mark and
-  NO brass ring**. Master CTA = **"Commission"** — never "Commission KTHA", no
-  "KTHA" suffix. Do not reintroduce a maker's mark / KTHA closing stroke.
+- **Marks (LOCKED 2026-06-13, scope 2026-06-18)**: exactly TWO — word mark (`katha`
+  Playfair-flow, swash off the k) + logo mark (leaf/feather "K"). There is **NO
+  maker's mark and NO brass ring**. Do not reintroduce a maker's mark / KTHA
+  closing stroke. **CTA (Vince-Alignment 2.0, 2026-06-18): "Commission" is
+  RETIRED** as master verb — unified set is "Request a Proposal" / "Reserve Your
+  Date" / "Begin Your Inquiry" / "Send Inquiry" / "Sign Me Up", same on both surfaces.
 - **Palette**: 10 brand tokens + 2 ecru-safe text tokens (see `patterns.md §1`).
   Canonical phrasing: "10 brand tokens + 2 ecru-safe". NOT "11-token".
 - **Two-Tier Rule** (design tiers): Katha Signature presets (id `^katha-`) held to
-  palette + Fraunces. Classic wedding presets exempt.
+  palette + current display type (Playfair Display now; IvyMode pending Adobe
+  Fonts license). Classic wedding presets exempt.
 - **Catalog count**: 82 committed presets (33 Signature + 49 Classic) in
   `lib/templates.ts` since slot-law enforcement (2026-06-12); slot-count law
   (2/3/4 only) + symmetry enforced by `npm run guard`. (The old "62 presets" /
@@ -60,8 +63,11 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
 - **Forbidden**: OAX tokens, pure `#000`/`#fff`, "keepsake", technical/agentic
   vocab client-facing, `oax-impeccable-bridge` skill, `oax-audit-monster` MCP.
 - **Output Validation**: Must pass `npm run guard` (P0:0 P1:0).
-- **Typography** (ratified 2026-06-04, Jed): Fraunces (display) · EB Garamond
-  (body) · Inter (UI) · JetBrains Mono (meta). "Outfit" is RETIRED.
+- **Typography** (Vince-Alignment 2.1/2.2, 2026-06-18): target pair is IvyMode
+  (display) + Proxima Nova (body @ 15px); free near-match in use now is Playfair
+  Display (display) + Hanken Grotesk (body), hot-swapped to the licensed pair once
+  the Adobe Fonts kit lands. Inter (UI) · JetBrains Mono (meta) unchanged. Fraunces
+  + EB Garamond are FULLY RETIRED — do not reintroduce. "Outfit" is RETIRED.
 
 ---
 
@@ -74,7 +80,7 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
 - Linting: `npm run guard` in `photobooth-template-studio/`.
 - Standing subagents: `loom-auditor` (live render) + `brass-ring-enforcer`
   (source-tree drift). Both at `.claude/agents/`. NB: `brass-ring-enforcer` is a
-  forbidden-hex/vocab/rust/`rounded-` source guard — it does **not** enforce any
+  forbidden-hex/vocab/rust source guard — it does **not** enforce any
   maker's mark (ignore any stale skill blurb claiming a "KTHA closing stroke").
 - **Brand governance / generation**: `impeccable-looped-kit` (master 4-phase
   Start/Iterate/Polish/Maintain) is the brand-governance workflow; `/impeccable`
@@ -160,6 +166,9 @@ On every new session, read ALL 7 nodes IN ORDER before anything else:
 5. `.memory/memory.md` — Jed-confirmed facts (append-only log, auto-capture)
 6. `.memory/instructions.md` — agent boundaries, auto-capture protocol
 7. `.memory/handoff/*.md` — unread AG artifacts (skip `_` prefix files)
+8. `.memory/handoff/gemini_consolidated_session.md` — The consolidated active architectural state (replaces the need to read older, truncated transcripts).
+
+**Auto-Context Consolidation:** If the session context becomes too long or momentum is degrading, run the `gemini-session-ingest` tool to compress the active architectural state into `.memory/handoff/gemini_consolidated_session.md`. When reading HAM nodes at boot, treat this file as the authoritative compressed memory state, replacing the need to scan older, truncated transcripts.
 
 **Canonical path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
 
@@ -288,4 +297,6 @@ is a convenience pointer, not the source of truth.
 - `katha-protocol` skill — PURGED 2026-06-13. Brand governance → `impeccable-looped-kit` / `/impeccable`.
 - `DESIGN_SYSTEM.v2.md` / `BRAND_GENESIS_PLAN.md` — SUPERSEDED. Living law = root `DESIGN.md` + vault `patterns.md`.
 - Old service tiers "Glam Editorial / Architectural / Katha Booth" — SUPERSEDED by the 4 Installation tiers (§3).
-- Maker's mark / brass ring / "Commission KTHA" — PURGED 2026-06-13. Two marks only; CTA = "Commission".
+- Maker's mark / brass ring / "Commission KTHA" — PURGED 2026-06-13. Two marks only.
+- "Commission" as master CTA — RETIRED 2026-06-18 (Vince-Alignment 2.0). Current unified set: "Request a Proposal" / "Reserve Your Date" / "Begin Your Inquiry" / "Send Inquiry" / "Sign Me Up" (see §3).
+- Fraunces (display) / EB Garamond (body) — FULLY RETIRED 2026-06-18 (Vince-Alignment 2.2). Current: Playfair Display / Hanken Grotesk (near-match) → IvyMode / Proxima Nova (licensed target).
