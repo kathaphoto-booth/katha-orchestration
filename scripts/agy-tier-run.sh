@@ -42,10 +42,12 @@ fi
 START=$(date +%s)
 
 "$AGY" \
+  --sandbox \
   --add-dir "$BRIEF_DIR" \
   --print-timeout "$TIMEOUT" \
   --print "--- TASK INSTRUCTION ---
-Read brief.md in this directory. Execute the task exactly as specified. Write your complete result to ${BRIEF_DIR}/result.md before ending. Do not read files outside the directories you have been granted.
+Read brief.md in this directory. Execute the task exactly as specified. Write your complete result to ${BRIEF_DIR}/result.md before ending. Do not read files outside the directories you have been granted. As the FINAL line of result.md, write exactly this transaction sentinel and nothing after it:
+STATUS: COMPLETE
 
 --- SYSTEM ARCHITECTURE INJECTION - VAULT MEMORY ---
 $(cat "$VAULT/COMPILED_HAM.md" 2>/dev/null || echo "Vault memory unavailable")" \
@@ -54,8 +56,13 @@ $(cat "$VAULT/COMPILED_HAM.md" 2>/dev/null || echo "Vault memory unavailable")" 
 END=$(date +%s)
 DURATION=$((END - START))
 
-if [[ -f "$BRIEF_DIR/result.md" ]]; then
+# Completion is the transaction SENTINEL, not file existence — a crashed agy can
+# leave a half-written result.md (and even exit 0). Check the tail + strip CR so
+# trailing whitespace / mid-file noise can't fool it.
+if [[ -f "$BRIEF_DIR/result.md" ]] && tail -n 3 "$BRIEF_DIR/result.md" | tr -d '\r' | grep -qx 'STATUS: COMPLETE'; then
   STATUS="OK"
+elif [[ -f "$BRIEF_DIR/result.md" ]]; then
+  STATUS="INCOMPLETE_NO_SENTINEL"
 else
   STATUS="MISSING_RESULT"
 fi
