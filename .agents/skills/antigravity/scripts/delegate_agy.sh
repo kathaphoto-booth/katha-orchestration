@@ -41,6 +41,8 @@ BASE_F="$(mktemp)"
 changed_set "$REPO" 2>/dev/null | sort > "$BASE_F" || true
 
 OUT="$REPO/.orchestration/$RUN"
+mkdir -p "$REPO/.orchestration"
+echo '*' > "$REPO/.orchestration/.gitignore"   # idempotent; see checkpoint.sh for rationale
 mkdir -p "$OUT"
 export AGY_OUT="$OUT"
 

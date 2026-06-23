@@ -42,6 +42,11 @@ esac
 STATE_DIR="$REPO/.orchestration/$RUN"
 
 do_snapshot() {
+  # Harness bookkeeping must never look like an agy-attributable change. Idempotent,
+  # self-healing nested gitignore — covers every file this skill ever writes under
+  # .orchestration/, including self_eval.sh's ledger.jsonl, with zero verdict.sh logic.
+  mkdir -p "$REPO/.orchestration"
+  echo '*' > "$REPO/.orchestration/.gitignore"
   mkdir -p "$STATE_DIR/vault/handoff"
 
   # Repo: record HEAD so rollback can `git reset --hard` back to it.
