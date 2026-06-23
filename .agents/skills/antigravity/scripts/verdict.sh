@@ -48,6 +48,9 @@ read_into REAL < <(changed_set "$REPO")
 # this script's bookkeeping artifact from a prior run, not something agy or
 # any external actor touched. Without this, a second run against the same
 # repo would self-FAIL on its own previous .verdict.json.
+# (.verdict.json lives at $REPO root, not under $REPO/.orchestration/, so it
+# isn't covered by checkpoint.sh/delegate_agy.sh's nested .orchestration/.gitignore
+# — that's a separate fix for a separate file, not redundant with this one.)
 REAL_FILTERED=()
 for _f in "${REAL[@]:-}"; do
   [[ "$_f" == ".verdict.json" ]] && continue

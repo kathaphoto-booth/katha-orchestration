@@ -801,3 +801,157 @@ git commit -m "feat(orchestration): /antigravity skill wired; v1 leak-proof loop
 
 ## v2 Backlog (explicitly out of scope here)
 §5 reader/verifier model split + Opus tiering · §6 differential/active-recall human approval + second-model canon critic · §7 vault-fsck hash-chain + per-line canon provenance.
+
+---
+
+## Phase 7 — Close the gate's self-leak (adversarial-review finding, 2026-06-22, post-ship)
+
+> **Context:** v1 shipped GREEN (59/0) and was then adversarially reviewed against the *documented
+> loop itself*, not just each script in isolation. Live repro: a fresh repo, `checkpoint.sh snapshot`,
+> a fully honest **zero-edit** delegation (`files_touched: []`), then `verdict.sh` → **FAIL**, reasons
+> `unclaimed change: .orchestration/run1/repo_head`, `.../result.md`, `.../vault/inbox.md`. Root cause:
+> `checkpoint.sh` and `delegate_agy.sh` write their own bookkeeping into `$REPO/.orchestration/<run>/`,
+> which is **not gitignored**; `verdict.sh`'s leak-check (`lib.sh:changed_set`) only excludes the single
+> file `.verdict.json`. Every real invocation of the loop fails the gate regardless of what agy does,
+> and it compounds — `self_eval.sh`'s `ledger.jsonl` ([self_eval.sh:37](../../../.agents/skills/antigravity/scripts/self_eval.sh)) lands in the same
+> unexcluded tree, so each run permanently adds another unclaimed "leak" for every future run to trip on.
+> This escaped the RED suite because `verdict.sh` and `checkpoint.sh`/`delegate_agy.sh` are unit-tested
+> in total isolation from each other — no test ever runs the documented 3-step loop against one shared
+> repo. **Council consulted** (`council.sh`, 2026-06-22): gemini ABSENT (Vertex exit 55, degraded loudly
+> per known infra constraint); OSS qwen voted path-prefix-exclude-in-verdict.sh. Chairman (CC) synthesis
+> below picks a simpler, more self-contained variant after weighing OSS's pick against two others.
+
+### Task 12: Self-contained `.orchestration/` exclusion + the missing integration test (CRITICAL)
+
+**Why this fix over the alternatives considered:**
+- *(rejected)* Hand-edit this repo's root `.gitignore` — works here, but `checkpoint.sh`/`delegate_agy.sh`
+  are written to take `--repo <any dir>`; a fix that depends on the *target* repo already having the
+  right gitignore line is fragile and silently breaks the day this harness points at a second repo.
+- *(rejected, OSS's pick)* Path-prefix exclude inside `verdict.sh`'s `changed_set` consumer — works, but
+  adds matching logic to the one script that's supposed to stay maximally simple/auditable (it's the
+  trust root), and only fixes `verdict.sh`'s view — a human running plain `git status` on the repo would
+  still see the clutter.
+- **(chosen) Self-contained nested `.gitignore`:** the moment either wrapper script creates
+  `$REPO/.orchestration/`, it also drops a `.orchestration/.gitignore` containing `*`. Same one-line
+  idea as OSS's "gitignore it" instinct (council option a), but the harness asserts it on *every* run
+  instead of depending on a human having edited the target repo's root gitignore once. Zero new logic
+  in `verdict.sh`. Idempotent — safe to write every run, self-heals if someone deletes it. `git status`,
+  `git clean -fd` (already used by `checkpoint.sh` rollback), and `verdict.sh`'s `changed_set` all honor
+  nested gitignores identically, so one fix covers every consumer.
+- **Regression risk (the one the council push-back surfaced):** `self_eval.sh`'s `ledger.jsonl` is the
+  system's only durable cross-run history; gitignoring `.orchestration/` makes it untracked, so it is
+  NOT preserved by git history and vanishes if the directory is ever pruned. Per the design's own stated
+  philosophy the durable artifact is meant to be the RED-test suite the ledger's `report` graduates into,
+  not the ledger itself — but flag this explicitly for Jed rather than deciding it silently (see
+  Checkpoint 7 below).
+
+**Files:**
+- Modify: `.agents/skills/antigravity/scripts/checkpoint.sh:44-45` (insert before the existing `mkdir -p "$STATE_DIR/vault/handoff"`)
+- Modify: `.agents/skills/antigravity/scripts/delegate_agy.sh:43-44` (insert before the existing `mkdir -p "$OUT"`)
+- Create: `.agents/skills/antigravity/tests/test_integration_e2e.sh` — the missing cross-script test
+
+- [x] **Step 1: Write the failing integration test.** Create `tests/test_integration_e2e.sh`:
+
+```bash
+#!/usr/bin/env bash
+# Tests the DOCUMENTED loop (checkpoint -> delegate -> verdict) end-to-end against
+# ONE shared repo — the gap that let the self-leak bug ship. Unit tests for the
+# individual scripts are not enough; they each mock away the other scripts' output.
+
+test_integration_honest_zero_edit_run_passes() {
+  source "$SKILL/lib.sh"
+  local r; r=$(mk_repo); local v; v=$(mk_vault); local bin; bin=$(mktemp -d)
+  bash "$SKILL/checkpoint.sh" snapshot int1 "$r" "$v" >/dev/null
+
+  printf '#!/usr/bin/env bash\nprintf "did nothing\\nSTATUS: COMPLETE\\n" > "$AGY_OUT/result.md"\nexit 0\n' > "$bin/agy"
+  chmod +x "$bin/agy"
+  AGY_BIN="$bin/agy" PATH="$bin:$PATH" bash "$SKILL/delegate_agy.sh" --repo "$r" --run int1 --brief "do nothing" >/dev/null 2>&1
+  assert_exit "$?" 0 "delegate_agy: honest no-op run reports OK"
+
+  local dg; dg=$(mktemp)
+  echo '{"files_touched":[],"external_effects":[]}' > "$dg"
+  bash "$SKILL/verdict.sh" --repo "$r" --digest "$dg" --gate none >/dev/null 2>&1
+  assert_exit "$?" 0 "verdict.sh: honest zero-edit run PASSES (not a false leak on the harness's own bookkeeping)"
+}
+```
+
+- [x] **Step 2: Run, verify it fails.** Run: `bash .agents/skills/antigravity/tests/run.sh integration_honest_zero_edit_run_passes`. Expected: FAIL on the `verdict.sh` assert, reasons listing `.orchestration/int1/repo_head` etc — reproduces the live repro above as a permanent regression test.
+
+- [x] **Step 3: Implement the fix in `checkpoint.sh`.** At [checkpoint.sh:44](../../../.agents/skills/antigravity/scripts/checkpoint.sh), change:
+
+```bash
+do_snapshot() {
+  mkdir -p "$STATE_DIR/vault/handoff"
+```
+to:
+```bash
+do_snapshot() {
+  # Harness bookkeeping must never look like an agy-attributable change. Idempotent,
+  # self-healing nested gitignore — covers every file this skill ever writes under
+  # .orchestration/, including self_eval.sh's ledger.jsonl, with zero verdict.sh logic.
+  mkdir -p "$REPO/.orchestration"
+  echo '*' > "$REPO/.orchestration/.gitignore"
+  mkdir -p "$STATE_DIR/vault/handoff"
+```
+
+- [x] **Step 4: Implement the fix in `delegate_agy.sh`.** At [delegate_agy.sh:43](../../../.agents/skills/antigravity/scripts/delegate_agy.sh), change:
+
+```bash
+OUT="$REPO/.orchestration/$RUN"
+mkdir -p "$OUT"
+```
+to:
+```bash
+OUT="$REPO/.orchestration/$RUN"
+mkdir -p "$REPO/.orchestration"
+echo '*' > "$REPO/.orchestration/.gitignore"   # idempotent; see checkpoint.sh for rationale
+mkdir -p "$OUT"
+```
+
+- [x] **Step 5: Run, verify pass.** Run: `bash .agents/skills/antigravity/tests/run.sh`. Expected: `FAIL=0`, and the new integration test prints both `ok:` lines.
+
+- [x] **Step 6: Commit.**
+
+```bash
+git add .agents/skills/antigravity/scripts/checkpoint.sh .agents/skills/antigravity/scripts/delegate_agy.sh .agents/skills/antigravity/tests/test_integration_e2e.sh
+git commit -m "fix(orchestration): self-contained .orchestration/ gitignore — gate no longer leaks on its own bookkeeping"
+```
+
+### ⏸ Checkpoint 7 (Jed): confirm the ledger tradeoff before closing this phase
+The fix above means `self_eval.sh`'s `ledger.jsonl` is no longer git-tracked. Confirm: is the RED-test
+suite the intended durable artifact (ledger is disposable, current design is fine), or should
+`ledger.jsonl` specifically be exempted from the nested gitignore (`echo '*' > .gitignore` + `echo
+'!ledger.jsonl' >> .gitignore`) so it survives as committed history? **Default if no response: ledger
+stays disposable** (matches the self-eval design's own stated philosophy — see `SKILL.md` "Self-
+improvement loop").
+
+### Task 13: Checkpoint rollback isn't atomic across repo+vault (WARNING, lower priority)
+**Files:** Modify `.agents/skills/antigravity/scripts/checkpoint.sh` (`do_rollback`)
+- [x] A process kill between the repo-half (`git reset --hard`) and vault-half (`cp -a` restore) of
+  `do_rollback` leaves a torn state with no detection. KISS fix (detect-and-warn, not auto-resume —
+  safely auto-resuming a torn transaction is genuinely hard and not needed for v1 single-operator use):
+  write `"$STATE_DIR/.rollback_inprogress"` as the first line of `do_rollback`, `rm -f` it as the last
+  line; add a `checkpoint.sh status <run> <repo> <vault>` subcommand that errors loudly if the marker
+  exists (torn rollback — needs manual review) instead of silently re-running.
+- [x] Test: kill `do_rollback` mid-way (e.g. `set -e` + a forced failure between the two halves in a
+  test double) and assert the marker is left behind and `status` reports it.
+- [x] Commit separately from Task 12.
+
+### Task 14: `council.sh`'s undocumented `set -uo pipefail` (NOTE, lower priority)
+**Files:** Modify `.agents/skills/antigravity/scripts/council.sh:15`
+- [x] Every other script in the skill uses `set -euo pipefail`; `council.sh` deliberately omits `-e`
+  (so `voice_gemini`/`voice_oss` failing doesn't kill the whole script) but says nothing. Add a one-line
+  comment above `set -uo pipefail` stating that's intentional, so a future contributor copy-pasting
+  boilerplate between these scripts doesn't "fix" it into a regression.
+- [x] No test needed — this is a comment-only change. Commit with Task 13 or standalone.
+
+## Dependency graph (Phase 7)
+```
+Task 12 (CRITICAL: self-leak fix + integration test) ──► Checkpoint 7 (Jed: ledger tradeoff)
+                                                                  │
+                                                                  ▼
+                                              Task 13 (rollback atomicity marker) ──┐
+                                              Task 14 (council.sh comment) ─────────┴──► done
+```
+Task 13/14 do not depend on each other or block Task 12 landing — they can ship in any order, or be
+deferred past this session without blocking the critical fix.
