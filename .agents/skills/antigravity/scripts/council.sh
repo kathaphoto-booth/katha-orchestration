@@ -12,6 +12,7 @@
 #
 # Voices: gemini (Google/Vertex) + qwen OSS (local Ollama). CC (Opus) is chairman
 # and synthesizes — agy is NEVER a council voice (executor != critic).
+# Omit -e so that a failed voice (missing model, network down) doesn't kill the script — each voice fails gracefully and the script prints whatever it got from the other voice.
 set -uo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=./lib.sh
