@@ -39,10 +39,30 @@ test_rollback_atomicity_detects_torn_rollback() {
 }
 
 test_rollback_atomicity_status_no_snapshot() {
-  source "$SKILL/lib.sh"
   local r; r=$(mk_repo); local v; v=$(mk_vault)
   bash "$SKILL/checkpoint.sh" status run_never_snapshotted "$r" "$v" >/dev/null 2>/tmp/rollback_atomicity_nosnap.$$
   local rc=$?
-  assert_exit "$rc" 0 "status on a run with no snapshot at all is not treated as torn (exit 0)"
+  assert_exit "$rc" 2 "status on a run with no snapshot at all is its own outcome, not torn or clean (exit 2)"
+  assert_contains "$(cat /tmp/rollback_atomicity_nosnap.$$)" "no snapshot found" "status stderr names the no-snapshot case"
   rm -f /tmp/rollback_atomicity_nosnap.$$
+}
+
+test_rollback_atomicity_status_typo_run_id_not_confused_with_clean() {
+  # Regression for the review finding: a typo'd run_id (here simulating
+  # run_importnat vs a real run_important) must report "no snapshot" (exit
+  # 2), never "clean" (exit 0) — even though a genuinely clean, correctly
+  # snapshotted run with a similar id exists right next to it.
+  local r; r=$(mk_repo); local v; v=$(mk_vault)
+  bash "$SKILL/checkpoint.sh" snapshot run_important "$r" "$v" >/dev/null
+  echo "agy edit" >> "$r/a.txt"
+  bash "$SKILL/checkpoint.sh" rollback run_important "$r" "$v" >/dev/null
+
+  bash "$SKILL/checkpoint.sh" status run_important "$r" "$v" >/dev/null 2>&1
+  assert_exit "$?" 0 "the correctly-spelled, genuinely clean run still reports clean (exit 0)"
+
+  bash "$SKILL/checkpoint.sh" status run_importnat "$r" "$v" >/dev/null 2>/tmp/rollback_atomicity_typo.$$
+  local rc=$?
+  assert_exit "$rc" 2 "a typo'd run_id reports no-snapshot (exit 2), never clean"
+  assert_contains "$(cat /tmp/rollback_atomicity_typo.$$)" "no snapshot found" "typo'd run_id stderr names the no-snapshot case"
+  rm -f /tmp/rollback_atomicity_typo.$$
 }

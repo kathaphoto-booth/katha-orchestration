@@ -145,6 +145,22 @@ do_rollback() {
 }
 
 do_status() {
+  # Three-way, not two-way: "no snapshot ever taken" and "clean" are
+  # deliberately reported as DIFFERENT outcomes (exit 2 vs exit 0). A
+  # typo'd run_id (e.g. run_importnat vs run_important) has no
+  # $STATE_DIR/repo_head and must never be folded into "clean" — that would
+  # read as false reassurance when the real run with the correct id could
+  # still be torn. Exit codes: 0 clean, 1 torn, 2 no snapshot for this run_id.
+  #
+  # Caveat: a marker found here can also mean a rollback is genuinely IN
+  # PROGRESS right now, not crashed — this marker-only design can't tell the
+  # two apart. Treat "torn" from a concurrent run as inconclusive, not fatal.
+  if [[ ! -f "$STATE_DIR/repo_head" ]]; then
+    echo "checkpoint.sh status: no snapshot found for run '$RUN' — check the run id" >&2
+    echo "(no $STATE_DIR/repo_head; this run_id was never snapshotted, or the" >&2
+    echo "spelling doesn't match the run that was)." >&2
+    exit 2
+  fi
   if [[ -f "$MARKER" ]]; then
     echo "checkpoint.sh status: TORN ROLLBACK for run '$RUN' — a prior rollback" >&2
     echo "started (marker $MARKER exists) but never finished cleanly." >&2
