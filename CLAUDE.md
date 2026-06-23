@@ -37,37 +37,23 @@ For deep-dive work, consult these directory-scoped context files:
 - Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
 - Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
 
-## BOOT ORDER (Systemic Injection)
+## CONTEXT RETRIEVAL (MCP Dynamic Pull)
 Memory lives at the absolute vault path (Samsung 970, always mounted):
 **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
-**SYSTEM ENFORCEMENT:** 
-The 7 HAM nodes (`SESSION_HANDOFF.json`, `decisions.md`, `patterns.md`, `inbox.md`, `memory.md`, `instructions.md`, `handoff/*.md`) are now auto-compiled into a single file by the pre-flight `compile-ham.sh` wrapper.
+**SYSTEM ENFORCEMENT:**
+The legacy "Push Memory" (forcing agents to read `COMPILED_HAM.md` or 7 nodes at boot) is **RETIRED** to prevent token bloat. Do not read the entire vault at startup.
 
-Read the single compiled node IN ORDER from the vault:
-1. `COMPILED_HAM.md` — Contains the entire locked state, decisions, brand law, and memory.
+Instead, you are connected to the `codebase-memory-mcp` server. 
+You must use semantic graph search to dynamically pull only the required facts when needed.
 
-No symlink, no mirror, no boot script. The vault is the single source of truth.
-Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
+- **Check Project State:** Query `SESSION_HANDOFF.json`
+- **Check Brand Law:** Query `patterns.md` 
+- **Check Recent Approvals:** Query `memory.md`
 
-**Staleness check (mandatory):** After reading `COMPILED_HAM.md`, compare its
-embedded `memory.md` newest dated entry and its `inbox.md` last "Pending
-(AG-proposed)" line against the embedded `SESSION_HANDOFF.json`'s
-`.latest_memory_entry` / `.latest_inbox_entry_date` (inside `COMPILED_HAM.md`
-these are the `## 5. memory.md`, `## 4. inbox.md`, and `## 1. SESSION_HANDOFF.json`
-sections). If either tail is newer than the recorded checkpoint, read the new
-entries before proceeding — never rely on SESSION_HANDOFF's narrative fields
-(`.session`, `.phase`, `.current_task`) alone; they describe intent, not the
-vault's actual tail. Run `bash .agents/skills/handoff/sync.sh` (or `/handoff`)
-at the end of any session that adds `memory.md`/`inbox.md` entries, to refresh
-the checkpoint for the next session.
+**Staleness Check:** If you suspect drift, run `search_graph` to compare `.latest_memory_entry` in `SESSION_HANDOFF.json` against the tail of `memory.md`. If out of sync, run `/handoff` via the mechanical sync skill.
 
-**Auto-capture rule:** After every Jed confirmation, correction, or preference,
-append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
-See `instructions.md` for the full protocol. Do not let facts slip through.
-
-> Deprecated boots: do NOT read HCL.md, HCL_DASHBOARD.html, STATE.md, or
-> BRAND_GENESIS_PLAN.md (archived in Vault `_deprecated_pre_HAM/`).
+**Auto-capture rule:** After every Jed confirmation, correction, or preference, append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`. Use the `write_file` tool to append. Do not let facts slip through.
 
 ---
 

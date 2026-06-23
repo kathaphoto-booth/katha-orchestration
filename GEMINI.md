@@ -155,22 +155,19 @@ austerity," or reflected-praise. Deliver output directly and confidently.
 
 ---
 
-## §6. AG Boot Sequence (HAM 7-Node, updated 2026-06-06)
+## §6. Context Retrieval (MCP Pull, updated 2026-06-23)
 
-On every new session, read ALL 7 nodes IN ORDER before anything else:
+The legacy 7-node manual boot sequence is RETIRED to eliminate token bloat. Do not attempt to read the entire vault at startup.
+AG is now connected to `codebase-memory-mcp`. You must query the vault dynamically.
 
-1. `.memory/SESSION_HANDOFF.json` — locked state, roadmap, resume instruction
-2. `.memory/decisions.md` — architecture, team, roadmap, infra, locked calls
-3. `.memory/patterns.md` — brand law (palette, type, voice, layout)
-4. `.memory/inbox.md` — open work (append proposals; CC approves)
-5. `.memory/memory.md` — Jed-confirmed facts (append-only log, auto-capture)
-6. `.memory/instructions.md` — agent boundaries, auto-capture protocol
-7. `.memory/handoff/*.md` — unread AG artifacts (skip `_` prefix files)
-8. `.memory/handoff/gemini_consolidated_session.md` — The consolidated active architectural state (replaces the need to read older, truncated transcripts).
+**Canonical vault path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
 
-**Auto-Context Consolidation:** If the session context becomes too long or momentum is degrading, run the `gemini-session-ingest` tool to compress the active architectural state into `.memory/handoff/gemini_consolidated_session.md`. When reading HAM nodes at boot, treat this file as the authoritative compressed memory state, replacing the need to scan older, truncated transcripts.
+When beginning a task, use semantic graph search (`search_graph` or `query_graph`) to pull only what you need:
+- To understand current state: search `SESSION_HANDOFF.json` and `handoff/gemini_consolidated_session.md`.
+- To verify rules: search `patterns.md` and `instructions.md`.
+- To record actions: append to `inbox.md` or `memory.md` via `write_file`.
 
-**Canonical path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
+**Auto-Context Consolidation:** If the session context becomes too long or momentum is degrading, use the memory ingestion workflow to compress the active architectural state. Treat the resulting handoff files as the authoritative compressed memory state.
 
 > `scripts/memory_boot_check.sh` is DELETED (2026-06-04). No symlink. No mirror.
 > Read the vault directly. If Samsung 970 is unmounted, do NOT proceed — report

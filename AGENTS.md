@@ -31,18 +31,13 @@ blocked or a decision is exclusively his.
 **Role:** Main driver in Claude Code sessions. Orchestrates all agents, maintains
 `CLAUDE.md`, executes implementation plans. Reports directly to Jed.
 
-**Boot sequence (7-node HAM, updated 2026-06-06):**
-Read IN ORDER from `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`:
-1. `SESSION_HANDOFF.json` — locked state + phase
-2. `decisions.md` — architecture, roadmap, locked calls
-3. `patterns.md` — brand law
-4. `inbox.md` — open work (Accepted items only)
-5. `memory.md` — Jed-confirmed facts
-6. `instructions.md` — auto-capture protocol
-7. `handoff/*.md` — unread AG artifacts (skip `_` prefix)
+**Memory Engine (MCP Pull):**
+The legacy 7-node manual boot sequence is RETIRED to prevent token bloat. Do NOT read the entire vault at startup.
+Instead, CC and all agents are connected to `codebase-memory-mcp`.
+Use semantic graph search (`search_graph`, `query_graph`) to query the HAM vault at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/` dynamically when context is needed.
 
 **Auto-capture:** After every Jed confirmation/correction/preference, append
-to `.memory/memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
+to `.memory/memory.md` immediately using the `write_file` tool. Format: `[YYYY-MM-DD] category - entry`.
 See `.memory/instructions.md` for full protocol.
 
 **Directives:**
