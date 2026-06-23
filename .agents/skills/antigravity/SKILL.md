@@ -74,9 +74,16 @@ agy's sandboxed toolbelt.
 suite. Must end `FAIL=0`.
 
 ## Known infra constraints (2026-06-22)
+- **gemini trusted-folder gate (FIXED):** headless gemini CLI calls exit 55 without
+  `GEMINI_CLI_TRUST_WORKSPACE=true`. This is the real cause of gemini voice failures —
+  not the Vertex env, not a broken consumer tier. Fix: `GEMINI_CLI_TRUST_WORKSPACE`
+  is now exported (defaulting to `true`, overridable) inside `load_vertex_env()` in
+  `council.sh`. The Vertex env (`GOOGLE_GENAI_USE_VERTEXAI=true`,
+  `GOOGLE_CLOUD_PROJECT=katha-booth`, `GOOGLE_CLOUD_LOCATION=global`) is CORRECT
+  and is NOT the issue. Do NOT add `--skip-trust` to the CLI call.
 - Council wrappers need the Vertex env (`GOOGLE_GENAI_USE_VERTEXAI/PROJECT/LOCATION`
-  from `~/.zshrc`) loaded; a non-interactive shell that lacks it silently falls
-  back to a broken consumer tier. Export the three vars before invoking gemini.
+  from `~/.zshrc`) loaded; `load_vertex_env()` self-loads these for non-interactive
+  shells.
 - No `timeout`/`gtimeout` on PATH → wrappers run their CLI unbounded. agy
   self-bounds via `--print-timeout`; the `codex` CLI does not and currently
   stalls — route the OSS voice via the Ollama API until that wrapper is fixed.
