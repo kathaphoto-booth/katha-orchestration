@@ -46,7 +46,10 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
    measured). Missing inputs recorded as null, never faked.
 6. **PASS** ⇒ promote staged handoff, consolidate to HAM, run `handoff/sync.sh`.
    **FAIL** ⇒ `checkpoint.sh rollback <run> <repo> <vault>`; log the leak; nothing
-   reaches HAM.
+   reaches HAM. `checkpoint.sh status <run> <repo> <vault>` detects a torn
+   rollback (process died mid-transaction between the repo and vault halves)
+   and exits 1 with a manual-review warning — detect-and-warn only, no
+   auto-resume.
 
 ## Self-improvement loop (honest, deterministic)
 `self_eval.sh report --repo <repo>` aggregates the ledger: pass rate, **honesty

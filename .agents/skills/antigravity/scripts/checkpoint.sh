@@ -14,6 +14,19 @@
 # Usage:
 #   checkpoint.sh snapshot <run_id> <repo> <vault>
 #   checkpoint.sh rollback <run_id> <repo> <vault>
+#   checkpoint.sh status   <run_id> <repo> <vault>
+#
+# `status` detects a torn rollback: do_rollback restores the repo half and
+# the vault half sequentially (see the comment above do_rollback). If the
+# process dies between those halves, the repo is back at the snapshot HEAD
+# but the vault still holds the failed run's poisoned inbox.md/handoff/ —
+# a torn transaction with no other signal. `status` checks for the
+# `.rollback_inprogress` marker that do_rollback brackets around both
+# halves and reports it loudly instead of silently leaving it undetected.
+# This is detect-and-warn only, not auto-resume (see Task 13 design notes
+# in docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md §Phase 7):
+# safely auto-resuming a torn transaction is genuinely hard and a
+# single-operator v1 just needs to know to look.
 #
 # This is a standalone (non-sourced) script, so `set -euo pipefail` is safe
 # here — unlike lib.sh, which is deliberately sourced and leaves the
@@ -21,7 +34,7 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: checkpoint.sh <snapshot|rollback> <run_id> <repo> <vault>" >&2
+  echo "usage: checkpoint.sh <snapshot|rollback|status> <run_id> <repo> <vault>" >&2
 }
 
 if [[ $# -ne 4 ]]; then
@@ -35,7 +48,7 @@ REPO="$3"
 VAULT="$4"
 
 case "$CMD" in
-  snapshot|rollback) ;;
+  snapshot|rollback|status) ;;
   *) usage; exit 2;;
 esac
 
@@ -64,11 +77,20 @@ do_snapshot() {
   fi
 }
 
+MARKER="$STATE_DIR/.rollback_inprogress"
+
 do_rollback() {
   if [[ ! -f "$STATE_DIR/repo_head" ]]; then
     echo "no snapshot for $RUN" >&2
     exit 1
   fi
+
+  # Torn-transaction marker: written FIRST, before any repo mutation, and
+  # removed LAST, only after the vault half below fully completes. If this
+  # process dies anywhere in between, the marker survives on disk and
+  # `checkpoint.sh status` reports it — see the usage-comment block at the
+  # top of this file for why this is detect-and-warn rather than auto-resume.
+  touch "$MARKER"
 
   # The state dir lives under $REPO/.orchestration/$RUN — it is itself
   # untracked, so `git clean -fd` below would delete it before the vault
@@ -116,9 +138,25 @@ do_rollback() {
     rm -rf "$VAULT/handoff"
     cp -a "$HOLD/handoff" "$VAULT/handoff"
   fi
+
+  # Vault half done — the transaction is no longer torn. Must be the very
+  # last line of do_rollback (see marker comment above).
+  rm -f "$MARKER"
+}
+
+do_status() {
+  if [[ -f "$MARKER" ]]; then
+    echo "checkpoint.sh status: TORN ROLLBACK for run '$RUN' — a prior rollback" >&2
+    echo "started (marker $MARKER exists) but never finished cleanly." >&2
+    echo "Repo and vault state may be inconsistent. Needs manual review" >&2
+    echo "before retrying rollback or trusting this run's state." >&2
+    exit 1
+  fi
+  echo "checkpoint.sh status: clean for run '$RUN' (no torn rollback marker)"
 }
 
 case "$CMD" in
   snapshot) do_snapshot;;
   rollback) do_rollback;;
+  status) do_status;;
 esac
