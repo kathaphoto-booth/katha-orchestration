@@ -65,13 +65,11 @@ def post_to_mcp(mcp_url, audit_data, run_id, log_file):
     )
     try:
         with urllib.request.urlopen(req, timeout=10) as response:
-            if response.status in (200, 201, 202):
-                with open(log_file, "a") as lf:
-                    lf.write(f"MCP ingestion succeeded with status {response.status}\n")
+            if 200 <= response.status < 300:
+                log_msg(log_file, f"MCP ingestion succeeded with status {response.status}")
                 return "ok"
     except Exception as e:
-        with open(log_file, "a") as lf:
-            lf.write(f"MCP ingestion failed: {str(e)}. Writing fallback file.\n")
+        log_msg(log_file, f"MCP ingestion failed: {str(e)}. Writing fallback file.")
             
     # Fallback path
     fallback_dir = "tools/ingest_ready"

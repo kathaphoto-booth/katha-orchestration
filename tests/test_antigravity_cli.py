@@ -157,6 +157,14 @@ class TestAntigravityCLI(unittest.TestCase):
         current_files = set(os.listdir(self.fallback_dir))
         new_files = current_files - self.pre_existing_files
         self.assertTrue(len(new_files) > 0)
+        
+        for filename in new_files:
+            self.assertTrue(filename.startswith("audit-"))
+            self.assertTrue(filename.endswith(".json"))
+            file_path = os.path.join(self.fallback_dir, filename)
+            with open(file_path, "r") as f:
+                content = json.load(f)
+                self.assertEqual(content, {"project": "antigravity"})
 
 if __name__ == '__main__':
     unittest.main()
