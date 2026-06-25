@@ -30,16 +30,36 @@ def main():
     # placeholder for trimmed_run
     if action == "trimmed_run":
         ts = str(int(time.time()))
-        run_dir = f".orchestration/test-run-{ts}"
+        run_dir = input_data.get("run_dir") or f".orchestration/test-run-{ts}"
         os.makedirs(run_dir, exist_ok=True)
+        
+        log_path = os.path.join(run_dir, "cli.log")
+        
+        def log_msg(msg):
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            with open(log_path, "a") as log_f:
+                log_f.write(f"[{timestamp}] {msg}\n")
+                
+        log_msg(f"Starting trimmed_run. Action: {action}")
+        log_msg(f"Input parameters: {json.dumps(input_data)}")
+        
         # Create synthetic files
-        with open(os.path.join(run_dir, "audit.json"), "w") as f:
+        audit_path = os.path.join(run_dir, "audit.json")
+        perf_path = os.path.join(run_dir, "perf.json")
+        
+        with open(audit_path, "w") as f:
             json.dump({"project": "antigravity"}, f)
-        with open(os.path.join(run_dir, "perf.json"), "w") as f:
+        log_msg(f"Created audit.json at: {audit_path}")
+            
+        with open(perf_path, "w") as f:
             json.dump({"agy": []}, f)
+        log_msg(f"Created perf.json at: {perf_path}")
+        
+        log_msg("Status: success")
+        
         output_json(
             "success", 
-            artifacts=[f"{run_dir}/audit.json", f"{run_dir}/perf.json"],
+            artifacts=[audit_path, perf_path, log_path],
             run_id=ts,
             exit_code=0
         )
