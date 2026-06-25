@@ -104,21 +104,54 @@ if [[ "$agy_rc" -eq 0 && -s "$OUT/agy.out" ]]; then agy_status="OK"; else
   echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc)" >> "$OUT/agy.out"
 fi
 
+# --- Voice 3: copilot (optional, env-gated; read-only critic) ---
+copilot_status="SKIPPED"
+copilot_rc=0
+: > "$OUT/copilot.out"
+: > "$OUT/copilot.err"
+COUNCIL_INCLUDE_COPILOT="${COUNCIL_INCLUDE_COPILOT:-1}"
+COPILOT_BIN="${COPILOT_BIN:-gh}"
+if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
+  copilot_status="ABSENT"
+  # Pre-flight: `gh copilot --help` returns fast with no network call whether
+  # or not the underlying Copilot CLI is downloaded (verified empirically
+  # 2026-06-25 — gh 2.92.0, Copilot CLI not installed, rc=1, no download
+  # triggered). A nonzero rc here means a real `-p` call would either fail
+  # identically or risk triggering a first-run download — never attempt it
+  # blind (FR-11).
+  if "$COPILOT_BIN" copilot --help >/dev/null 2>&1; then
+    set +e
+    run_with_timeout "$TIMEOUT" "$COPILOT_BIN" copilot -p "$PROMPT" \
+      > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
+    copilot_rc=$?
+    set -e
+    redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"
+    rm -f "$OUT/.copilot.raw" "$OUT/.copilot.raw.err"
+    if [[ "$copilot_rc" -eq 0 && -s "$OUT/copilot.out" ]]; then copilot_status="OK"; else
+      echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
+    fi
+  else
+    echo "ABSENT: gh copilot CLI not available (pre-flight --help failed) — skipped to avoid a possible first-run download" >> "$OUT/copilot.out"
+  fi
+fi
+
 # council.json: a manifest CC reads to chair. NOT a verdict — no winner is picked.
 jq -n \
   --arg run "$RUN" \
   --arg blob "$BLOB" \
   --arg codex_status "$codex_status" --argjson codex_rc "$codex_rc" \
   --arg agy_status "$agy_status" --argjson agy_rc "$agy_rc" \
+  --arg copilot_status "$copilot_status" --argjson copilot_rc "$copilot_rc" \
   '{run: $run, blob: $blob,
     voices: {
-      codex: {status: $codex_status, rc: $codex_rc, out: "codex.out", err: "codex.err"},
-      agy:   {status: $agy_status,   rc: $agy_rc,   out: "agy.out",   err: "agy.err"}
+      codex:   {status: $codex_status,   rc: $codex_rc,   out: "codex.out",   err: "codex.err"},
+      agy:     {status: $agy_status,     rc: $agy_rc,     out: "agy.out",     err: "agy.err"},
+      copilot: {status: $copilot_status, rc: $copilot_rc, out: "copilot.out", err: "copilot.err"}
     },
     note: "collected critiques only; CC chairs synthesis"}' \
   > "$OUT/council.json"
 
-echo "council: codex=$codex_status agy=$agy_status -> $OUT/council.json"
+echo "council: codex=$codex_status agy=$agy_status copilot=$copilot_status -> $OUT/council.json"
 if [[ "$codex_status" == "ABSENT" && "$agy_status" == "ABSENT" ]]; then
   echo "BOTH voices ABSENT — nothing for CC to chair." >&2
   exit 1
