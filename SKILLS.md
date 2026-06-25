@@ -33,8 +33,9 @@
 |---|---|---|
 | `antigravity` | Delegate heavy agentic work to `agy` with the git-truth verification gate | `.agents/skills/antigravity/` |
 | `antigravity/loop.sh` | Bounded auto-retry (max 3) around the delegation chain; feeds verdict reasons into each retry | `.agents/skills/antigravity/scripts/loop.sh` |
-| `antigravity/council.sh` | 2nd-opinion critique (`codex` + `agy`, read-only) on a CC-authored diff — never on agy's own just-completed output | `.agents/skills/antigravity/scripts/council.sh` |
+| `antigravity/council.sh` | 2nd-opinion critique (`codex` + `agy` + optional `copilot`, read-only) on a CC-authored diff — never on agy's own just-completed output | `.agents/skills/antigravity/scripts/council.sh` |
 | `grill-me` | Adversarial pre-brainstorm interview (run BEFORE brainstorming) | `.agents/skills/grill-me/` |
+| `handoff` | Mechanical HAM sync — refreshes SESSION_HANDOFF.json derived fields via sync.sh (wired to /handoff) | `.agents/skills/handoff/` |
 | `crafting-agent-prompts` | Author/fix a delegated CLI agent's role/system prompt | `.agents/skills/crafting-agent-prompts/` |
 
 ## QA / Audit / Security
@@ -54,9 +55,12 @@
 ## Retiring (do not use — pending cleanup)
 | Skill | Reason | Path |
 |---|---|---|
-| `handoff` · `hierarchical-agent-memory` | HAM machinery — being stood down (see DESIGN.md / agy fix) | `.agents/skills/<name>/` |
-| `higgsfield-generate` · `-marketplace-cards` · `-product-photoshoot` · `-soul-id` | Deprecated — slated for deletion (also duplicated in `.claude/skills/`) | — |
 | `taste-skill-v1` | Legacy v1, kept only for back-compat | `.agents/skills/taste-skill-v1/` |
+
+> Removed 2026-06-25 (deleted from tree + skills-lock.json): `hierarchical-agent-memory`
+> (legacy push-memory model, contradicted current MCP-pull) and `higgsfield-generate` ·
+> `-marketplace-cards` · `-product-photoshoot` · `-soul-id` (unused side-exploration). `handoff`
+> was previously mislisted here — it is LIVE (wired to /handoff) and now sits under Orchestration.
 
 ---
 _Edit this file when adding/removing a skill. It is the ONLY skill index;
