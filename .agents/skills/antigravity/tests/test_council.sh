@@ -188,3 +188,17 @@ test_council_copilot_preflight_gates_p_call() {
   local cj="$r/.orchestration/crc5/council/council.json"
   assert_eq "$(jq -r '.voices.copilot.status' "$cj" 2>/dev/null)" "ABSENT" "uninstalled copilot => ABSENT"
 }
+
+# Finding 1 (council review): the copilot pre-flight probe must be BOUNDED. An
+# unbounded probe that hung would abort the whole script under set -e before the
+# codex/agy quorum check — regressing the baseline even with the quorum line
+# untouched. Source-assertion (a functional hang-test would add 15s/run).
+test_council_copilot_preflight_is_bounded() {
+  local src="$SKILL/council.sh"
+  # Match the actual `if` invocation line (starts with `if`, so comments that
+  # merely mention the probe can't satisfy it) carrying BOTH the timeout wrapper
+  # and the probe.
+  local hit; hit="$(grep -c 'if run_with_timeout.*copilot -- --help' "$src")"
+  assert_eq "$([[ "$hit" -ge 1 ]] && echo bounded || echo unbounded)" "bounded" \
+    "copilot pre-flight probe is wrapped in run_with_timeout (bounded, cannot hang the script)"
+}

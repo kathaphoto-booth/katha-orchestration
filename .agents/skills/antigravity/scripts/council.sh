@@ -121,7 +121,11 @@ if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   # install state — it must NOT be used as the gate. A failed probe routes
   # straight to ABSENT so the `-p` call below is never reached blind (no hang,
   # no possible first-run download).
-  if "$COPILOT_BIN" copilot -- --help >/dev/null 2>&1; then
+  # The pre-flight itself is bounded by run_with_timeout (council review finding 1):
+  # an UNBOUNDED probe that hung would abort the whole script under set -e BEFORE
+  # the codex/agy quorum check below — breaking the "copilot can't regress the
+  # 2-voice baseline" invariant in practice even though the quorum line is untouched.
+  if run_with_timeout 15 "$COPILOT_BIN" copilot -- --help >/dev/null 2>&1; then
     set +e
     # FR-12: the `-p` form is the documented `gh copilot -p`, but is UNVERIFIED
     # end-to-end until the Copilot CLI is actually installed (the pre-flight above
@@ -137,6 +141,7 @@ if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
       echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
     fi
   else
+    copilot_rc=$?   # reflect the pre-flight's real failure rc, not a misleading 0 (council review finding 6)
     echo "ABSENT: gh copilot CLI not installed (pre-flight 'copilot -- --help' failed) — skipped to avoid a blind -p call / possible first-run download" >> "$OUT/copilot.out"
   fi
 fi
