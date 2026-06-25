@@ -25,19 +25,27 @@ _mk_codex_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/codex"; chmod +x
 _mk_agy_ok() { printf '#!/usr/bin/env bash\necho "agy critique: ship it"\nexit 0\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
 
-# A copilot stub (gh wrapper) that succeeds. council.sh's pre-flight probes
-# `gh copilot --help` before ever attempting the real `-p` prompted call (to
-# avoid triggering a first-run download blind) — the stub must answer both.
+# A copilot stub (gh wrapper) with the Copilot CLI INSTALLED. council.sh's
+# pre-flight is `gh copilot -- --help` (the form that passes --help THROUGH to
+# the real Copilot CLI, so $2 == "--"); the critique call is `gh copilot -p`.
+# The stub answers both. (Plain `gh copilot --help`, $2 == "--help", is gh's own
+# wrapper help and is NOT what the gate uses — see council.sh FR-11 comment.)
 _mk_copilot_ok() {
-  printf '#!/usr/bin/env bash\nif [[ "$1" == "copilot" && "$2" == "--help" ]]; then exit 0; fi\nif [[ "$1" == "copilot" && "$2" == "-p" ]]; then echo "copilot critique: looks fine"; exit 0; fi\nexit 1\n' > "$1/gh"
+  printf '#!/usr/bin/env bash\nif [[ "$1" == "copilot" && "$2" == "--" ]]; then exit 0; fi\nif [[ "$1" == "copilot" && "$2" == "-p" ]]; then echo "copilot critique: looks fine"; exit 0; fi\nexit 1\n' > "$1/gh"
   chmod +x "$1/gh"
 }
-# Simulates `gh` installed but the underlying Copilot CLI not downloaded —
-# `gh copilot --help` fails fast (rc=1), matching real gh's verified behavior
-# when the Copilot CLI sub-binary isn't present. council.sh must never reach
-# the real `-p` call in this case.
+# Simulates `gh` present but the Copilot CLI NOT installed: the pre-flight
+# `gh copilot -- --help` fails fast (rc=1), matching real gh's verified behavior
+# (2026-06-25). council.sh must mark copilot ABSENT and never reach `-p`.
 _mk_copilot_absent() {
   printf '#!/usr/bin/env bash\nexit 1\n' > "$1/gh"
+  chmod +x "$1/gh"
+}
+# Like _mk_copilot_absent, but if council.sh ever WRONGLY reaches the `-p` call
+# (FR-11 violation), the stub records it by touching $COPILOT_SENTINEL — letting
+# a test assert the pre-flight gate truly prevents the blind prompted call.
+_mk_copilot_absent_guarded() {
+  printf '#!/usr/bin/env bash\nif [[ "$1" == "copilot" && "$2" == "-p" ]]; then touch "${COPILOT_SENTINEL:-/tmp/copilot_p_invoked}"; echo "should-not-run"; exit 1; fi\nexit 1\n' > "$1/gh"
   chmod +x "$1/gh"
 }
 
@@ -160,4 +168,23 @@ test_council_copilot_block_after_codex_and_agy() {
   copilot_line=$(grep -n 'redact < "\$OUT/\.copilot\.raw"' "$src" | head -1 | cut -d: -f1)
   assert_eq "$([[ -n "$copilot_line" && "$copilot_line" -gt "$codex_line" && "$copilot_line" -gt "$agy_line" ]] && echo yes || echo no)" "yes" \
     "copilot voice block's redact invocation is strictly after both codex's and agy's (set -e ordering invariant)"
+}
+
+# FR-11: the pre-flight (`gh copilot -- --help`) must structurally prevent the
+# blind `gh copilot -p` call when the Copilot CLI is not installed — not merely
+# mark the voice ABSENT after the fact. This is the assertion the original tests
+# lacked: their stubs matched the (buggy) `--help` gate, so a wrong gate stayed
+# green. Here the guarded stub records ANY `-p` invocation; we assert it never
+# happened.
+test_council_copilot_preflight_gates_p_call() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_ok "$bin"; _mk_agy_ok "$bin"; _mk_copilot_absent_guarded "$bin"
+  local sentinel; sentinel="$(mktemp -u)"      # a path that must NOT come to exist
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/gh" COUNCIL_INCLUDE_COPILOT=1 COPILOT_SENTINEL="$sentinel" \
+    bash "$SKILL/council.sh" crc5 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  assert_eq "$([[ -e "$sentinel" ]] && echo invoked || echo not-invoked)" "not-invoked" \
+    "FR-11: Copilot CLI not installed => pre-flight gates the -p call, never reached"
+  local cj="$r/.orchestration/crc5/council/council.json"
+  assert_eq "$(jq -r '.voices.copilot.status' "$cj" 2>/dev/null)" "ABSENT" "uninstalled copilot => ABSENT"
 }

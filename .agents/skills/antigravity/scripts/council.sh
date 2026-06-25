@@ -113,14 +113,20 @@ COUNCIL_INCLUDE_COPILOT="${COUNCIL_INCLUDE_COPILOT:-1}"
 COPILOT_BIN="${COPILOT_BIN:-gh}"
 if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   copilot_status="ABSENT"
-  # Pre-flight: `gh copilot --help` returns fast with no network call whether
-  # or not the underlying Copilot CLI is downloaded (verified empirically
-  # 2026-06-25 — gh 2.92.0, Copilot CLI not installed, rc=1, no download
-  # triggered). A nonzero rc here means a real `-p` call would either fail
-  # identically or risk triggering a first-run download — never attempt it
-  # blind (FR-11).
-  if "$COPILOT_BIN" copilot --help >/dev/null 2>&1; then
+  # Pre-flight (FR-11): `gh copilot -- --help` passes --help THROUGH to the real
+  # Copilot CLI, so it returns rc=1 "Copilot CLI not installed" when the binary
+  # is absent and rc=0 only when it's genuinely installed (verified 2026-06-25:
+  # gh 2.92.0, Copilot CLI not installed -> rc=1, no download). NOTE: plain
+  # `gh copilot --help` is gh's OWN wrapper help and returns rc=0 regardless of
+  # install state — it must NOT be used as the gate. A failed probe routes
+  # straight to ABSENT so the `-p` call below is never reached blind (no hang,
+  # no possible first-run download).
+  if "$COPILOT_BIN" copilot -- --help >/dev/null 2>&1; then
     set +e
+    # FR-12: the `-p` form is the documented `gh copilot -p`, but is UNVERIFIED
+    # end-to-end until the Copilot CLI is actually installed (the pre-flight above
+    # makes this line unreachable until then). Validate the flag form on first
+    # real install before relying on this voice.
     run_with_timeout "$TIMEOUT" "$COPILOT_BIN" copilot -p "$PROMPT" \
       > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
     copilot_rc=$?
@@ -131,7 +137,7 @@ if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
       echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
     fi
   else
-    echo "ABSENT: gh copilot CLI not available (pre-flight --help failed) — skipped to avoid a possible first-run download" >> "$OUT/copilot.out"
+    echo "ABSENT: gh copilot CLI not installed (pre-flight 'copilot -- --help' failed) — skipped to avoid a blind -p call / possible first-run download" >> "$OUT/copilot.out"
   fi
 fi
 

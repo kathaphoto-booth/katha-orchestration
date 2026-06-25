@@ -22,7 +22,7 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
   a full agent harness. Use only for genuine bulk work, never as a "fast voice."
 - **Multi-model consultation → council** (`council.sh`: `codex` + `agy` + `copilot`, read-only).
   Opinion / peer review on a CC-authored blob (e.g. a proposed canon-file diff). CC
-  (Opus) is chairman and synthesizes; `council.sh` only COLLECTS the two critiques.
+  (Opus) is chairman and synthesizes; `council.sh` only COLLECTS the critiques.
   `agy` is NEVER a council voice on its OWN just-completed delegation output
   (executor ≠ critic; conflict of interest) — `council.sh` takes an explicit blob
   path precisely so this can't happen by accident.
