@@ -20,7 +20,7 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
 ## Two delegation paths (distinct, do not conflate)
 - **Agentic execution → `agy`** (heavy, token-bound, writes files). Slow: it spins
   a full agent harness. Use only for genuine bulk work, never as a "fast voice."
-- **Multi-model consultation → council** (`council.sh`: `codex` + `agy`, read-only).
+- **Multi-model consultation → council** (`council.sh`: `codex` + `agy` + `copilot`, read-only).
   Opinion / peer review on a CC-authored blob (e.g. a proposed canon-file diff). CC
   (Opus) is chairman and synthesizes; `council.sh` only COLLECTS the two critiques.
   `agy` is NEVER a council voice on its OWN just-completed delegation output
@@ -78,11 +78,14 @@ blind retry). Stop conditions / exit codes:
 - `130/143` propagated (user interrupt aborts the whole loop)
 
 ## Council (`council.sh`) — opinion path, NOT execution
-`council.sh <run_id> <blob-file> [--repo <dir>] [--timeout <secs>]` collects two
-read-only critiques (`codex` via `codex exec -s read-only`; `agy` via `--print`
-with NO `--sandbox`/`--add-dir`, zero write surface) of a CC-authored blob and
-writes them under `.orchestration/<run>/council/` for CC to chair. A failed voice
-is marked `ABSENT` (fail-loud); exit 1 only if BOTH are absent. **Never** point it
+`council.sh <run_id> <blob-file> [--repo <dir>] [--timeout <secs>]` collects up to
+three read-only critiques (`codex` via `codex exec -s read-only`; `agy` via
+`--print` with NO `--sandbox`/`--add-dir`; `copilot` via `gh copilot -p`, pre-flight
+gated so it never attempts a call when the Copilot CLI isn't already downloaded —
+env-toggle `COUNCIL_INCLUDE_COPILOT`, default on) of a CC-authored blob and writes
+them under `.orchestration/<run>/council/` for CC to chair. A failed or disabled
+voice is marked `ABSENT`/`SKIPPED` (fail-loud); exit 1 only if codex AND agy are
+both absent — copilot's presence never affects that decision. **Never** point it
 at agy's own just-completed `result.md` — it takes an explicit blob path so that
 mistake can't happen implicitly. Secrets in the reviewed blob are redacted before
 anything is persisted.
