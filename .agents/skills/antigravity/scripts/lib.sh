@@ -33,6 +33,27 @@ changed_set() {
       done
 }
 
+# redact (stdin -> stdout): replace common secret shapes with [REDACTED] before
+# anything is persisted to disk. Shared by delegate_agy.sh (agy.log), council.sh
+# (voice output), and loop.sh (jsonl) so there is ONE scrubber, not three diverging
+# copies. Errs toward over-redaction (safe for forensic logs). Adversarial review
+# (2026-06-24) hardened it: case-INSENSITIVE token prefixes (sk-/AIza/xox), and
+# multi-line PEM private-key BLOCKS collapsed whole (the old line-based pattern only
+# caught the BEGIN/END lines and leaked the base64 key material in between).
+# awk for the stateful PEM block; sed -E for the single-line token patterns.
+redact() {
+  awk '
+    /-----BEGIN[ A-Za-z]*PRIVATE KEY-----/ { print "[REDACTED]"; inkey=1; next }
+    inkey && /-----END[ A-Za-z]*PRIVATE KEY-----/ { inkey=0; next }
+    inkey { next }
+    { print }
+  ' \
+  | sed -E \
+      -e 's/[sS][kK]-[A-Za-z0-9_-]{16,}/[REDACTED]/g' \
+      -e 's/[aA][iI][zZ][aA][0-9A-Za-z_-]{30,}/[REDACTED]/g' \
+      -e 's/[xX][oO][xX][baprsBAPRS]-[A-Za-z0-9-]{6,}/[REDACTED]/g'
+}
+
 # run_with_timeout <secs> <cmd...> -> runs cmd bounded by <secs>; returns cmd's
 # exit code, or a signal exit (e.g. 137 = 128+SIGKILL) if it was killed at the
 # bound. Portable + zero-dependency: macOS ships no coreutils timeout/gtimeout,

@@ -1,6 +1,6 @@
 ---
 name: antigravity
-description: Leak-proof delegation to the agy CLI with a deterministic, non-LLM verification gate. Use when CC should hand bulk agentic work (multi-file edits, scaffolding, refactors) to Antigravity (agy) and must verify the result before trusting it — i.e. whenever you would otherwise take a CLI's "done" on faith. Routes execution to agy (sandboxed, per-run isolated), verifies via verdict.sh (truth computed from git, never from agy's self-report), and rolls back transactionally on any leak. NOT for fast opinion/critique — use the gemini+codex council for that.
+description: Leak-proof delegation to the agy CLI with a deterministic, non-LLM verification gate. Use when CC should hand bulk agentic work (multi-file edits, scaffolding, refactors) to Antigravity (agy) and must verify the result before trusting it — i.e. whenever you would otherwise take a CLI's "done" on faith. Routes execution to agy (sandboxed, per-run isolated), verifies via verdict.sh (truth computed from git, never from agy's self-report), and rolls back transactionally on any leak. NOT for fast opinion/critique — use the codex+agy council for that.
 allowed-tools: [Bash, Read, Write]
 ---
 
@@ -20,9 +20,12 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
 ## Two delegation paths (distinct, do not conflate)
 - **Agentic execution → `agy`** (heavy, token-bound, writes files). Slow: it spins
   a full agent harness. Use only for genuine bulk work, never as a "fast voice."
-- **Multi-model consultation → council** (`gemini` Vertex + OSS `qwen2.5-coder`).
-  Read-only opinion / peer review. CC (Opus) is chairman. `agy` is NEVER a council
-  voice on its own output (executor ≠ critic; council-confirmed conflict of interest).
+- **Multi-model consultation → council** (`council.sh`: `codex` + `agy`, read-only).
+  Opinion / peer review on a CC-authored blob (e.g. a proposed canon-file diff). CC
+  (Opus) is chairman and synthesizes; `council.sh` only COLLECTS the two critiques.
+  `agy` is NEVER a council voice on its OWN just-completed delegation output
+  (executor ≠ critic; conflict of interest) — `council.sh` takes an explicit blob
+  path precisely so this can't happen by accident.
 
 ## The loop (scripts in `scripts/`)
 1. `checkpoint.sh snapshot <run> <repo> <vault>` — capture repo HEAD + vault
@@ -51,6 +54,39 @@ task status: `docs/superpowers/plans/2026-06-22-orchestration-layer-v1.md`.
    and exits 1 with a manual-review warning — detect-and-warn only, no
    auto-resume.
 
+`delegate_agy.sh`'s prompt also requires agy to emit `${OUT}/digest.json`
+(`{files_touched:[...], external_effects:[...]}`) — `verdict.sh` hard-requires it
+as the CLAIM side of the leak check. A missing digest is a hard FAIL, never a guess.
+
+## Bounded auto-retry (`loop.sh`)
+`loop.sh --repo <repo> --vault <vault> --run <prefix> --brief <task> [--max 3]
+[--timeout 5m] [--gate fast]` wraps steps 1–5 in a bounded retry loop (Loop
+Engineering: Trigger → Action → objective Stop, capped so it can never run
+unbounded). Each failed attempt rolls back transactionally, then feeds the
+verdict's `reasons[]` into the next attempt's brief (concrete feedback, not a
+blind retry). Stop conditions / exit codes:
+- `0` PASS (terminal success)
+- `1` cap exhausted (every attempt failed *differently*, never passed)
+- `2` early-exit (same failure *class* repeated → no progress → stop before
+  burning the rest of the cap; reasons are classified by the verdict-reason
+  prefix, so "unclaimed change: a" and "...: b" count as the same class)
+- `3` rollback failed (a between-attempts rollback errored → repo/vault may be
+  torn → abort loudly rather than snapshot a poisoned baseline next attempt)
+- `4` snapshot failed (can't proceed without a recoverable checkpoint)
+- `5` locked (another run with the same `--run` prefix is in progress; the
+  mkdir-based lock prevents two loops corrupting shared checkpoint state)
+- `130/143` propagated (user interrupt aborts the whole loop)
+
+## Council (`council.sh`) — opinion path, NOT execution
+`council.sh <run_id> <blob-file> [--repo <dir>] [--timeout <secs>]` collects two
+read-only critiques (`codex` via `codex exec -s read-only`; `agy` via `--print`
+with NO `--sandbox`/`--add-dir`, zero write surface) of a CC-authored blob and
+writes them under `.orchestration/<run>/council/` for CC to chair. A failed voice
+is marked `ABSENT` (fail-loud); exit 1 only if BOTH are absent. **Never** point it
+at agy's own just-completed `result.md` — it takes an explicit blob path so that
+mistake can't happen implicitly. Secrets in the reviewed blob are redacted before
+anything is persisted.
+
 ## Self-improvement loop (honest, deterministic)
 `self_eval.sh report --repo <repo>` aggregates the ledger: pass rate, **honesty
 rate**, **Token-to-Diff** (tokens/line — surfaces slop/stalling briefs), and
@@ -73,20 +109,16 @@ agy's sandboxed toolbelt.
 `bash .agents/skills/antigravity/tests/run.sh` — the adversarial attacks ARE the
 suite. Must end `FAIL=0`.
 
-## Known infra constraints (2026-06-22)
-- **gemini trusted-folder gate (FIXED):** headless gemini CLI calls exit 55 without
-  `GEMINI_CLI_TRUST_WORKSPACE=true`. This is the real cause of gemini voice failures —
-  not the Vertex env, not a broken consumer tier. Fix: `GEMINI_CLI_TRUST_WORKSPACE`
-  is now exported (defaulting to `true`, overridable) inside `load_vertex_env()` in
-  `council.sh`. The Vertex env (`GOOGLE_GENAI_USE_VERTEXAI=true`,
-  `GOOGLE_CLOUD_PROJECT=katha-booth`, `GOOGLE_CLOUD_LOCATION=global`) is CORRECT
-  and is NOT the issue. Do NOT add `--skip-trust` to the CLI call.
-- Council wrappers need the Vertex env (`GOOGLE_GENAI_USE_VERTEXAI/PROJECT/LOCATION`
-  from `~/.zshrc`) loaded; `load_vertex_env()` self-loads these for non-interactive
-  shells.
-- No `timeout`/`gtimeout` on PATH → wrappers run their CLI unbounded. agy
-  self-bounds via `--print-timeout`; the `codex` CLI does not and currently
-  stalls — route the OSS voice via the Ollama API until that wrapper is fixed.
+## Known infra constraints (2026-06-24)
+- **Council voices are `codex` + `agy`** (the gemini Vertex + OSS-via-Ollama design
+  is fully retired — gemini had a persistent trusted-folder gate failure, exit 55).
+  `codex` is ChatGPT-account authenticated (`codex login status` → "Logged in using
+  ChatGPT"); `agy` wraps Gemini/Claude/GPT-OSS models. Both confirmed live 2026-06-24.
+- No `timeout`/`gtimeout` on PATH → `council.sh` bounds BOTH voices via `lib.sh`'s
+  pure-bash `run_with_timeout` (the `codex` CLI has no self-timeout and once stalled
+  7.5 min unbounded; agy also self-bounds via `--print-timeout` as belt-and-suspenders).
+- `codex` usage now stacks council-critique calls on top of whatever else invokes it
+  on this machine — no combined rate-limit/cost data yet (watch via `self_eval`).
 
 ## Deferred to v2
 §5 reader/verifier model split + Opus tiering · §6 differential/active-recall

@@ -50,14 +50,23 @@ export AGY_OUT="$OUT"
 #     `timeout` needed — and macOS ships none). Capture rc; do NOT `|| true`,
 #     which would swallow user interrupts (council #3).
 PROMPT="Execute: ${BRIEF}
-Write your complete result to ${OUT}/result.md. As the FINAL line of result.md, write exactly this transaction sentinel and nothing after it:
+Write your complete result to ${OUT}/result.md.
+You MUST also write a machine-readable digest to ${OUT}/digest.json — valid JSON, exactly this shape, no prose, no markdown fences:
+{\"files_touched\": [\"<repo-relative path>\", ...], \"external_effects\": [\"<migration|deploy|email|etc>\", ...]}
+List in files_touched EVERY repo file you create or modify (the verifier compares this against git reality; an unlisted change is treated as a leak). Put [] for external_effects unless you genuinely triggered one.
+As the FINAL line of result.md, write exactly this transaction sentinel and nothing after it:
 STATUS: COMPLETE"
 
 set +e
 "$AGY" --sandbox --add-dir "$OUT" --print-timeout "$TIMEOUT" --print "$PROMPT" \
-  < /dev/null > "$OUT/agy.log" 2>&1
+  < /dev/null > "$OUT/.agy.log.raw" 2>&1
 rc=$?
 set -e
+# Redact agy's captured output before it persists — the brief (which may carry a
+# secret) is embedded in the prompt and can be echoed back (adversarial review #3).
+# result.md/digest.json are agy's deliverables (checked by sentinel/verdict) and are
+# left intact; only the forensic console log is scrubbed.
+redact < "$OUT/.agy.log.raw" > "$OUT/agy.log"; rm -f "$OUT/.agy.log.raw"
 # Propagate interrupt/termination signals instead of masking them as a normal
 # (recoverable) delegation failure.
 case "$rc" in 130|143) exit "$rc";; esac

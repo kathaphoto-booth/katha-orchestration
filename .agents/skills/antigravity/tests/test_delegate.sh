@@ -39,6 +39,58 @@ test_delegate_success_on_sentinel() {              # the happy path is real, too
   assert_exit "$?" 0 "result.md with STATUS: COMPLETE sentinel => OK"
 }
 
+test_delegate_instructs_digest_production() {      # digest gap: verdict.sh needs digest.json
+  # verdict.sh --digest <file> hard-requires a digest.json with files_touched[]
+  # + external_effects[]; without it the whole pipeline exits 2 before judging.
+  # This test uses a WELL-BEHAVED fake agy that writes digest.json ONLY when the
+  # prompt it receives actually instructs it to — so the test passes iff
+  # delegate_agy.sh's prompt carries the digest instruction (behavioral, not a
+  # source grep).
+  source "$SKILL/lib.sh"
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  cat > "$bin/agy" <<'STUB'
+#!/usr/bin/env bash
+prompt=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --print) prompt="$2"; shift 2;;
+    *) shift;;
+  esac
+done
+printf "did the thing\nSTATUS: COMPLETE\n" > "$AGY_OUT/result.md"
+# only a prompt that asks for digest.json gets one — mirrors a compliant agy
+if printf '%s' "$prompt" | grep -q "digest.json"; then
+  printf '{"files_touched":[],"external_effects":[]}' > "$AGY_OUT/digest.json"
+fi
+exit 0
+STUB
+  chmod +x "$bin/agy"
+  AGY_BIN="$bin/agy" PATH="$bin:$PATH" bash "$SKILL/delegate_agy.sh" --repo "$r" --run dr5 --brief "do x" >/dev/null 2>&1
+  assert_eq "$([[ -f "$r/.orchestration/dr5/digest.json" ]] && echo present || echo missing)" "present" "delegate prompt instructs agy to write digest.json (verdict.sh requires it)"
+}
+
+test_delegate_redacts_agy_log() {                  # adversarial review #3: agy.log leaked secrets
+  # agy's captured stdout/stderr lands in agy.log. The brief (which can carry a
+  # secret) is embedded in the prompt agy sees and may be echoed back. agy.log must
+  # be redacted before it persists — delegate_agy.sh previously left it raw.
+  source "$SKILL/lib.sh"
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  # stub agy echoes its own prompt (which contains the brief's secret) to stdout
+  cat > "$bin/agy" <<'STUB'
+#!/usr/bin/env bash
+prompt=""
+while [[ $# -gt 0 ]]; do case "$1" in --print) prompt="$2"; shift 2;; *) shift;; esac; done
+echo "$prompt"                                   # echoes the secret-bearing prompt to agy.log
+printf 'done\nSTATUS: COMPLETE\n' > "$AGY_OUT/result.md"
+printf '{"files_touched":[],"external_effects":[]}' > "$AGY_OUT/digest.json"
+exit 0
+STUB
+  chmod +x "$bin/agy"
+  AGY_BIN="$bin/agy" PATH="$bin:$PATH" bash "$SKILL/delegate_agy.sh" \
+    --repo "$r" --run dr6 --brief "fix it; OPENAI_API_KEY=sk-abcdefghijklmnopqrstuvwxyz1234" >/dev/null 2>&1
+  assert_not_contains "$(cat "$r/.orchestration/dr6/agy.log" 2>/dev/null)" "sk-abcdefghijklmnopqrstuvwxyz1234" "agy.log is redacted (no raw secret persisted)"
+}
+
 test_delegate_failure_stash_excludes_unrelated_untracked() {  # council finding #1: no sweep
   # The failure stash must preserve the delegation's OWN wip but must NOT sweep
   # pre-existing, unrelated untracked files (the live repo is full of them:
