@@ -78,6 +78,48 @@ class TestAntigravityCLI(unittest.TestCase):
         data = json.loads(proc.stdout.strip())
         self.assertEqual(data["status"], "error")
         self.assertIn("invalid_json", data["errors"])
+    def test_secrets_abort(self):
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'tools', 'antigravity_cli.py')
+        proc = subprocess.run(
+            [sys.executable, script_path],
+            input=json.dumps({"action": "trimmed_run", "redact_patterns": ["antigravity-assistant"]}),
+            text=True,
+            capture_output=True
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        data = json.loads(proc.stdout.strip())
+        self.assertEqual(data["status"], "error")
+        self.assertIn("secret_detected", data["errors"])
+
+    def test_status_action(self):
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'tools', 'antigravity_cli.py')
+        proc = subprocess.run(
+            [sys.executable, script_path],
+            input=json.dumps({"action": "status"}),
+            text=True,
+            capture_output=True
+        )
+        self.assertEqual(proc.returncode, 0)
+        data = json.loads(proc.stdout.strip())
+        self.assertEqual(data["status"], "success")
+        self.assertIn("codex_present", data)
+        self.assertIn("agy_present", data)
+
+    def test_run_dir_permission_error_graceful_abort(self):
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'tools', 'antigravity_cli.py')
+        proc = subprocess.run(
+            [sys.executable, script_path],
+            input=json.dumps({"action": "trimmed_run", "run_dir": "/sbin/nonexistent-cli-dir-test"}),
+            text=True,
+            capture_output=True
+        )
+        self.assertNotEqual(proc.returncode, 0)
+        data = json.loads(proc.stdout.strip())
+        self.assertEqual(data["status"], "error")
+        self.assertIn("execution_failed", data["errors"])
 
 if __name__ == '__main__':
     unittest.main()
+
+
+
