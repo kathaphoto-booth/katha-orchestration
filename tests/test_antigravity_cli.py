@@ -5,6 +5,27 @@ import sys
 import unittest
 
 class TestAntigravityCLI(unittest.TestCase):
+    def setUp(self):
+        self.fallback_dir = os.path.join(os.path.dirname(__file__), '..', 'tools', 'ingest_ready')
+        self.pre_existing_files = set()
+        if os.path.exists(self.fallback_dir):
+            self.pre_existing_files = set(os.listdir(self.fallback_dir))
+
+    def tearDown(self):
+        if os.path.exists(self.fallback_dir):
+            current_files = set(os.listdir(self.fallback_dir))
+            new_files = current_files - self.pre_existing_files
+            for f in new_files:
+                try:
+                    os.remove(os.path.join(self.fallback_dir, f))
+                except Exception:
+                    pass
+            if not os.listdir(self.fallback_dir):
+                try:
+                    os.rmdir(self.fallback_dir)
+                except Exception:
+                    pass
+
     def test_missing_action(self):
         # Make sure we use the correct path assuming tests are run from root
         script_path = os.path.join(os.path.dirname(__file__), '..', 'tools', 'antigravity_cli.py')
@@ -117,6 +138,25 @@ class TestAntigravityCLI(unittest.TestCase):
         data = json.loads(proc.stdout.strip())
         self.assertEqual(data["status"], "error")
         self.assertIn("execution_failed", data["errors"])
+
+    def test_ingest_fallback(self):
+        script_path = os.path.join(os.path.dirname(__file__), '..', 'tools', 'antigravity_cli.py')
+        
+        proc = subprocess.run(
+            [sys.executable, script_path],
+            input=json.dumps({"action": "trimmed_run", "mcp_url": "http://localhost:11111/fake"}),
+            text=True,
+            capture_output=True
+        )
+        self.assertEqual(proc.returncode, 0)
+        data = json.loads(proc.stdout.strip())
+        self.assertEqual(data["mcp_ingest"], "written")
+        
+        # Check that files were indeed written under tools/ingest_ready
+        self.assertTrue(os.path.exists(self.fallback_dir))
+        current_files = set(os.listdir(self.fallback_dir))
+        new_files = current_files - self.pre_existing_files
+        self.assertTrue(len(new_files) > 0)
 
 if __name__ == '__main__':
     unittest.main()
