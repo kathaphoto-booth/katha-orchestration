@@ -24,6 +24,10 @@ _mk_codex_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/codex"; chmod +x
 #   agy --print --print-timeout <t>s --model <m> <prompt>
 _mk_agy_ok() { printf '#!/usr/bin/env bash\necho "agy critique: ship it"\nexit 0\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
+_mk_agy_guarded() {
+  printf '#!/usr/bin/env bash\ntouch "${AGY_SENTINEL:-/tmp/agy_invoked}"\necho "should-not-run"\nexit 0\n' > "$1/agy"
+  chmod +x "$1/agy"
+}
 
 # A copilot stub (gh wrapper) with the Copilot CLI INSTALLED. council.sh's
 # pre-flight is `gh copilot -- --help` (the form that passes --help THROUGH to
@@ -201,4 +205,49 @@ test_council_copilot_preflight_is_bounded() {
   local hit; hit="$(grep -c 'if run_with_timeout.*copilot -- --help' "$src")"
   assert_eq "$([[ "$hit" -ge 1 ]] && echo bounded || echo unbounded)" "bounded" \
     "copilot pre-flight probe is wrapped in run_with_timeout (bounded, cannot hang the script)"
+}
+
+test_council_agy_no_model_override() {            # source-assertion (regression guard)
+  # council.sh used to hardcode --model "Claude Sonnet 4.6 (Thinking)" into the
+  # agy invocation — an Anthropic model name fed to the Gemini-based agy binary.
+  # Confirmed via live repro (2026-06-25) that this silently broke every council
+  # run: rc=0, empty stdout/stderr, no error surfaced anywhere. agy must be left
+  # to its own default model — matching the only other known-working invocation
+  # (agy-tier-run.sh), which never passes --model either.
+  local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
+  assert_not_contains "$b" "Claude Sonnet" "council.sh does not hardcode a Claude model name for agy"
+  assert_not_contains "$b" '"$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model' "agy invocation does not pass --model at all"
+}
+
+test_council_agy_disabled_never_invokes_binary() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_ok "$bin"; _mk_agy_guarded "$bin"
+  local sentinel; sentinel="$(mktemp -u)"      # a path that must NOT come to exist
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COUNCIL_INCLUDE_AGY=0 COUNCIL_INCLUDE_COPILOT=0 AGY_SENTINEL="$sentinel" \
+    bash "$SKILL/council.sh" crc6 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  assert_eq "$([[ -e "$sentinel" ]] && echo invoked || echo not-invoked)" "not-invoked" \
+    "COUNCIL_INCLUDE_AGY=0 => agy binary never invoked"
+  local cj="$r/.orchestration/crc6/council/council.json"
+  assert_eq "$(jq -r '.voices.agy.status' "$cj" 2>/dev/null)" "ABSENT" "disabled agy reports ABSENT (reuses existing status, no new value)"
+  assert_contains "$(cat "$r/.orchestration/crc6/council/agy.out" 2>/dev/null)" "disabled" "agy.out distinguishes 'disabled' from a real failure"
+}
+
+test_council_agy_default_on_unchanged() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_ok "$bin"; _mk_agy_ok "$bin"
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COUNCIL_INCLUDE_COPILOT=0 \
+    bash "$SKILL/council.sh" crc7 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  local cj="$r/.orchestration/crc7/council/council.json"
+  assert_eq "$(jq -r '.voices.agy.status' "$cj" 2>/dev/null)" "OK" "COUNCIL_INCLUDE_AGY unset => defaults to on, unchanged behavior"
+}
+
+test_council_quorum_correct_when_agy_disabled() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_fail "$bin"; _mk_agy_ok "$bin"
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COUNCIL_INCLUDE_AGY=0 COUNCIL_INCLUDE_COPILOT=0 \
+    bash "$SKILL/council.sh" crc8 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  assert_exit "$?" 1 "codex failed + agy intentionally disabled => exit 1 (nothing for CC to chair; quorum line stays correct unmodified)"
 }
