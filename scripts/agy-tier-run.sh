@@ -5,16 +5,24 @@
 #
 # Behavior:
 #   1. Verifies brief.md exists in <brief-dir>
-#   2. Runs agy with --add-dir <brief-dir> and a fixed --print instruction
+#   2. Runs agy with --add-dir <brief-dir> and a fixed --print instruction,
+#      injecting DESIGN.md as the brand-law context (lean, ~2.9KB; degrades to
+#      a warning if missing — never the 697KB COMPILED_HAM.md this script used
+#      to inject via compile-ham.sh, the root cause of agy slowness, removed
+#      2026-06-26 after confirming live it had silently regressed back in)
 #   3. Records wall-clock to <brief-dir>/timing.txt
 #   4. Classifies the run as T2 (<3 min) or T3 (>=3 min)
 #   5. Exits non-zero if result.md was not written
+#
+# AGY_BIN / DESIGN_PATH env overrides exist for testing (scripts/tests/) —
+# unset, behavior is unchanged from the hardcoded defaults.
 
 set -euo pipefail
 
 BRIEF_DIR="${1:?Usage: $0 <brief-dir> [print-timeout]}"
 TIMEOUT="${2:-5m}"
-AGY="/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy"
+AGY="${AGY_BIN:-/Volumes/samsung 970 pro - Data/KATHA_VAULT/bin/agy}"
+DESIGN_PATH="${DESIGN_PATH:-/Users/jedg./Desktop/kat_ha_pb/DESIGN.md}"
 
 if [[ ! -f "$BRIEF_DIR/brief.md" ]]; then
   echo "ERROR: $BRIEF_DIR/brief.md does not exist" >&2
@@ -26,19 +34,6 @@ if [[ ! -x "$AGY" ]]; then
   exit 3
 fi
 
-VAULT="/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory"
-
-if [[ ! -d "$VAULT" ]]; then
-  echo "ERROR: Samsung 970 pro is unmounted. Vault memory is unavailable." >&2
-  exit 1
-fi
-
-# Fresh-compile the vault snapshot so AG's injected COMPILED_HAM.md is CURRENT at
-# invocation. Without this, agy receives whatever stale COMPILED_HAM.md happens to
-# be on disk, and (since AG has no live-vault read access here) cannot detect the
-# drift. This is what makes the GEMINI.md §6 headless staleness check meaningful.
-/Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh
-
 START=$(date +%s)
 
 "$AGY" \
@@ -49,8 +44,8 @@ START=$(date +%s)
 Read brief.md in this directory. Execute the task exactly as specified. Write your complete result to ${BRIEF_DIR}/result.md before ending. Do not read files outside the directories you have been granted. As the FINAL line of result.md, write exactly this transaction sentinel and nothing after it:
 STATUS: COMPLETE
 
---- SYSTEM ARCHITECTURE INJECTION - VAULT MEMORY ---
-$(cat "$VAULT/COMPILED_HAM.md" 2>/dev/null || echo "Vault memory unavailable")" \
+--- SYSTEM ARCHITECTURE INJECTION - BRAND LAW (DESIGN.md) ---
+$(if [[ -f "$DESIGN_PATH" ]]; then cat "$DESIGN_PATH"; else echo "WARNING: DESIGN.md brand law context is missing. Proceed strictly with task instructions."; fi)" \
   < /dev/null 2>&1 | tee "$BRIEF_DIR/agy-stdout.log"
 
 END=$(date +%s)
