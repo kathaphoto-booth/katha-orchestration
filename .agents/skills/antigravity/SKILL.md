@@ -80,14 +80,19 @@ blind retry). Stop conditions / exit codes:
 ## Council (`council.sh`) — opinion path, NOT execution
 `council.sh <run_id> <blob-file> [--repo <dir>] [--timeout <secs>]` collects up to
 three read-only critiques (`codex` via `codex exec -s read-only`; `agy` via
-`--print` with NO `--sandbox`/`--add-dir`; `copilot` via `gh copilot -p`, pre-flight
-gated so it never attempts a call when the Copilot CLI isn't already downloaded —
-env-toggle `COUNCIL_INCLUDE_COPILOT`, default on) of a CC-authored blob and writes
-them under `.orchestration/<run>/council/` for CC to chair. A failed or disabled
-voice is marked `ABSENT`/`SKIPPED` (fail-loud); exit 1 only if codex AND agy are
-both absent — copilot's presence never affects that decision. **Never** point it
-at agy's own just-completed `result.md` — it takes an explicit blob path so that
-mistake can't happen implicitly. Secrets in the reviewed blob are redacted before
+`--print` with NO `--sandbox`/`--add-dir` and no `--model` override — agy uses
+its own default model, env-toggle `COUNCIL_INCLUDE_AGY`, default on; `copilot`
+via `gh copilot -p`, pre-flight gated so it never attempts a call when the
+Copilot CLI isn't already downloaded — env-toggle `COUNCIL_INCLUDE_COPILOT`,
+default on) of a CC-authored blob and writes them under
+`.orchestration/<run>/council/` for CC to chair. A failed or disabled voice is
+marked `ABSENT`/`SKIPPED` (fail-loud); exit 1 only if codex AND agy are both
+absent (disabling agy via `COUNCIL_INCLUDE_AGY=0` counts as absent for this
+check — it reuses the ABSENT status, unlike copilot's distinct SKIPPED, because
+agy is one of the two voices the quorum check itself reads) — copilot's
+presence never affects that decision. **Never** point it at agy's own
+just-completed `result.md` — it takes an explicit blob path so that mistake
+can't happen implicitly. Secrets in the reviewed blob are redacted before
 anything is persisted.
 
 ## Self-improvement loop (honest, deterministic)

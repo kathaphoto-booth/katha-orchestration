@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Tests for scripts/council.sh — the 2-voice read-only critique collector.
+# Tests for scripts/council.sh — the read-only critique collector (codex + agy
+# required-pair, copilot optional 3rd voice).
 #
 # Design (2026-06-24 rebuild): the council is codex + agy, CC chairs. The OLD
 # gemini+Vertex+OSS-via-Ollama design is fully retired. council.sh COLLECTS two
@@ -20,8 +21,9 @@
 #   codex exec -s read-only --skip-git-repo-check -C <repo> <prompt>
 _mk_codex_ok() { printf '#!/usr/bin/env bash\necho "codex critique: looks fine"\nexit 0\n' > "$1/codex"; chmod +x "$1/codex"; }
 _mk_codex_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/codex"; chmod +x "$1/codex"; }
-# An agy stub that succeeds with output. council.sh invokes:
-#   agy --print --print-timeout <t>s --model <m> <prompt>
+# An agy stub that succeeds with output. council.sh invokes (no --model
+# override — agy uses its own default model; see COUNCIL_INCLUDE_AGY):
+#   agy --print --print-timeout <t>s <prompt>
 _mk_agy_ok() { printf '#!/usr/bin/env bash\necho "agy critique: ship it"\nexit 0\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_guarded() {
