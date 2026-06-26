@@ -77,10 +77,15 @@ $(cat "$BLOB")
 --- END PROPOSED CHANGE ---"
 
 # --- Voice 1: codex (read-only sandbox, no write surface) ---
+# < /dev/null is required: without it, codex sits on "Reading additional input
+# from stdin..." and is SIGKILLed by run_with_timeout's watcher at the full
+# $TIMEOUT bound every non-interactive run (confirmed live 2026-06-26: rc=137,
+# stderr shows the stdin-wait message) — silently misread in the past as a
+# quota/auth issue. Same fix as agy's invocation below.
 codex_status="ABSENT"
 set +e
 run_with_timeout "$TIMEOUT" "$CODEX_BIN" exec -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
-  > "$OUT/.codex.raw" 2> "$OUT/.codex.raw.err"
+  < /dev/null > "$OUT/.codex.raw" 2> "$OUT/.codex.raw.err"
 codex_rc=$?
 set -e
 redact < "$OUT/.codex.raw" > "$OUT/codex.out"; redact < "$OUT/.codex.raw.err" > "$OUT/codex.err"
@@ -156,14 +161,16 @@ if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   # an UNBOUNDED probe that hung would abort the whole script under set -e BEFORE
   # the codex/agy quorum check below — breaking the "copilot can't regress the
   # 2-voice baseline" invariant in practice even though the quorum line is untouched.
-  if run_with_timeout 15 "$COPILOT_BIN" copilot -- --help >/dev/null 2>&1; then
+  if run_with_timeout 15 "$COPILOT_BIN" copilot -- --help < /dev/null >/dev/null 2>&1; then
     set +e
     # FR-12: the `-p` form is the documented `gh copilot -p`, but is UNVERIFIED
     # end-to-end until the Copilot CLI is actually installed (the pre-flight above
     # makes this line unreachable until then). Validate the flag form on first
-    # real install before relying on this voice.
+    # real install before relying on this voice. < /dev/null guards against the
+    # same stdin-hang found in codex's invocation (2026-06-26) — untested here
+    # since the CLI isn't installed yet, but the same risk applies on principle.
     run_with_timeout "$TIMEOUT" "$COPILOT_BIN" copilot -p "$PROMPT" \
-      > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
+      < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
     copilot_rc=$?
     set -e
     redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"

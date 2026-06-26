@@ -257,3 +257,20 @@ test_council_quorum_correct_when_agy_disabled() {
     bash "$SKILL/council.sh" crc8 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
   assert_exit "$?" 1 "codex failed + agy intentionally disabled => exit 1 (nothing for CC to chair; quorum line stays correct unmodified)"
 }
+
+test_council_all_voices_redirect_stdin_from_devnull() {  # source-assertion (regression guard)
+  # Confirmed live 2026-06-26: without "< /dev/null", codex sits on "Reading
+  # additional input from stdin..." and is SIGKILLed by run_with_timeout's
+  # watcher at the FULL $TIMEOUT bound on every non-interactive run (rc=137) —
+  # silently misread in the past as a quota/auth issue, when it was really a
+  # stdin hang masking whatever the real error was. Every voice invocation
+  # (preflight or real call) must close stdin explicitly.
+  local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
+  assert_contains "$b" '"$CODEX_BIN" exec -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
+  < /dev/null' "codex invocation redirects stdin from /dev/null"
+  assert_contains "$b" '"$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$AGY_MODEL" "$PROMPT" \
+    < /dev/null' "agy invocation redirects stdin from /dev/null"
+  assert_contains "$b" '"$COPILOT_BIN" copilot -- --help < /dev/null' "copilot preflight redirects stdin from /dev/null"
+  assert_contains "$b" '"$COPILOT_BIN" copilot -p "$PROMPT" \
+      < /dev/null' "copilot -p invocation redirects stdin from /dev/null"
+}
