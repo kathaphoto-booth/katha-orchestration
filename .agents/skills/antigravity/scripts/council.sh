@@ -36,12 +36,10 @@ BLOB="${2:-}"
 shift 2 2>/dev/null || true
 REPO="."
 TIMEOUT="300"
-MODEL="Claude Sonnet 4.6 (Thinking)"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --repo) REPO="$2"; shift 2;;
     --timeout) TIMEOUT="$2"; shift 2;;
-    --model) MODEL="$2"; shift 2;;
     *) echo "unknown arg $1" >&2; exit 2;;
   esac
 done
@@ -92,16 +90,40 @@ if [[ "$codex_rc" -eq 0 && -s "$OUT/codex.out" ]]; then codex_status="OK"; else
 fi
 
 # --- Voice 2: agy as critic (--print only; NO --sandbox, NO --add-dir) ---
+# COUNCIL_INCLUDE_AGY (default 1): kill-switch for the agy voice, mirroring
+# COUNCIL_INCLUDE_COPILOT's pattern. Added 2026-06-25 after a real incident:
+# agy silently returned ABSENT (rc=0, empty output) for an auth/billing reason
+# that took a full debugging session to diagnose. Disabling agy here is
+# immediate and free — no wasted $TIMEOUT — while an account issue is
+# resolved. Reuses the existing ABSENT status rather than a new SKIPPED value
+# (unlike copilot) because agy participates directly in the quorum check
+# below; a disabled agy must still count as ABSENT for that decision to stay
+# correct (see test_council_quorum_correct_when_agy_disabled).
 agy_status="ABSENT"
-set +e
-run_with_timeout "$TIMEOUT" "$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$MODEL" "$PROMPT" \
-  < /dev/null > "$OUT/.agy.raw" 2> "$OUT/.agy.raw.err"
-agy_rc=$?
-set -e
-redact < "$OUT/.agy.raw" > "$OUT/agy.out"; redact < "$OUT/.agy.raw.err" > "$OUT/agy.err"
-rm -f "$OUT/.agy.raw" "$OUT/.agy.raw.err"
-if [[ "$agy_rc" -eq 0 && -s "$OUT/agy.out" ]]; then agy_status="OK"; else
-  echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc)" >> "$OUT/agy.out"
+COUNCIL_INCLUDE_AGY="${COUNCIL_INCLUDE_AGY:-1}"
+if [[ "$COUNCIL_INCLUDE_AGY" == "1" ]]; then
+  # No --model override: agy uses its own default model. A hardcoded
+  # Anthropic model name was previously passed here into this Gemini-based
+  # binary and silently broke every council run (confirmed via live repro
+  # 2026-06-25: rc=0, empty stdout/stderr, no error surfaced anywhere outside
+  # agy's own --log-file). The only other known-working invocation
+  # (agy-tier-run.sh) never passes --model either.
+  set +e
+  run_with_timeout "$TIMEOUT" "$AGY_BIN" --print --print-timeout "${TIMEOUT}s" "$PROMPT" \
+    < /dev/null > "$OUT/.agy.raw" 2> "$OUT/.agy.raw.err"
+  agy_rc=$?
+  set -e
+  redact < "$OUT/.agy.raw" > "$OUT/agy.out"; redact < "$OUT/.agy.raw.err" > "$OUT/agy.err"
+  rm -f "$OUT/.agy.raw" "$OUT/.agy.raw.err"
+  if [[ "$agy_rc" -eq 0 && -s "$OUT/agy.out" ]]; then
+    agy_status="OK"
+  else
+    echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc; re-run agy directly with --log-file <path> for diagnostics)" >> "$OUT/agy.out"
+  fi
+else
+  agy_rc=0
+  echo "ABSENT: agy voice disabled (COUNCIL_INCLUDE_AGY=0) — re-enable by unsetting or setting =1" > "$OUT/agy.out"
+  : > "$OUT/agy.err"
 fi
 
 # --- Voice 3: copilot (optional, env-gated; read-only critic) ---
