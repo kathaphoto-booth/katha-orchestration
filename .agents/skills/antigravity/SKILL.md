@@ -119,7 +119,7 @@ agy's sandboxed toolbelt.
 `bash .agents/skills/antigravity/tests/run.sh` — the adversarial attacks ARE the
 suite. Must end `FAIL=0`.
 
-## Known infra constraints (2026-06-24)
+## Known infra constraints (2026-06-24, updated 2026-06-26)
 - **Council voices are `codex` + `agy`** (the gemini Vertex + OSS-via-Ollama design
   is fully retired — gemini had a persistent trusted-folder gate failure, exit 55).
   `codex` is ChatGPT-account authenticated (`codex login status` → "Logged in using
@@ -127,8 +127,34 @@ suite. Must end `FAIL=0`.
 - No `timeout`/`gtimeout` on PATH → `council.sh` bounds BOTH voices via `lib.sh`'s
   pure-bash `run_with_timeout` (the `codex` CLI has no self-timeout and once stalled
   7.5 min unbounded; agy also self-bounds via `--print-timeout` as belt-and-suspenders).
-- `codex` usage now stacks council-critique calls on top of whatever else invokes it
-  on this machine — no combined rate-limit/cost data yet (watch via `self_eval`).
+- **Both voices' invocations MUST redirect stdin from `/dev/null`** (2026-06-26):
+  without it, `codex exec` sits on "Reading additional input from stdin..." and is
+  SIGKILLed at the full `$TIMEOUT` bound on every non-interactive run (rc=137) —
+  in the past silently misread as a quota/auth issue when it was really a stdin
+  hang masking the real error. Same risk applies to `gh copilot` on principle
+  (untested — not installed). See `test_council_all_voices_redirect_stdin_from_devnull`.
+- **`codex` and `agy` both have account-level quota limits independent of each
+  other and independent of any CLI flag or env var** (confirmed live 2026-06-26):
+  - `codex`: ChatGPT plan usage limit — `"ERROR: You've hit your usage limit.
+    Upgrade to Plus..."` on stderr, resets ~Jul 20 2026 per the live message.
+  - `agy`: `RESOURCE_EXHAUSTED` (code 429) on the free/consumer-tier quota.
+    Confirmed this is NOT a CLI/env-fixable auth routing issue — `GOOGLE_GENAI_
+    USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`, and `--project` all had zero effect
+    on `authMethod` (stays `consumer`) in live testing, despite a real $1,300
+    GCP/Vertex credit balance sitting unused on the linked project. The actual
+    toggle is an Antigravity account-level setting (config key `useG1Credits`,
+    "G1 Credits" — a separate quota pool from generic GCP/Vertex billing),
+    outside this CLI's reach entirely. `agy` is pinned to the fastest,
+    lowest-thinking-budget model on the confirmed-valid list (`Gemini 3.5 Flash
+    (Low)`, env-overridable via `AGY_MODEL`) to make the most of whatever quota
+    is available; `COUNCIL_INCLUDE_AGY=0` is the immediate, free workaround
+    while an account issue is being resolved.
+  - council.sh now greps each voice's failure output for these known
+    signatures and appends a specific hint instead of the generic ABSENT
+    message — see `test_council_quota_diagnostic_hints`.
+- `codex` usage stacks council-critique calls on top of whatever else invokes it
+  on this machine — confirmed 2026-06-26 this CAN exhaust the plan's quota
+  (see above); watch via `self_eval`.
 
 ## Deferred to v2
 §5 reader/verifier model split + Opus tiering · §6 differential/active-recall
