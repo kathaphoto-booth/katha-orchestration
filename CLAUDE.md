@@ -10,7 +10,11 @@ tags:
   - core-memory
 ---
 
-> **MCP DIRECTIVE:** Use MCP tools to query the `.memory/` vault for historical context rather than requesting manual text injections.
+> **MCP DIRECTIVE:** `codebase-memory-mcp` indexes code structure only (functions,
+> classes, call chains, routes) — it is blind to markdown prose (verified
+> 2026-06-25, see vault `README.md` "Querying" section: zero hits for known
+> vault content). Use it for code lookups only; for `.memory/` vault context,
+> read the plain files directly — see CONTEXT RETRIEVAL below.
 
 # Katha Booth — CLAUDE.md (HAM Router)
 # CC reads this file automatically on every session startup.
@@ -37,21 +41,26 @@ For deep-dive work, consult these directory-scoped context files:
 - Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
 - Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
 
-## CONTEXT RETRIEVAL (MCP Dynamic Pull)
+## CONTEXT RETRIEVAL (Direct Pull — corrected 2026-06-25)
 Memory lives at the absolute vault path (Samsung 970, always mounted):
 **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
 **SYSTEM ENFORCEMENT:**
 The legacy "Push Memory" (forcing agents to read `COMPILED_HAM.md` or 7 nodes at boot) is **RETIRED** to prevent token bloat. Do not read the entire vault at startup.
 
-Instead, you are connected to the `codebase-memory-mcp` server. 
-You must use semantic graph search to dynamically pull only the required facts when needed.
+`codebase-memory-mcp` is connected, but it indexes code symbols only — it
+returns zero hits for vault markdown prose (verified empirically 2026-06-25).
+Pull facts via direct, targeted file reads instead — bounded and on-demand,
+never a full vault sweep.
 
-- **Check Project State:** Query `SESSION_HANDOFF.json`
-- **Check Brand Law:** Query `patterns.md` 
-- **Check Recent Approvals:** Query `memory.md`
+- **Check Project State:** Read `SESSION_HANDOFF.json` directly.
+- **Check Brand Law:** Read `patterns.md` directly.
+- **Check Recent Approvals:** Read the tail of `memory.md` directly.
 
-**Staleness Check:** If you suspect drift, run `search_graph` to compare `.latest_memory_entry` in `SESSION_HANDOFF.json` against the tail of `memory.md`. If out of sync, run `/handoff` via the mechanical sync skill.
+**Staleness Check:** If you suspect drift, read `.latest_memory_entry` in
+`SESSION_HANDOFF.json` and compare it against the tail of `memory.md` directly
+— NOT via `search_graph`, which cannot see this content. If out of sync, run
+`/handoff` via the mechanical sync skill.
 
 **Auto-capture rule:** After every Jed confirmation, correction, or preference, append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`. Use the `write_file` tool to append. Do not let facts slip through.
 
@@ -197,9 +206,11 @@ Palette forbidden-hex rule still governs (no pure `#000`/`#fff`, no legacy OAX h
 ---
 
 ## STARTUP COMMAND
-Announce your presence, acknowledge the team, confirm you read the 4 vault HAM
-nodes + any unread `.memory/handoff/` artifacts, and state the current Phase
-position before asking Jed to authorize the next step.
+Announce your presence, acknowledge the team, confirm you read
+`SESSION_HANDOFF.json` + the tail of `inbox.md` directly (NOT the full 7-node
+push — that pattern is retired, see CONTEXT RETRIEVAL) + any unread
+`.memory/handoff/` artifacts, and state the current Phase position before
+asking Jed to authorize the next step.
 
 ---
 
