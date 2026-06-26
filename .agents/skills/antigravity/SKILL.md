@@ -119,7 +119,7 @@ agy's sandboxed toolbelt.
 `bash .agents/skills/antigravity/tests/run.sh` — the adversarial attacks ARE the
 suite. Must end `FAIL=0`.
 
-## Known infra constraints (2026-06-24, updated 2026-06-26)
+## Known infra constraints (2026-06-24, updated 2026-06-26 x2)
 - **Council voices are `codex` + `agy`** (the gemini Vertex + OSS-via-Ollama design
   is fully retired — gemini had a persistent trusted-folder gate failure, exit 55).
   `codex` is ChatGPT-account authenticated (`codex login status` → "Logged in using
@@ -155,6 +155,25 @@ suite. Must end `FAIL=0`.
 - `codex` usage stacks council-critique calls on top of whatever else invokes it
   on this machine — confirmed 2026-06-26 this CAN exhaust the plan's quota
   (see above); watch via `self_eval`.
+- **`agy` re-verified live 2026-06-26 (second pass, same day): quota block
+  persists and appears to have tightened.** Direct `agy-bin --print` calls
+  (bypassing council.sh entirely) still return rc=0/empty output on a trivial
+  prompt — but this time `--log-file` never even got created, vs. the earlier
+  same-day confirmation where it captured a `RESOURCE_EXHAUSTED` 429 before
+  exiting. Read as: the account is now failing earlier in the request
+  lifecycle (before agy's Go logger initializes), not as evidence the root
+  cause changed. Still an account-level `useG1Credits` issue outside this
+  CLI's reach — nothing here is fixable from script/CLI side; needs Jed to
+  check the Antigravity account directly.
+- **`agy` ALSO hangs on unredirected stdin, like `codex`** (confirmed
+  2026-06-26, extending the line-130 finding which only had `codex` live and
+  flagged copilot as "untested — not installed"): `agy-bin --print "prompt"`
+  with stdin left open (not redirected from `/dev/null`) blocks indefinitely
+  instead of erroring — SIGKILLed at a 12s bound in testing (rc=137). With
+  `/dev/null` (immediate EOF), it returns instantly. Both real call sites
+  (`agy-tier-run.sh`, `council.sh`) already redirect `< /dev/null` correctly,
+  so this is **not an active bug** — documented here only so a future script
+  invoking `agy-bin --print` directly doesn't lose time rediscovering it.
 
 ## Deferred to v2
 §5 reader/verifier model split + Opus tiering · §6 differential/active-recall
