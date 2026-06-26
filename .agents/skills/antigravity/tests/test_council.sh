@@ -21,9 +21,9 @@
 #   codex exec -s read-only --skip-git-repo-check -C <repo> <prompt>
 _mk_codex_ok() { printf '#!/usr/bin/env bash\necho "codex critique: looks fine"\nexit 0\n' > "$1/codex"; chmod +x "$1/codex"; }
 _mk_codex_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/codex"; chmod +x "$1/codex"; }
-# An agy stub that succeeds with output. council.sh invokes (no --model
-# override — agy uses its own default model; see COUNCIL_INCLUDE_AGY):
-#   agy --print --print-timeout <t>s <prompt>
+# An agy stub that succeeds with output. council.sh invokes (model pinned to
+# AGY_MODEL, default "Gemini 3.5 Flash (Low)" — see COUNCIL_INCLUDE_AGY):
+#   agy --print --print-timeout <t>s --model <m> <prompt>
 _mk_agy_ok() { printf '#!/usr/bin/env bash\necho "agy critique: ship it"\nexit 0\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_guarded() {
@@ -209,16 +209,20 @@ test_council_copilot_preflight_is_bounded() {
     "copilot pre-flight probe is wrapped in run_with_timeout (bounded, cannot hang the script)"
 }
 
-test_council_agy_no_model_override() {            # source-assertion (regression guard)
-  # council.sh used to hardcode --model "Claude Sonnet 4.6 (Thinking)" into the
-  # agy invocation — an Anthropic model name fed to the Gemini-based agy binary.
-  # Confirmed via live repro (2026-06-25) that this silently broke every council
-  # run: rc=0, empty stdout/stderr, no error surfaced anywhere. agy must be left
-  # to its own default model — matching the only other known-working invocation
-  # (agy-tier-run.sh), which never passes --model either.
+test_council_agy_model_pinned_correctly() {       # source-assertion (regression guard)
+  # council.sh once hardcoded --model "Claude Sonnet 4.6 (Thinking)" into the
+  # agy invocation — an Anthropic model name fed to the Gemini-based agy
+  # binary — which silently broke every council run (rc=0, empty output).
+  # Later (2026-06-25), agy's free/consumer-tier quota was confirmed exhausted
+  # (RESOURCE_EXHAUSTED 429, via --log-file) independent of Vertex env vars or
+  # --project, so the voice is now deliberately pinned to the fastest,
+  # lowest-thinking-budget model on the confirmed-valid list (`agy models`):
+  # Gemini 3.5 Flash (Low). The invariant that must never regress is "no
+  # Anthropic/Claude model name reaches agy" — not "no --model at all".
   local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
   assert_not_contains "$b" "Claude Sonnet" "council.sh does not hardcode a Claude model name for agy"
-  assert_not_contains "$b" '"$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model' "agy invocation does not pass --model at all"
+  assert_contains "$b" 'AGY_MODEL="${AGY_MODEL:-Gemini 3.5 Flash (Low)}"' "agy model is pinned to a confirmed-valid, fast, free-tier-friendly default"
+  assert_contains "$b" '"$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$AGY_MODEL" "$PROMPT"' "agy invocation passes --model with the pinned (overridable) value"
 }
 
 test_council_agy_disabled_never_invokes_binary() {

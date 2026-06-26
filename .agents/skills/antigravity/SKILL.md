@@ -80,8 +80,10 @@ blind retry). Stop conditions / exit codes:
 ## Council (`council.sh`) — opinion path, NOT execution
 `council.sh <run_id> <blob-file> [--repo <dir>] [--timeout <secs>]` collects up to
 three read-only critiques (`codex` via `codex exec -s read-only`; `agy` via
-`--print` with NO `--sandbox`/`--add-dir` and no `--model` override — agy uses
-its own default model, env-toggle `COUNCIL_INCLUDE_AGY`, default on; `copilot`
+`--print` with NO `--sandbox`/`--add-dir`, model pinned to the fastest
+free-tier-friendly choice (`Gemini 3.5 Flash (Low)`, env-overridable via
+`AGY_MODEL`) — never a hardcoded Anthropic name, that silently broke every
+run before — env-toggle `COUNCIL_INCLUDE_AGY`, default on; `copilot`
 via `gh copilot -p`, pre-flight gated so it never attempts a call when the
 Copilot CLI isn't already downloaded — env-toggle `COUNCIL_INCLUDE_COPILOT`,
 default on) of a CC-authored blob and writes them under

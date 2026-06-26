@@ -102,14 +102,23 @@ fi
 agy_status="ABSENT"
 COUNCIL_INCLUDE_AGY="${COUNCIL_INCLUDE_AGY:-1}"
 if [[ "$COUNCIL_INCLUDE_AGY" == "1" ]]; then
-  # No --model override: agy uses its own default model. A hardcoded
-  # Anthropic model name was previously passed here into this Gemini-based
-  # binary and silently broke every council run (confirmed via live repro
-  # 2026-06-25: rc=0, empty stdout/stderr, no error surfaced anywhere outside
-  # agy's own --log-file). The only other known-working invocation
-  # (agy-tier-run.sh) never passes --model either.
+  # AGY_MODEL pinned to "Gemini 3.5 Flash (Low)" (2026-06-25): the fastest,
+  # lowest-thinking-budget model on the confirmed-valid list (`agy models`).
+  # A hardcoded ANTHROPIC model name was previously passed here into this
+  # Gemini-based binary and silently broke every council run (rc=0, empty
+  # output, no error surfaced outside agy's own --log-file) — removing the
+  # override entirely was the fix for that. This pin is a different, later
+  # change: agy's free/consumer-tier quota is rate-limited (confirmed via
+  # --log-file: RESOURCE_EXHAUSTED 429 even with Vertex env vars + --project
+  # set explicitly — the account's auth resolves to authMethod=consumer
+  # regardless, a billing-account-level setting outside this script's reach).
+  # Flash-tier + lowest thinking budget = cheapest, fastest call, most likely
+  # to fit inside whatever quota is left. Must stay a real value from
+  # `agy models` — never an Anthropic/Claude name (see
+  # test_council_agy_model_pinned_correctly).
+  AGY_MODEL="${AGY_MODEL:-Gemini 3.5 Flash (Low)}"
   set +e
-  run_with_timeout "$TIMEOUT" "$AGY_BIN" --print --print-timeout "${TIMEOUT}s" "$PROMPT" \
+  run_with_timeout "$TIMEOUT" "$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$AGY_MODEL" "$PROMPT" \
     < /dev/null > "$OUT/.agy.raw" 2> "$OUT/.agy.raw.err"
   agy_rc=$?
   set -e
