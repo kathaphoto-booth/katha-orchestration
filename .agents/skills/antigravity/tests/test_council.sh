@@ -21,11 +21,13 @@
 #   codex exec -s read-only --skip-git-repo-check -C <repo> <prompt>
 _mk_codex_ok() { printf '#!/usr/bin/env bash\necho "codex critique: looks fine"\nexit 0\n' > "$1/codex"; chmod +x "$1/codex"; }
 _mk_codex_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/codex"; chmod +x "$1/codex"; }
+_mk_codex_quota_exhausted() { printf '#!/usr/bin/env bash\necho "ERROR: You'"'"'ve hit your usage limit. Upgrade to Plus to continue using Codex (https://chatgpt.com/explore/plus), or try again at Jul 20th, 2026 1:41 AM." >&2\nexit 1\n' > "$1/codex"; chmod +x "$1/codex"; }
 # An agy stub that succeeds with output. council.sh invokes (model pinned to
 # AGY_MODEL, default "Gemini 3.5 Flash (Low)" — see COUNCIL_INCLUDE_AGY):
 #   agy --print --print-timeout <t>s --model <m> <prompt>
 _mk_agy_ok() { printf '#!/usr/bin/env bash\necho "agy critique: ship it"\nexit 0\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_fail() { printf '#!/usr/bin/env bash\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
+_mk_agy_quota_exhausted() { printf '#!/usr/bin/env bash\necho "RESOURCE_EXHAUSTED (code 429): Resource has been exhausted (e.g. check quota)." >&2\nexit 1\n' > "$1/agy"; chmod +x "$1/agy"; }
 _mk_agy_guarded() {
   printf '#!/usr/bin/env bash\ntouch "${AGY_SENTINEL:-/tmp/agy_invoked}"\necho "should-not-run"\nexit 0\n' > "$1/agy"
   chmod +x "$1/agy"
@@ -273,4 +275,17 @@ test_council_all_voices_redirect_stdin_from_devnull() {  # source-assertion (reg
   assert_contains "$b" '"$COPILOT_BIN" copilot -- --help < /dev/null' "copilot preflight redirects stdin from /dev/null"
   assert_contains "$b" '"$COPILOT_BIN" copilot -p "$PROMPT" \
       < /dev/null' "copilot -p invocation redirects stdin from /dev/null"
+}
+
+test_council_quota_diagnostic_hints() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_quota_exhausted "$bin"; _mk_agy_quota_exhausted "$bin"
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COUNCIL_INCLUDE_COPILOT=0 \
+    bash "$SKILL/council.sh" crc9 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  local codex_out agy_out
+  codex_out="$(cat "$r/.orchestration/crc9/council/codex.out" 2>/dev/null)"
+  agy_out="$(cat "$r/.orchestration/crc9/council/agy.out" 2>/dev/null)"
+  assert_contains "$codex_out" "ChatGPT plan usage limit" "codex.out carries the usage-limit hint, not just the generic ABSENT message"
+  assert_contains "$agy_out" "RESOURCE_EXHAUSTED/429" "agy.out carries the quota hint, not just the generic ABSENT message"
 }

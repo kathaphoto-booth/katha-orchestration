@@ -92,6 +92,12 @@ redact < "$OUT/.codex.raw" > "$OUT/codex.out"; redact < "$OUT/.codex.raw.err" > 
 rm -f "$OUT/.codex.raw" "$OUT/.codex.raw.err"
 if [[ "$codex_rc" -eq 0 && -s "$OUT/codex.out" ]]; then codex_status="OK"; else
   echo "ABSENT: codex voice failed or produced no output (rc=$codex_rc)" >> "$OUT/codex.out"
+  # Confirmed live 2026-06-26: a ChatGPT plan usage-limit hit prints
+  # "ERROR: You've hit your usage limit..." to STDERR with empty stdout
+  # (rc nonzero) — easy to mistake for a wiring/auth bug without this hint.
+  if grep -qi "usage limit\|upgrade to plus" "$OUT/codex.err" 2>/dev/null; then
+    echo "hint: ChatGPT plan usage limit — account-level quota, not a wiring/code issue; wait for reset or upgrade." >> "$OUT/codex.out"
+  fi
 fi
 
 # --- Voice 2: agy as critic (--print only; NO --sandbox, NO --add-dir) ---
@@ -133,6 +139,15 @@ if [[ "$COUNCIL_INCLUDE_AGY" == "1" ]]; then
     agy_status="OK"
   else
     echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc; re-run agy directly with --log-file <path> for diagnostics)" >> "$OUT/agy.out"
+    # RESOURCE_EXHAUSTED/429 was confirmed via --log-file (2026-06-25/26), not
+    # plain stdout/stderr — agy's internal Go logger writes there separately
+    # from the process streams council.sh captures, so this grep may be a
+    # no-op against the real binary. Checking both files anyway: cheap,
+    # harmless if it never matches, and correct if agy ever does surface it
+    # on a plain stream. The --log-file re-run above remains the reliable path.
+    if grep -qi "RESOURCE_EXHAUSTED\|HTTP 429\|code 429" "$OUT/agy.out" "$OUT/agy.err" 2>/dev/null; then
+      echo "hint: RESOURCE_EXHAUSTED/429 — agy's account-level quota (Antigravity 'G1 Credits'), not a CLI/env issue. See SKILL.md." >> "$OUT/agy.out"
+    fi
   fi
 else
   agy_rc=0
