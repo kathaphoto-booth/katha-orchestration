@@ -11,7 +11,11 @@ import { KathaLogomark } from '@/app/components/KathaLogomark';
 import { KathaWordmark } from '@/app/components/KathaWordmark';
 import Image from 'next/image';
 import { PRESETS } from '../lib/templates';
-import { resolveLayout, VIEWBOX } from '../lib/layouts';
+import { VIEWBOX } from '../lib/layouts';
+import { Print, Tag } from './components/PrintCard';
+import { TIERS, ADDONS } from '@/lib/tiers';
+import { TierCard } from './components/TierCard';
+import { ZDrawer } from './components/ZDrawer';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -52,7 +56,7 @@ const N = {
 };
 
 const F = {
-  d: "'FH Ronaldson Display Test', serif", 
+  d: "var(--font-fh-ronaldson-display), serif", 
   b: "'Cormorant', serif",                 
   m: "'Courier Prime', monospace",         
 };
@@ -64,7 +68,6 @@ const OAK_B64 = "https://images.unsplash.com/photo-1621245643448-4e86db703fc6?q=
 const BARONG_B64 = "https://images.unsplash.com/photo-1605273763365-d0de969eb2ec?q=80&w=1200&auto=format&fit=crop";
 
 const CSS = `
-@import url('https://fonts.cdnfonts.com/css/fh-ronaldson-display-test');
 @import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;1,400&family=Courier+Prime&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
@@ -204,30 +207,7 @@ body.drawer{overflow:hidden;}
 const STYLES = ["All", "Signature", "Classic"];
 const FORMATS = [ { id:"All", label:"All" },{ id:"2x6", label:"2×6" },{ id:"4x6", label:"4×6" },{ id:"6x4land", label:"6×4 LAND" },{ id:"6x4sq", label:"6×4 SQ" } ];
 
-// ── PRINT RENDER ─────────────────────────────────────────────────
-function Print({ t, height = 200 }: { t: any, height?: number }) {
-  const vb = VIEWBOX[t.type as keyof typeof VIEWBOX];
-  const layout = resolveLayout(t.layoutId, t.type);
-  const H = height, W = Math.round(H * vb.w / vb.h);
-  const scale = H / vb.h;
-  
-  return (
-    <div className="pw" style={{ width:W, height:H, flexShrink:0, background:t.backgroundColor, position:"relative", boxShadow:"0 20px 50px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.4)", transition:"box-shadow .45s cubic-bezier(.16,1,.3,1)" }}>
-      {layout.slots.map((s: any,i: number)=>(
-        <div key={i} style={{ position:"absolute", left:s.x * scale, top:s.y * scale, width:s.w * scale, height:s.h * scale,
-          background:t.slotBgColor, outline: t.slotBorderWidth !== "0px" ? `1px solid ${t.borderColor}` : "none", outlineOffset: "-1px", borderRadius: parseFloat(t.slotBorderRadius) * scale }} />
-      ))}
-      <div style={{ position:"absolute", left:layout.textZone.x * scale, top:layout.textZone.y * scale, width:layout.textZone.w * scale, height:layout.textZone.h * scale, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center" }}>
-          <p style={{ fontFamily: t.fontFamily, fontSize: 80 * scale, color:t.textColor, letterSpacing:"0.12em", marginBottom: 20 * scale }}>{t.titleText}</p>
-          {t.subTitleText && <p style={{ fontFamily:F.m, fontSize: 35 * scale, color:t.secondaryColor, letterSpacing:"0.12em", textTransform:"uppercase" }}>{t.subTitleText}</p>}
-      </div>
-    </div>
-  );
-}
-
-function Tag({ style }: { style: string }) {
-  return <span style={{ fontFamily:F.m, fontSize:8, letterSpacing:"0.18em", textTransform:"uppercase", color: style==="Signature"?N.loko:N.mut }}>{style==="Signature"?"◆ Signature":"Classic"}</span>;
-}
+// Print + Tag extracted to ./components/PrintCard.tsx
 
 // ── The Thread Input ──
 function ThreadWire({ label, type="text", value, onChange, placeholder, required, hint }: any) {
@@ -306,27 +286,13 @@ export default function App() {
   const [calcTier, setCalcTier] = useState<string>("Signature");
   const [calcAddons, setCalcAddons] = useState<Record<string, boolean>>({});
 
-  const tiersData: Record<string, number> = {
-    Signature: 949,
-    Editorial: 1149,
-    Modernist: 749,
-    Monochrome: 949
-  };
-  const addonsData: Record<string, number> = {
-    "Heirloom Guestbook": 150,
-    "Extra Hour of Service": 200,
-    "Custom Backdrop": 250
-  };
-  const calcTotal = (tiersData[calcTier] || 0) + Object.entries(calcAddons).filter(a=>a[1]).reduce((sum, a) => sum + addonsData[a[0]], 0);
+  const calcTotal = (TIERS.find(t => t.id === calcTier)?.price ?? 0) + Object.entries(calcAddons).filter(a=>a[1]).reduce((sum, a) => sum + (ADDONS[a[0]] ?? 0), 0);
 
   // Bridge unmount is driven by the GSAP timeline's onComplete (see below) so the
   // dissolve always finishes before unmount on any device speed — no magic-number race.
   useEffect(()=>{ const t=setTimeout(()=>setTemplatesLoading(false), 1200); return ()=>clearTimeout(t); },[]);
   
-  useEffect(()=>{
-    if(drawer) document.body.classList.add("drawer"); else document.body.classList.remove("drawer");
-    return ()=>document.body.classList.remove("drawer");
-  },[drawer]);
+  // body.drawer class now managed by ZDrawer component
 
   const visible = useMemo(()=>PRESETS.filter(t=>{
     const style = t.name.includes("Signature") ? "Signature" : "Classic";
@@ -395,28 +361,7 @@ export default function App() {
     });
   }, [bridge]);
 
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      if (drawer) {
-        gsap.to('.drawer-container', { x: '0%', duration: 0.7, ease: "expo.out" });
-        gsap.to('.drawer-overlay', { opacity: 1, duration: 0.6, ease: "power2.out" });
-      } else {
-        gsap.to('.drawer-container', { x: '100%', duration: 0.7, ease: "expo.out" });
-        gsap.to('.drawer-overlay', { opacity: 0, duration: 0.6, ease: "power2.out" });
-      }
-    });
-    
-    mm.add("(prefers-reduced-motion: reduce)", () => {
-      if (drawer) {
-        gsap.set('.drawer-container', { x: '0%' });
-        gsap.set('.drawer-overlay', { opacity: 1 });
-      } else {
-        gsap.set('.drawer-container', { x: '100%' });
-        gsap.set('.drawer-overlay', { opacity: 0 });
-      }
-    });
-  }, [drawer]);
+  // Drawer animation now managed by ZDrawer component
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -651,11 +596,11 @@ export default function App() {
                 <h3 style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: "0.16em", textTransform: "uppercase", color: N.hi, marginBottom: 16 }}>Estimate Summary</h3>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                   <span style={{ fontFamily: F.b, fontSize: 16, color: N.mut }}>{calcTier} Package</span>
-                  <span style={{ fontFamily: F.m, fontSize: 14, color: N.hi }}>${tiersData[calcTier]}</span>
+                  <span style={{ fontFamily: F.m, fontSize: 14, color: N.hi }}>${TIERS.find(t => t.id === calcTier)?.price ?? 0}</span>
                 </div>
                 
                 <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${N.ln}`, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {Object.entries(addonsData).map(([name, price]) => (
+                  {Object.entries(ADDONS).map(([name, price]) => (
                     <label key={name} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", userSelect: "none" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         <div style={{ width: 16, height: 16, border: `1px solid ${calcAddons[name] ? N.loko : N.ln}`, background: calcAddons[name] ? N.loko : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '1px' }}>
@@ -681,53 +626,9 @@ export default function App() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <div className={`tier-card ${calcTier === 'Signature' ? 'selected' : ''}`} onClick={() => setCalcTier('Signature')}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
-                  <div>
-                    <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 30, color: N.hi, lineHeight: 1.05 }}>Signature</div>
-                    <span style={{ fontFamily: F.m, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", marginTop: 10, display: "inline-block", color: N.loko }}>◆ Oak Booth · 2×6 or 4×6</span>
-                  </div>
-                  <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$949</div>
-                </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>Weathered oak booth, DSLR capture, archival cotton prints handed over in the room.</p>
-                <span className="tier-cta">{calcTier === 'Signature' ? 'Selected' : 'Select Package'}</span>
-              </div>
-
-              <div className={`tier-card tier-flag ${calcTier === 'Editorial' ? 'selected' : ''}`} onClick={() => setCalcTier('Editorial')}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
-                  <div>
-                    <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 30, color: N.hi, lineHeight: 1.05 }}>Editorial</div>
-                    <span style={{ fontFamily: F.m, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", marginTop: 10, display: "inline-block", color: N.loko }}>◆ Oak Booth · 4×6</span>
-                  </div>
-                  <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$1,149</div>
-                </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The full build — oak booth, refined black-and-white retouching, every print hand-finished.</p>
-                <span className="tier-cta">{calcTier === 'Editorial' ? 'Selected' : 'Select Package'}</span>
-              </div>
-
-              <div className={`tier-card ${calcTier === 'Modernist' ? 'selected' : ''}`} onClick={() => setCalcTier('Modernist')}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
-                  <div>
-                    <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 30, color: N.hi, lineHeight: 1.05 }}>Modernist</div>
-                    <span style={{ fontFamily: F.m, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", marginTop: 10, display: "inline-block", color: N.fnt }}>White Booth · 2×6 or 4×6</span>
-                  </div>
-                  <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$749</div>
-                </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The white shell booth, built for galleries, lofts, and modern rooms.</p>
-                <span className="tier-cta">{calcTier === 'Modernist' ? 'Selected' : 'Select Package'}</span>
-              </div>
-
-              <div className={`tier-card ${calcTier === 'Monochrome' ? 'selected' : ''}`} onClick={() => setCalcTier('Monochrome')}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20 }}>
-                  <div>
-                    <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 30, color: N.hi, lineHeight: 1.05 }}>Monochrome</div>
-                    <span style={{ fontFamily: F.m, fontSize: 8.5, letterSpacing: "0.16em", textTransform: "uppercase", marginTop: 10, display: "inline-block", color: N.fnt }}>White Booth · 4×6</span>
-                  </div>
-                  <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$949</div>
-                </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The white booth tuned for high-contrast black-and-white, razor frames that last.</p>
-                <span className="tier-cta">{calcTier === 'Monochrome' ? 'Selected' : 'Select Package'}</span>
-              </div>
+              {TIERS.map(t => (
+                <TierCard key={t.id} tier={t} selected={calcTier === t.id} onSelect={() => setCalcTier(t.id)} />
+              ))}
             </div>
           </div>
         </section>
@@ -746,15 +647,8 @@ export default function App() {
       </div>
 
       {/* ════ DEEP Z-DEPTH VAULT DRAWER ═════ */}
-      <div className="drawer-overlay" onClick={closeDrawer} style={{ position:"fixed", inset:0, zIndex:300, background:"rgba(0,0,0,0.55)",
-        opacity: 0, pointerEvents: "none" }}/>
-        
-      <div className="drawer-container" style={{ position:"fixed", top:0, right:0, bottom:0, width:"100%", maxWidth:600, background:N.l3,
-        backgroundImage:GRAIN, borderLeft:`1px solid ${N.glass}`, zIndex:301, overflowY:"auto", padding:"48px clamp(24px, 5vw, 48px)",
-        transform: "translateX(100%)",
-        boxShadow:"-60px 0 120px rgba(0,0,0,0.9)" }}>
-        
-        {drawer && (
+      <ZDrawer open={drawer} onClose={closeDrawer}>
+        <div style={{ padding: "48px clamp(24px, 5vw, 48px)", minHeight: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
             <div style={{ display:"flex", justifyContent:"flex-end", alignItems:"center", marginBottom:32 }}>
               <button onClick={closeDrawer} style={{ fontFamily:F.m, fontSize:9.5, letterSpacing:"0.14em", textTransform:"uppercase", color:N.mut }}>Close ✕</button>
@@ -803,8 +697,8 @@ export default function App() {
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      </ZDrawer>
     </div>
   );
 }
