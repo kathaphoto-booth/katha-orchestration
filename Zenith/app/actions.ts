@@ -1,6 +1,7 @@
 'use server';
 
 import { Resend } from 'resend';
+import { supabaseAdmin } from '@/lib/supabase';
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
@@ -35,6 +36,22 @@ export async function submitInquiry(lead: any) {
     return { success: true };
   } catch (error: any) {
     console.error('Error sending email:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function submitBooking(payload: any) {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('leads')
+      .insert([payload])
+      .select();
+
+    if (error) throw new Error(error.message);
+
+    return { success: true, lead: data[0] };
+  } catch (error: any) {
+    console.error('Error submitting booking:', error);
     return { success: false, error: error.message };
   }
 }
