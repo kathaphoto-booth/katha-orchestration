@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useId } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { submitInquiry } from '@/app/actions';
@@ -105,7 +105,7 @@ html, body {
 .skeleton-pulse { animation: skeletonPulse 2s ease-in-out infinite; }
 
 input,select,textarea,button{font-family:inherit;outline:none;}
-input::placeholder{color:rgba(236,231,219,0.2);}
+input::placeholder{color:rgba(236,231,219,0.4);}
 button{cursor:pointer;border:none;background:none;}
 
 input[type=date] {
@@ -232,16 +232,17 @@ function Tag({ style }: { style: string }) {
 // ── The Thread Input ──
 function ThreadWire({ label, type="text", value, onChange, placeholder, required, hint }: any) {
   const [f,setF]=useState(false);
+  const id = useId();
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:6, flex: "1 1 100%", minWidth:"180px", position:"relative" }}>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
-        <label style={{ fontFamily:F.m, fontSize:9, letterSpacing:"0.14em", textTransform:"uppercase", color:f?N.hi:N.fnt, transition:"color .3s" }}>
+        <label htmlFor={id} style={{ fontFamily:F.m, fontSize:9, letterSpacing:"0.14em", textTransform:"uppercase", color:f?N.hi:N.fnt, transition:"color .3s" }}>
           {label}{required && <span style={{color:N.loko,marginLeft:3}}>*</span>}
         </label>
         {hint && <span style={{ fontFamily:F.m, fontSize:8, color:N.fnt }}>{hint}</span>}
       </div>
       <div style={{ position: "relative" }}>
-        <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}
+        <input id={id} type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder}
           style={{ width:"100%", background:"transparent", border:"none", color:N.hi, padding:"12px 0", fontFamily:F.d, fontSize:22 }}
           onFocus={()=>setF(true)} onBlur={()=>setF(false)}/>
         {type === "date" && (
@@ -498,12 +499,12 @@ export default function App() {
             ) : (
               <h1 className="gsap-entrance hero-h1" style={{ fontFamily:F.d, fontSize:"clamp(60px, 11vw, 120px)", fontWeight:300,
                 letterSpacing:"-0.02em", lineHeight:0.95, color:N.hi, marginBottom:48, opacity: 0 }}>
-                The frame<br/>your night<br/><em style={{fontFamily:F.b, fontStyle:"italic", color:N.mut, fontWeight:400}}>lives in.</em>
+                The frame<br/>your night<br/><em style={{fontFamily:F.b, fontStyle:"italic", color:N.mut, fontWeight:400, lineHeight: 1.1, paddingBottom: "4px"}}>lives in.</em>
               </h1>
             )}
 
             <div className="gsap-entrance" style={{ maxWidth:580, borderLeft:`2px solid ${N.loko}`, paddingLeft:28, marginLeft: 2, opacity: 0 }}>
-              <p style={{ fontFamily:F.b, fontSize:"clamp(24px, 3vw, 28px)", fontStyle:"italic", color:N.mut, lineHeight:1.5, marginBottom:40 }}>
+              <p style={{ fontFamily:F.b, fontSize:"clamp(24px, 3vw, 28px)", fontStyle:"italic", color:N.mut, lineHeight:1.5, paddingBottom:"4px", marginBottom:40 }}>
                 Eighty-two print designs, drawn by hand and held to one standard. Find the one that fits your event — we shape the details with you.
               </p>
               <button onClick={() => { setDrawer(true); }} style={{ fontFamily: F.m, fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: N.hi, background: N.loko, padding: "16px 24px", borderRadius: "2px", border: `1px solid ${N.loko}` }}>
@@ -608,7 +609,7 @@ export default function App() {
           <div style={{ maxWidth: 1100, margin: "0 auto 48px" }}>
             <p className="gsap-entrance" style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase", color: N.loko, marginBottom: 12, opacity: 0 }}>Tiers</p>
             <h2 className="gsap-entrance" style={{ fontFamily: F.d, fontWeight: 300, fontSize: "clamp(32px, 4.5vw, 46px)", lineHeight: 1.04, letterSpacing: "-0.02em", color: N.hi, maxWidth: "16ch", opacity: 0 }}>
-              Two booths. Four ways to <em style={{ fontFamily: F.b, fontStyle: "italic", color: N.mut }}>hold the night.</em>
+              Two booths. Four ways to <em style={{ fontFamily: F.b, fontStyle: "italic", color: N.mut, lineHeight: 1.1, paddingBottom: "4px" }}>hold the night.</em>
             </h2>
           </div>
           
@@ -668,7 +669,7 @@ export default function App() {
                   </div>
                   <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$949</div>
                 </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, color: N.mut, maxWidth: "42ch" }}>Weathered oak booth, DSLR capture, archival cotton prints handed over in the room.</p>
+                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>Weathered oak booth, DSLR capture, archival cotton prints handed over in the room.</p>
                 <span className="tier-cta">{calcTier === 'Signature' ? 'Selected' : 'Select Package'}</span>
               </div>
 
@@ -680,7 +681,7 @@ export default function App() {
                   </div>
                   <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$1,149</div>
                 </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, color: N.mut, maxWidth: "42ch" }}>The full build — oak booth, refined black-and-white retouching, every print hand-finished.</p>
+                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The full build — oak booth, refined black-and-white retouching, every print hand-finished.</p>
                 <span className="tier-cta">{calcTier === 'Editorial' ? 'Selected' : 'Select Package'}</span>
               </div>
 
@@ -692,7 +693,7 @@ export default function App() {
                   </div>
                   <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$749</div>
                 </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, color: N.mut, maxWidth: "42ch" }}>The white shell booth, built for galleries, lofts, and modern rooms.</p>
+                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The white shell booth, built for galleries, lofts, and modern rooms.</p>
                 <span className="tier-cta">{calcTier === 'Modernist' ? 'Selected' : 'Select Package'}</span>
               </div>
 
@@ -704,7 +705,7 @@ export default function App() {
                   </div>
                   <div style={{ fontFamily: F.d, fontWeight: 300, fontSize: 34, color: N.hi, whiteSpace: "nowrap", lineHeight: 1 }}>$949</div>
                 </div>
-                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, color: N.mut, maxWidth: "42ch" }}>The white booth tuned for high-contrast black-and-white, razor frames that last.</p>
+                <p style={{ fontFamily: F.b, fontStyle: "italic", fontSize: 19, lineHeight: 1.55, paddingBottom: "4px", color: N.mut, maxWidth: "42ch" }}>The white booth tuned for high-contrast black-and-white, razor frames that last.</p>
                 <span className="tier-cta">{calcTier === 'Monochrome' ? 'Selected' : 'Select Package'}</span>
               </div>
             </div>
