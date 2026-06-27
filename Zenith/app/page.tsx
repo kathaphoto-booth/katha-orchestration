@@ -9,6 +9,8 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { KathaLogomark } from '@/app/components/KathaLogomark';
 import { KathaWordmark } from '@/app/components/KathaWordmark';
+import { PRESETS } from '../lib/templates';
+import { resolveLayout, VIEWBOX } from '../lib/layouts';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -201,65 +203,23 @@ body.drawer{overflow:hidden;}
 const STYLES = ["All", "Signature", "Classic"];
 const FORMATS = [ { id:"All", label:"All" },{ id:"2x6", label:"2×6" },{ id:"4x6", label:"4×6" },{ id:"6x4land", label:"6×4 LAND" },{ id:"6x4sq", label:"6×4 SQ" } ];
 
-const TEMPLATES = [
-  { id:"loom-oak", plate:"004", name:"Loom Oak", style:"Signature", booth:"Oak", formatLabel:"2×6 Strip", layout:"strip3", font:"FH Ronaldson Display Test", ratio:{w:1,h:3},
-    desc:"Three frames on unbleached ground with a single Kobe seam — the warp line of the loom drawn straight down the strip.",
-    paper:"#ECE7DB", slot:"#D1CBBF", edge:N.loko, ink:"#161311", accent:N.loko, sName:"AMARA & SEBASTIAN", sSub:"OCTOBER · LONG BEACH" },
-  { id:"knalum-dark", plate:"011", name:"Knalum Dark", style:"Signature", booth:"Oak", formatLabel:"6×4 Landscape", layout:"land3", font:"FH Ronaldson Display Test", ratio:{w:3,h:2},
-    desc:"Leaf-black ground, three apertures in geometric tension, one Philippine Gray thread bisecting the field below.",
-    paper:"#211D1A", slot:N.l2, edge:N.fnt, ink:N.hi, accent:N.fnt, sName:"RENZO & CAMILLE", sSub:"NOVEMBER · CARSON" },
-  
-  { id:"fn-1", isFootnote: true, text: "Calado Piña — openwork drawn from Barong Tagalog embroidery, 17th c." },
-  
-  { id:"calado-pina", plate:"019", name:"Calado Piña", style:"Signature", booth:"Oak", formatLabel:"4×6 Postcard", layout:"strip2", font:"Cormorant", ratio:{w:2,h:3},
-    desc:"Two openings on raw piña fiber, divided by a hand-stitched calado — openwork drawn the way grandmothers drew it.",
-    paper:"#E3DEC5", slot:"#D2CBBF", edge:N.fnt, ink:"#161311", accent:N.loko, sName:"Marisol & Diego", sSub:"September · Pasadena" },
-  { id:"sombra-twin", plate:"027", name:"Sombra Twin", style:"Signature", booth:"White", formatLabel:"6×4 Square", layout:"twinsq", font:"Cormorant", ratio:{w:3,h:2},
-    desc:"Twin squares with breathing room, each trailing a ghost silhouette offset behind it, as if seen through fabric.",
-    paper:"#D2CBBF", slot:"#C0B9AC", edge:N.fnt, ink:"#161311", accent:N.loko, sName:"SOFIA & MARCO", sSub:"SEPTEMBER · LOS ANGELES" },
-  
-  { id:"fn-2", isFootnote: true, text: "The Classic Standard — 1px hairlines. The portrait carries the weight." },
-
-  { id:"iron-rule", plate:"041", name:"Iron Rule", style:"Classic", booth:"White", formatLabel:"2×6 Strip", layout:"strip4", font:"FH Ronaldson Display Test", ratio:{w:1,h:3},
-    desc:"Four frames, one hairline rule. The design steps back so the portrait carries the whole strip.",
-    paper:"#FAFAF8", slot:N.hi, edge:N.dim, ink:"#161311", accent:N.dim, sName:"NADIA + ELIAS", sSub:"JULY · LONG BEACH" },
-  { id:"champagne-frame", plate:"053", name:"Champagne Frame", style:"Classic", booth:"Oak", formatLabel:"4×6 Postcard", layout:"strip2", font:"FH Ronaldson Display Test", ratio:{w:2,h:3},
-    desc:"A concentric pewter border around two portraits — restraint with a single quiet line.",
-    paper:"#ECE7DB", slot:"#D1CBBF", edge:N.fnt, ink:"#161311", accent:N.fnt, sName:"JAMES & ELEANOR", sSub:"OCTOBER · MALIBU" },
-];
-
-const fmtLong = (d: string) => d ? new Date(d+"T12:00:00").toLocaleDateString("en-US", {weekday:"long",month:"long",day:"numeric",year:"numeric"}) : "";
-
 // ── PRINT RENDER ─────────────────────────────────────────────────
 function Print({ t, height = 200 }: { t: any, height?: number }) {
-  const { w, h } = t.ratio;
-  const H = height, W = Math.round(H*w/h);
-  const pad = 9, iW = W-pad*2, iH = H-pad*2;
-  let slots: any[] = [];
-  if (t.layout==="strip3"){ const sh=(iH-34)/3-2.5; slots=[0,1,2].map(i=>({x:pad,y:pad+i*(sh+3),w:iW,h:sh})); }
-  else if (t.layout==="strip4"){ const sh=(iH-26)/4-2; slots=[0,1,2,3].map(i=>({x:pad,y:pad+i*(sh+2),w:iW,h:sh})); }
-  else if (t.layout==="strip2"){ const sh=(iH-44)/2-2; slots=[0,1].map(i=>({x:pad,y:pad+i*(sh+3),w:iW,h:sh})); }
-  else if (t.layout==="land2"){ const sw=(iW-5)/2; const sh=iH-26; slots=[0,1].map(i=>({x:pad+i*(sw+5),y:pad,w:sw,h:sh})); }
-  else if (t.layout==="land3"){ const sw=(iW-6)/3; const sh=iH-24; slots=[0,1,2].map(i=>({x:pad+i*(sw+3),y:pad,w:sw,h:sh})); }
-  else if (t.layout==="twinsq"){ const sq=Math.min((iW-6)/2,iH-26); const ox=(iW-(sq*2+6))/2; slots=[0,1].map(i=>({x:pad+ox+i*(sq+6),y:pad,w:sq,h:sq})); }
-  const isLand = w>h, last = slots[slots.length-1];
-  const textY = isLand ? pad+(last?.h||0)+5 : (last?.y||0)+(last?.h||0)+6;
+  const vb = VIEWBOX[t.type as keyof typeof VIEWBOX];
+  const layout = resolveLayout(t.layoutId, t.type);
+  const H = height, W = Math.round(H * vb.w / vb.h);
+  const scale = H / vb.h;
+  
   return (
-    <div className="pw" style={{ width:W, height:H, flexShrink:0, background:t.paper, position:"relative", boxShadow:"0 20px 50px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.4)", transition:"box-shadow .45s cubic-bezier(.16,1,.3,1)" }}>
-      {slots.map((s,i)=>(
-        <div key={i} style={{ position:"absolute", left:s.x, top:s.y, width:s.w, height:s.h,
-          background:t.slot, outline:`1px solid ${t.edge}`, outlineOffset: t.layout==="strip3"||t.layout==="land3" ? "-2.5px" : "-2px" }}>
-          {t.layout==="twinsq" && <div style={{ position:"absolute", inset:3, background:"rgba(0,0,0,0.04)", transform:"translate(2px,2px)", zIndex:-1 }}/>}
-        </div>
+    <div className="pw" style={{ width:W, height:H, flexShrink:0, background:t.backgroundColor, position:"relative", boxShadow:"0 20px 50px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.4)", transition:"box-shadow .45s cubic-bezier(.16,1,.3,1)" }}>
+      {layout.slots.map((s: any,i: number)=>(
+        <div key={i} style={{ position:"absolute", left:s.x * scale, top:s.y * scale, width:s.w * scale, height:s.h * scale,
+          background:t.slotBgColor, outline: t.slotBorderWidth !== "0px" ? `1px solid ${t.borderColor}` : "none", outlineOffset: "-1px", borderRadius: parseFloat(t.slotBorderRadius) * scale }} />
       ))}
-      {t.id==="champagne-frame" && <div style={{ position:"absolute", inset:5, border:`0.5px solid ${t.edge}`, opacity:0.5 }}/>}
-      {t.id==="knalum-dark" && <div style={{ position:"absolute", left:pad, right:pad, bottom:18, height:1, background:t.accent, opacity:0.75 }}/>}
-      {textY < H && (
-        <div style={{ position:"absolute", left:pad, right:pad, top:textY, textAlign:"center" }}>
-          <p style={{ fontFamily: t.font, fontSize:isLand?6.5:5.5, color:t.ink, letterSpacing:t.font.includes("Ronaldson")?"0.12em":"0.04em", fontStyle:t.font==="Cormorant"?"italic":"normal", marginBottom:2 }}>{t.sName}</p>
-          <p style={{ fontFamily:F.m, fontSize:4, color:t.accent, letterSpacing:"0.12em" }}>{t.sSub}</p>
-        </div>
-      )}
+      <div style={{ position:"absolute", left:layout.textZone.x * scale, top:layout.textZone.y * scale, width:layout.textZone.w * scale, height:layout.textZone.h * scale, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", textAlign:"center" }}>
+          <p style={{ fontFamily: t.fontFamily, fontSize: 80 * scale, color:t.textColor, letterSpacing:"0.12em", marginBottom: 20 * scale }}>{t.titleText}</p>
+          {t.subTitleText && <p style={{ fontFamily:F.m, fontSize: 35 * scale, color:t.secondaryColor, letterSpacing:"0.12em", textTransform:"uppercase" }}>{t.subTitleText}</p>}
+      </div>
     </div>
   );
 }
@@ -400,14 +360,11 @@ export default function App() {
   }, [drawer]);
 
 
-  const visible = useMemo(()=>TEMPLATES.filter(t=>{
-    if(t.isFootnote && styleF!=="All") return false; 
-    if(!t.isFootnote) {
-      if(styleF!=="All" && t.style!==styleF) return false;
-      // if(fmtF!=="All" && t.format!==fmtF) return false;
-    }
+  const visible = useMemo(()=>PRESETS.filter(t=>{
+    const style = t.name.includes("Signature") ? "Signature" : "Classic";
+    if(styleF!=="All" && style!==styleF) return false;
     return true;
-  }),[styleF,fmtF]);
+  }),[styleF]);
 
   const openDrawerForTemplate = (t: any) => { 
     if(drag.current.moved || t.isFootnote) return; 
@@ -644,19 +601,12 @@ export default function App() {
                 ))
               ) : visible.map((item, idx)=>{
                 const t = item as any;
-                if(t.isFootnote) {
-                  return (
-                    <div key={t.id} className="titem" style={{ width: 400, flexShrink: 0, padding: "0 20px" }}>
-                      <div style={{ width: 40, height: 1, background: N.loko, marginBottom: 24 }} />
-                      <p style={{ fontFamily: F.b, fontSize: 22, lineHeight: 1.6, color: N.mut, fontStyle: "italic" }}>
-                        &quot;{t.text}&quot;
-                      </p>
-                    </div>
-                  );
-                }
-  
+                const style = t.name.includes("Signature") ? "Signature" : "Classic";
+                const formatLabel = t.type === 'strip' ? "2×6 Strip" : (t.type === 'postcard-vertical' ? "4×6 Postcard" : "6×4 Landscape");
                 const sel = selected?.data?.id===t.id;
-                const width = t.style === "Signature" ? 340 : 280;
+                const width = style === "Signature" ? 340 : 280;
+                const vb = VIEWBOX[t.type as keyof typeof VIEWBOX];
+                const printHeight = vb.h > vb.w ? 280 : 180;
   
                 return (
                   <div key={t.id} onClick={()=>openDrawerForTemplate(t)} className="titem titem-image" style={{ width }}>
@@ -664,20 +614,12 @@ export default function App() {
                       display:"flex", flexDirection:"column", alignItems:"center", gap:32, position:"relative",
                       boxShadow: `0 24px 60px ${N.shadow}` }}>
                       
-                      <div style={{ position:"absolute", top:24, left:24, display:"flex", alignItems:"baseline", gap:5 }}>
-                        <span style={{ fontFamily:F.m, fontSize:10, color: sel?N.terra:N.fnt }}>{t.plate}</span>
-                      </div>
-                      <div style={{ position:"absolute", top:24, right:24 }}>
-                        <span style={{ fontFamily:F.m, fontSize:7, letterSpacing:"0.12em", textTransform:"uppercase",
-                          color:N.fnt, borderBottom:`1px solid ${N.ln}`, padding:"2px 0" }}>{t.booth}</span>
-                      </div>
-                      
-                      <div style={{ marginTop:16 }}><Print t={t} height={t.ratio?.h>t.ratio?.w?280:180}/></div>
+                      <div style={{ marginTop:16 }}><Print t={t} height={printHeight}/></div>
                       
                       <div style={{ textAlign:"center" }}>
-                        <Tag style={t.style}/>
+                        <Tag style={style}/>
                         <h3 style={{ fontFamily:F.d, fontSize:24, fontWeight:300, color:N.hi, marginTop:12, marginBottom:4 }}>{t.name}</h3>
-                        <p style={{ fontFamily:F.m, fontSize:8.5, letterSpacing:"0.1em", color:N.fnt }}>{t.formatLabel}</p>
+                        <p style={{ fontFamily:F.m, fontSize:8.5, letterSpacing:"0.1em", color:N.fnt }}>{formatLabel}</p>
                       </div>
                     </div>
                   </div>
