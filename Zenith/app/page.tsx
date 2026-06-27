@@ -9,6 +9,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { KathaLogomark } from '@/app/components/KathaLogomark';
 import { KathaWordmark } from '@/app/components/KathaWordmark';
+import Image from 'next/image';
 import { PRESETS } from '../lib/templates';
 import { resolveLayout, VIEWBOX } from '../lib/layouts';
 
@@ -281,7 +282,6 @@ export default function App() {
   };
 
   const trackRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ on:false, x:0, sl:0, moved:false });
 
   const [templatesLoading, setTemplatesLoading] = useState(true);
   const [calcTier, setCalcTier] = useState<string>("Signature");
@@ -307,58 +307,6 @@ export default function App() {
     if(drawer) document.body.classList.add("drawer"); else document.body.classList.remove("drawer");
     return ()=>document.body.classList.remove("drawer");
   },[drawer]);
-  
-  useEffect(()=>{
-    const el=trackRef.current; if(!el) return;
-    const onWheel=(e: WheelEvent)=>{ if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){ el.scrollLeft+=e.deltaY; e.preventDefault(); } };
-    el.addEventListener("wheel",onWheel,{passive:false});
-    return ()=>el.removeEventListener("wheel",onWheel);
-  },[]);
-
-  const idleTimer = useRef<NodeJS.Timeout | null>(null);
-  const autoScrollFrame = useRef<number | null>(null);
-
-  useEffect(() => {
-    const startAutoScroll = () => {
-      if (autoScrollFrame.current) return;
-      let lastTime = performance.now();
-      const scroll = (time: number) => {
-        if (trackRef.current && !drag.current.on && !drawer) {
-          const dt = time - lastTime;
-          lastTime = time;
-          trackRef.current.scrollLeft += 0.05 * dt; // speed adjustment
-          if (trackRef.current.scrollLeft >= trackRef.current.scrollWidth - trackRef.current.clientWidth - 1) {
-            trackRef.current.scrollLeft = 0; // jump back to start
-          }
-        }
-        autoScrollFrame.current = requestAnimationFrame(scroll);
-      };
-      autoScrollFrame.current = requestAnimationFrame(scroll);
-    };
-
-    const stopAutoScroll = () => {
-      if (autoScrollFrame.current) {
-        cancelAnimationFrame(autoScrollFrame.current);
-        autoScrollFrame.current = null;
-      }
-    };
-
-    const resetIdleTimer = () => {
-      stopAutoScroll();
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(startAutoScroll, 5000);
-    };
-
-    resetIdleTimer();
-    const handlers = ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'keydown', 'wheel'];
-    handlers.forEach(ev => window.addEventListener(ev, resetIdleTimer));
-    return () => {
-      stopAutoScroll();
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      handlers.forEach(ev => window.removeEventListener(ev, resetIdleTimer));
-    };
-  }, [drawer]);
-
 
   const visible = useMemo(()=>PRESETS.filter(t=>{
     const style = t.name.includes("Signature") ? "Signature" : "Classic";
@@ -367,7 +315,7 @@ export default function App() {
   }),[styleF]);
 
   const openDrawerForTemplate = (t: any) => { 
-    if(drag.current.moved || t.isFootnote) return; 
+    if(t.isFootnote) return; 
     setLead(p => ({ ...p, template: t.name }));
     setDrawer(true);
   };
@@ -379,90 +327,118 @@ export default function App() {
 
   const closeDrawer = ()=>{ setDrawer(false); setTimeout(()=>{ setConfirmed(false); }, 600); };
 
-  const scrollTrack = (dir: 'left' | 'right') => {
-    if (trackRef.current) {
-      const amount = window.innerWidth * 0.5;
-      trackRef.current.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
-    }
-  };
-
-  const skewSetter = useRef<any>(null);
-
   useGSAP(() => {
-    if (bridge) {
-      const tl = gsap.timeline();
-      tl.fromTo('.bridge-wordmark', 
-        { opacity: 0, filter: 'blur(20px)', scale: 1.1, y: 10 },
-        { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0, duration: 2.4, ease: "power3.inOut" }
-      )
-      .to('.bridge-container', 
-        { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 1.4, ease: "power2.inOut" },
-        "+=0.8"
-      );
-    } else {
-      gsap.fromTo('.gsap-entrance',
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 1, ease: "power3.out", stagger: 0.15 }
-      );
-
-      gsap.utils.toArray('.pricing-grid > div').forEach((card: any, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 40 },
-          { 
-            opacity: 1, y: 0, 
-            duration: 1.2, 
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-            },
-            delay: i * 0.15
-          }
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (bridge) {
+        const tl = gsap.timeline();
+        tl.fromTo('.bridge-wordmark', 
+          { opacity: 0, filter: 'blur(20px)', scale: 1.1, y: 10 },
+          { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0, duration: 2.4, ease: "power3.inOut" }
+        )
+        .to('.bridge-container', 
+          { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 1.4, ease: "power2.inOut" },
+          "+=0.8"
         );
-      });
-    }
+      } else {
+        gsap.fromTo('.gsap-entrance',
+          { opacity: 0, y: 24 },
+          { opacity: 1, y: 0, duration: 1, ease: "power3.out", stagger: 0.15 }
+        );
+
+        gsap.utils.toArray('.pricing-grid > div').forEach((card: any, i) => {
+          gsap.fromTo(card,
+            { opacity: 0, y: 40 },
+            { 
+              opacity: 1, y: 0, 
+              duration: 1.2, 
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 85%",
+              },
+              delay: i * 0.15
+            }
+          );
+        });
+      }
+    });
     
-    skewSetter.current = gsap.quickTo(".titem", "skewX", { ease: "power3", duration: 0.8 });
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      if (bridge) {
+        gsap.set(['.bridge-wordmark', '.bridge-container'], { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0 });
+      } else {
+        gsap.set('.gsap-entrance', { opacity: 1, y: 0 });
+        gsap.set('.pricing-grid > div', { opacity: 1, y: 0 });
+      }
+    });
   }, [bridge]);
 
   useGSAP(() => {
-    if (drawer) {
-      gsap.to('.drawer-container', { x: '0%', duration: 0.7, ease: "expo.out" });
-      gsap.to('.drawer-overlay', { opacity: 1, duration: 0.6, ease: "power2.out" });
-    } else {
-      gsap.to('.drawer-container', { x: '100%', duration: 0.7, ease: "expo.out" });
-      gsap.to('.drawer-overlay', { opacity: 0, duration: 0.6, ease: "power2.out" });
-    }
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (drawer) {
+        gsap.to('.drawer-container', { x: '0%', duration: 0.7, ease: "expo.out" });
+        gsap.to('.drawer-overlay', { opacity: 1, duration: 0.6, ease: "power2.out" });
+      } else {
+        gsap.to('.drawer-container', { x: '100%', duration: 0.7, ease: "expo.out" });
+        gsap.to('.drawer-overlay', { opacity: 0, duration: 0.6, ease: "power2.out" });
+      }
+    });
+    
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      if (drawer) {
+        gsap.set('.drawer-container', { x: '0%' });
+        gsap.set('.drawer-overlay', { opacity: 1 });
+      } else {
+        gsap.set('.drawer-container', { x: '100%' });
+        gsap.set('.drawer-overlay', { opacity: 0 });
+      }
+    });
   }, [drawer]);
 
   useGSAP(() => {
-    if (!templatesLoading) {
-      gsap.fromTo('.titem-image', 
-        { opacity: 0, filter: "blur(4px)" },
-        { opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power3.out", stagger: 0.1 }
-      );
-    }
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      if (!templatesLoading) {
+        gsap.fromTo('.titem-image', 
+          { opacity: 0, filter: "blur(4px)" },
+          { opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power3.out", stagger: 0.1 }
+        );
+      }
+    });
+    
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      if (!templatesLoading) {
+        gsap.set('.titem-image', { opacity: 1, filter: "blur(0px)" });
+      }
+    });
   }, [templatesLoading]);
 
-  const onDown=(e: React.MouseEvent | React.TouchEvent)=>{ 
-    const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
-    drag.current={ on:true, x:pageX, sl:trackRef.current!.scrollLeft, moved:false }; 
-  };
-  const onMove=(e: React.MouseEvent | React.TouchEvent)=>{ 
-    if(!drag.current.on) return; 
-    const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
-    const w=(pageX-drag.current.x); 
-    if(Math.abs(w)>4) drag.current.moved=true;
-    trackRef.current!.scrollLeft=drag.current.sl-w*1.5; 
-    if (skewSetter.current) {
-      skewSetter.current(w * 0.15);
-    }
-  };
-  const onUp=()=>{ 
-    drag.current.on=false; 
-    setTimeout(()=>{drag.current.moved=false;},50); 
-    if (skewSetter.current) skewSetter.current(0);
-  };
+  useGSAP(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.set(track, { width: "max-content", overflow: "visible" });
+      const scrollAmount = track.scrollWidth - window.innerWidth;
+      
+      if (scrollAmount > 0) {
+        gsap.to(track, {
+          x: -scrollAmount,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#track-section",
+            pin: true,
+            scrub: 1,
+            start: "top top",
+            end: () => `+=${scrollAmount}`
+          }
+        });
+      }
+    });
+  }, [visible]);
 
   // Determine if the date is fully secured to simplify the drawer form
   return (
@@ -559,7 +535,7 @@ export default function App() {
         </section>
 
         {/* ════ THE RHYTHMIC EXHIBITION TRACK ════ */}
-        <section style={{ padding:"48px 0 40px" }}>
+        <section id="track-section" style={{ padding:"48px 0 40px", overflow: "hidden" }}>
           <div style={{ padding:"0 clamp(20px, 5vw, 32px) 24px", display:"flex", justifyContent:"space-between", alignItems:"flex-end", flexWrap:"wrap", gap:20 }}>
             <div className="gsap-entrance" style={{ display:"flex", gap:24, alignItems:"baseline", opacity: 0 }}>
               {STYLES.map(s=>(
@@ -574,19 +550,7 @@ export default function App() {
             <div style={{ position:"absolute", left:0, top:0, bottom:0, width:120, background:`linear-gradient(to right, ${N.l0}, transparent)`, zIndex:2, pointerEvents:"none" }} />
             <div style={{ position:"absolute", right:0, top:0, bottom:0, width:120, background:`linear-gradient(to left, ${N.l0}, transparent)`, zIndex:2, pointerEvents:"none" }} />
             
-            <div className="gsap-entrance" style={{ position: "absolute", top: "50%", left: 16, transform: "translateY(-50%)", zIndex: 10, opacity: 0 }}>
-              <button onClick={() => scrollTrack('left')} style={{ background: N.l1, border: `1px solid ${N.ln}`, borderRadius: "50%", width: 48, height: 48, display: "flex", alignItems: "center", justifyContent: "center", color: N.hi, boxShadow: `0 8px 30px rgba(0,0,0,0.5)`, cursor: "pointer", transition: "all .3s" }}>
-                <ChevronLeft size={20} strokeWidth={1} />
-              </button>
-            </div>
-            
-            <div className="gsap-entrance" style={{ position: "absolute", top: "50%", right: 16, transform: "translateY(-50%)", zIndex: 10, opacity: 0 }}>
-              <button onClick={() => scrollTrack('right')} style={{ background: N.l1, border: `1px solid ${N.ln}`, borderRadius: "50%", width: 48, height: 48, display: "flex", alignItems: "center", justifyContent: "center", color: N.hi, boxShadow: `0 8px 30px rgba(0,0,0,0.5)`, cursor: "pointer", transition: "all .3s" }}>
-                <ChevronRight size={20} strokeWidth={1} />
-              </button>
-            </div>
-
-            <div ref={trackRef} className={`track grab gsap-entrance`} onMouseDown={onDown} onMouseMove={onMove} onMouseUp={onUp} onMouseLeave={onUp} onTouchStart={onDown} onTouchMove={onMove} onTouchEnd={onUp} style={{ opacity: 0 }}>
+            <div ref={trackRef} className={`track gsap-entrance`} style={{ opacity: 0 }}>
               {templatesLoading ? (
                 Array.from({ length: 4 }).map((_, i) => (
                   <div key={`skel-${i}`} className="titem" style={{ width: 280, flexShrink: 0 }}>
@@ -631,9 +595,9 @@ export default function App() {
 
           <div className="gsap-entrance" style={{ textAlign:"center", padding:"16px 32px 0", opacity: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
             <span style={{ fontFamily:F.m, fontSize:8.5, letterSpacing:"0.16em", textTransform:"uppercase", color:N.fnt }}>
-              ← drag · pan the exhibition →
+              ↓ scroll to pan the exhibition ↓
             </span>
-            <div style={{ animation: "pulseAlpha 2s infinite ease-in-out", marginTop: 12 }}>
+            <div style={{ animation: "pulseAlpha 2s infinite ease-in-out", marginTop: 12, transform: "rotate(90deg)" }}>
               <ChevronRight size={14} color={N.fnt} />
             </div>
           </div>
@@ -652,8 +616,8 @@ export default function App() {
             <div className="oak-sticky">
               <div style={{ position: "relative", border: `1px solid ${N.ln}`, background: N.l2, padding: 12, boxShadow: `0 30px 70px ${N.shadow}` }}>
                 {/* Physical Oak Booth Image */}
-                <div style={{ width: "100%", aspectRatio: "3/4", background: N.l0, overflow: "hidden", border: `1px solid ${N.glass}` }}>
-                   <img src={OAK_B64} alt="Weathered Oak Booth" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "contrast(1.04) saturate(0.96)" }} />
+                <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", background: N.l0, overflow: "hidden", border: `1px solid ${N.glass}` }}>
+                   <Image src={OAK_B64} alt="Weathered Oak Booth" fill style={{ objectFit: "cover", filter: "contrast(1.04) saturate(0.96)" }} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 16, padding: "0 4px" }}>
                   <span style={{ fontFamily: F.d, fontSize: 20, color: N.hi }}>The Oak Installation</span>
