@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useId } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
-import { submitInquiry } from '@/app/actions';
+import { submitBooking } from '@/app/actions';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -265,7 +265,8 @@ export default function App() {
 
   const [selected, setSelected] = useState<any>(null);
   const [drawer, setDrawer] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [token] = useState(()=>Math.random().toString(36).substring(2,9).toUpperCase());
   const [lead, setLead] = useState({ name:"", email:"", date:"", venue: "", tier: "", template: "", phone: "" });
   const setL = (k: string) => (v: string) => setLead(p=>({...p,[k]:v}));
@@ -273,11 +274,27 @@ export default function App() {
   const canSubmit = lead.name && lead.email && lead.date;
   const submit = async ()=>{ 
     if(canSubmit) {
-      setConfirmed(true);
+      setIsSubmitting(true);
       try {
-        await submitInquiry(lead);
+        const payload = {
+          name: lead.name,
+          email: lead.email,
+          event_date: lead.date,
+          venue_name: lead.venue,
+          tier_selected: lead.tier,
+          template_selected: lead.template,
+          addons: Object.keys(calcAddons).filter(k => calcAddons[k]).join(', ')
+        };
+        const res = await submitBooking(payload);
+        if (res?.success) {
+          setIsSuccess(true);
+        } else {
+          console.error("Booking failed:", res?.error);
+        }
       } catch (error) {
-        console.error("Email failed:", error);
+        console.error("Booking failed:", error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -326,7 +343,7 @@ export default function App() {
     setDrawer(true);
   };
 
-  const closeDrawer = ()=>{ setDrawer(false); setTimeout(()=>{ setConfirmed(false); }, 600); };
+  const closeDrawer = ()=>{ setDrawer(false); setTimeout(()=>{ setIsSuccess(false); setIsSubmitting(false); }, 600); };
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -740,7 +757,7 @@ export default function App() {
               <button onClick={closeDrawer} style={{ fontFamily:F.m, fontSize:9.5, letterSpacing:"0.14em", textTransform:"uppercase", color:N.mut }}>Close ✕</button>
             </div>
 
-            {!confirmed ? (
+            {!isSuccess ? (
               <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
                 <h2 style={{ fontFamily:F.d, fontSize:48, fontWeight:300, color:N.hi, lineHeight:1.08, marginBottom:8 }}>
                   Frictionless Intake
@@ -757,24 +774,29 @@ export default function App() {
                 </div>
 
                 <div style={{ marginTop: 40, display: "flex", gap: 16 }}>
-                  <button onClick={submit} disabled={!canSubmit} style={{ padding: "16px", flex: 2, background: canSubmit ? N.loko : "transparent", border:`1px solid ${canSubmit ? N.loko : N.glass}`, color: canSubmit ? "#FFF" : N.fnt, fontFamily:F.m, fontSize:10.5, letterSpacing:"0.18em", textTransform:"uppercase", transition: "all .3s" }}>
-                    Submit Inquiry →
+                  <button onClick={submit} disabled={!canSubmit || isSubmitting} style={{ padding: "16px", flex: 2, background: canSubmit ? N.loko : "transparent", border:`1px solid ${canSubmit ? N.loko : N.glass}`, color: canSubmit ? "#FFF" : N.fnt, fontFamily:F.m, fontSize:10.5, letterSpacing:"0.18em", textTransform:"uppercase", transition: "all .3s" }}>
+                    {isSubmitting ? "Submitting..." : "Submit Inquiry →"}
                   </button>
                 </div>
               </div>
             ) : (
-              <div style={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "center", animation: "subtleFadeUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) both" }}>
-                <div style={{ textAlign:"center", marginBottom:48 }}>
-                  <KathaLogomark style={{ width: 80, height: 80, margin: "0 auto", color: N.loko, marginBottom: 24 }} />
-                  <p style={{ fontFamily:F.m, fontSize:9.5, letterSpacing:"0.2em", textTransform:"uppercase", color:N.loko, marginTop:32, marginBottom:14 }}>Lead Registered</p>
-                  <h2 style={{ fontFamily:F.d, fontSize:44, fontWeight:300, color:N.hi, lineHeight:1.05, marginBottom:16 }}>
-                    Now, your <em style={{fontFamily:F.b, fontStyle:"italic", color:N.mut}}>template.</em></h2>
-                  <p style={{ fontFamily:F.b, fontSize:20, fontStyle:"italic", color:N.mut, lineHeight:1.6 }}>
-                    Thank you, {lead.name}. Your inquiry is secured. An email is on its way.
+              <div style={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "center", borderTop: `1px solid ${N.ln}`, borderBottom: `1px solid ${N.ln}`, padding: "64px 0" }}>
+                <div style={{ textAlign:"left", marginBottom:48 }}>
+                  <p style={{ fontFamily:F.m, fontSize:11, letterSpacing:"0.25em", textTransform:"uppercase", color:N.loko, marginBottom:24 }}>// Status: Secured</p>
+                  <h2 style={{ fontFamily:F.d, fontSize:56, fontWeight:300, color:N.hi, lineHeight:1.05, marginBottom:24 }}>
+                    Request <br/><em style={{fontFamily:F.b, fontStyle:"italic", color:N.mut}}>Received.</em>
+                  </h2>
+                  <div style={{ width: "100%", height: "1px", background: N.ln, marginBottom: 24 }}></div>
+                  <p style={{ fontFamily:F.m, fontSize:14, color:N.mut, lineHeight:1.6, maxWidth: "40ch" }}>
+                    Thank you, {lead.name}. We have logged your inquiry and will be in touch shortly.
                   </p>
                 </div>
-                <button onClick={() => { router.push(`/portal/${token}/template-design`); }} style={{ marginTop:40, width:"100%", padding:"16px", background:N.loko, border:`1px solid ${N.loko}`,
-                  color:"#FFF", fontFamily:F.m, fontSize:10, letterSpacing:"0.16em", textTransform:"uppercase" }}>Continue to your template →</button>
+                <button onClick={() => { router.push(`/portal/${token}/template-design`); }} style={{ marginTop:20, width:"100%", padding:"20px", background:"transparent", border:`1px solid ${N.hi}`,
+                  color:N.hi, fontFamily:F.m, fontSize:11, letterSpacing:"0.2em", textTransform:"uppercase", transition: "all 0.3s" }}
+                  onMouseOver={(e) => { e.currentTarget.style.background = N.hi; e.currentTarget.style.color = N.l0; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = N.hi; }}>
+                  Proceed to Portal →
+                </button>
               </div>
             )}
           </div>
