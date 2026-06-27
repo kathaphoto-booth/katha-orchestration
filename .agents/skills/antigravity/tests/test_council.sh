@@ -14,8 +14,19 @@
 #   - both voices ABSENT => exit 1 (nothing for CC to chair)
 #   - secrets in the reviewed blob are REDACTED before anything is persisted
 #   - council.sh refuses a missing/blank blob arg (no "default to agy's last output")
-#   - no stale gemini/Vertex/qwen strings; reuses lib.sh run_with_timeout;
-#     never calls delegate_agy.sh (separate entrypoint, executor != critic)
+#   - no stale gemini/Vertex/manual-Ollama-HTTP strings; reuses lib.sh
+#     run_with_timeout; never calls delegate_agy.sh (executor != critic)
+#
+# 2026-06-27: codex's cloud path is account-quota-blocked (confirmed, resets
+# ~Jul 20), so codex now defaults to its own documented `--oss` flag routing
+# to a local Ollama model (qwen2.5-coder:7b) — free, no external quota. This
+# is NOT the old retired gemini+Vertex+manual-Ollama-HTTP design (that one
+# curl'd 11434/api/generate directly); codex's --oss is first-party, so the
+# old blanket "no qwen string" guard was removed — the real invariant is "no
+# manual Ollama HTTP routing", still asserted below. copilot also switched
+# from the sunset `gh copilot` extension to the standalone `copilot` CLI
+# (npm @github/copilot), pinned to `gpt-5-mini` (confirmed via live debug log:
+# GitHub's own auto-mode default, model_picker_price_category="low").
 
 # A codex stub that succeeds with output. council.sh invokes:
 #   codex exec -s read-only --skip-git-repo-check -C <repo> <prompt>
@@ -33,28 +44,27 @@ _mk_agy_guarded() {
   chmod +x "$1/agy"
 }
 
-# A copilot stub (gh wrapper) with the Copilot CLI INSTALLED. council.sh's
-# pre-flight is `gh copilot -- --help` (the form that passes --help THROUGH to
-# the real Copilot CLI, so $2 == "--"); the critique call is `gh copilot -p`.
-# The stub answers both. (Plain `gh copilot --help`, $2 == "--help", is gh's own
-# wrapper help and is NOT what the gate uses — see council.sh FR-11 comment.)
+# A copilot stub for the standalone `copilot` CLI (npm @github/copilot,
+# installed 2026-06-27 — replaces the sunset `gh copilot` extension entirely).
+# council.sh's pre-flight is `copilot --version`; the critique call is
+# `copilot -p ... --model ...`. The stub answers both.
 _mk_copilot_ok() {
-  printf '#!/usr/bin/env bash\nif [[ "$1" == "copilot" && "$2" == "--" ]]; then exit 0; fi\nif [[ "$1" == "copilot" && "$2" == "-p" ]]; then echo "copilot critique: looks fine"; exit 0; fi\nexit 1\n' > "$1/gh"
-  chmod +x "$1/gh"
+  printf '#!/usr/bin/env bash\nif [[ "$1" == "--version" ]]; then echo "GitHub Copilot CLI 1.0.65."; exit 0; fi\nif [[ "$1" == "-p" ]]; then echo "copilot critique: looks fine"; exit 0; fi\nexit 1\n' > "$1/copilot"
+  chmod +x "$1/copilot"
 }
-# Simulates `gh` present but the Copilot CLI NOT installed: the pre-flight
-# `gh copilot -- --help` fails fast (rc=1), matching real gh's verified behavior
-# (2026-06-25). council.sh must mark copilot ABSENT and never reach `-p`.
+# Simulates the Copilot CLI NOT installed: the pre-flight `copilot --version`
+# fails (binary absent / errors). council.sh must mark copilot ABSENT and
+# never reach `-p`.
 _mk_copilot_absent() {
-  printf '#!/usr/bin/env bash\nexit 1\n' > "$1/gh"
-  chmod +x "$1/gh"
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$1/copilot"
+  chmod +x "$1/copilot"
 }
 # Like _mk_copilot_absent, but if council.sh ever WRONGLY reaches the `-p` call
-# (FR-11 violation), the stub records it by touching $COPILOT_SENTINEL — letting
-# a test assert the pre-flight gate truly prevents the blind prompted call.
+# (pre-flight gate violation), the stub records it by touching $COPILOT_SENTINEL
+# — letting a test assert the pre-flight gate truly prevents the blind call.
 _mk_copilot_absent_guarded() {
-  printf '#!/usr/bin/env bash\nif [[ "$1" == "copilot" && "$2" == "-p" ]]; then touch "${COPILOT_SENTINEL:-/tmp/copilot_p_invoked}"; echo "should-not-run"; exit 1; fi\nexit 1\n' > "$1/gh"
-  chmod +x "$1/gh"
+  printf '#!/usr/bin/env bash\nif [[ "$1" == "-p" ]]; then touch "${COPILOT_SENTINEL:-/tmp/copilot_p_invoked}"; echo "should-not-run"; exit 1; fi\nexit 1\n' > "$1/copilot"
+  chmod +x "$1/copilot"
 }
 
 test_council_both_voices_ok() {
@@ -120,8 +130,7 @@ test_council_is_hardened() {                       # source-assertion (drives re
   assert_contains "$b" "ABSENT" "marks a voice ABSENT / fails loud rather than degrading silently"
   assert_not_contains "$b" "GEMINI_TIER" "no stale gemini billing-tier logic"
   assert_not_contains "$b" "load_vertex_env" "no stale Vertex env self-load"
-  assert_not_contains "$b" "11434/api/generate" "no stale Ollama-direct OSS routing"
-  assert_not_contains "$b" "qwen" "no stale qwen reference"
+  assert_not_contains "$b" "11434/api/generate" "no stale Ollama-direct OSS routing (codex's own --oss/--local-provider flag is the supported path, not a manual curl to Ollama's HTTP API)"
   # path form = an invocation; a prose mention of the bare name in comments is fine
   assert_not_contains "$b" "/delegate_agy.sh" "council never invokes delegate_agy.sh (executor != critic)"
 }
@@ -130,7 +139,7 @@ test_council_copilot_ok_when_healthy() {
   local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
   _mk_codex_ok "$bin"; _mk_agy_ok "$bin"; _mk_copilot_ok "$bin"
   local blob; blob=$(mktemp); echo "diff" > "$blob"
-  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/gh" COUNCIL_INCLUDE_COPILOT=1 \
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/copilot" COUNCIL_INCLUDE_COPILOT=1 \
     bash "$SKILL/council.sh" crc1 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
   local cj="$r/.orchestration/crc1/council/council.json"
   assert_eq "$(jq -r '.voices.copilot.status' "$cj" 2>/dev/null)" "OK" "copilot voice OK when healthy"
@@ -140,7 +149,7 @@ test_council_baseline_survives_copilot_absent() {
   local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
   _mk_codex_ok "$bin"; _mk_agy_ok "$bin"; _mk_copilot_absent "$bin"
   local blob; blob=$(mktemp); echo "diff" > "$blob"
-  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/gh" COUNCIL_INCLUDE_COPILOT=1 \
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/copilot" COUNCIL_INCLUDE_COPILOT=1 \
     bash "$SKILL/council.sh" crc2 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
   assert_exit "$?" 0 "codex+agy healthy, copilot absent => still exit 0"
   local cj="$r/.orchestration/crc2/council/council.json"
@@ -163,7 +172,7 @@ test_council_quorum_unaffected_by_copilot() {
   local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
   _mk_codex_fail "$bin"; _mk_agy_fail "$bin"; _mk_copilot_absent "$bin"
   local blob; blob=$(mktemp); echo "diff" > "$blob"
-  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/gh" COUNCIL_INCLUDE_COPILOT=1 \
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/copilot" COUNCIL_INCLUDE_COPILOT=1 \
     bash "$SKILL/council.sh" crc4 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
   assert_exit "$?" 1 "codex+agy absent => exit 1 regardless of copilot's status (copilot never enters the quorum decision)"
 }
@@ -189,7 +198,7 @@ test_council_copilot_preflight_gates_p_call() {
   _mk_codex_ok "$bin"; _mk_agy_ok "$bin"; _mk_copilot_absent_guarded "$bin"
   local sentinel; sentinel="$(mktemp -u)"      # a path that must NOT come to exist
   local blob; blob=$(mktemp); echo "diff" > "$blob"
-  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/gh" COUNCIL_INCLUDE_COPILOT=1 COPILOT_SENTINEL="$sentinel" \
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COPILOT_BIN="$bin/copilot" COUNCIL_INCLUDE_COPILOT=1 COPILOT_SENTINEL="$sentinel" \
     bash "$SKILL/council.sh" crc5 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
   assert_eq "$([[ -e "$sentinel" ]] && echo invoked || echo not-invoked)" "not-invoked" \
     "FR-11: Copilot CLI not installed => pre-flight gates the -p call, never reached"
@@ -206,7 +215,7 @@ test_council_copilot_preflight_is_bounded() {
   # Match the actual `if` invocation line (starts with `if`, so comments that
   # merely mention the probe can't satisfy it) carrying BOTH the timeout wrapper
   # and the probe.
-  local hit; hit="$(grep -c 'if run_with_timeout.*copilot -- --help' "$src")"
+  local hit; hit="$(grep -c 'if run_with_timeout.*"\$COPILOT_BIN" --version' "$src")"
   assert_eq "$([[ "$hit" -ge 1 ]] && echo bounded || echo unbounded)" "bounded" \
     "copilot pre-flight probe is wrapped in run_with_timeout (bounded, cannot hang the script)"
 }
@@ -269,12 +278,64 @@ test_council_all_voices_redirect_stdin_from_devnull() {  # source-assertion (reg
   # (preflight or real call) must close stdin explicitly.
   local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
   assert_contains "$b" '"$CODEX_BIN" exec -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
-  < /dev/null' "codex invocation redirects stdin from /dev/null"
+    < /dev/null' "codex cloud-fallback invocation (CODEX_USE_OSS=0 path) redirects stdin from /dev/null"
   assert_contains "$b" '"$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$AGY_MODEL" "$PROMPT" \
     < /dev/null' "agy invocation redirects stdin from /dev/null"
-  assert_contains "$b" '"$COPILOT_BIN" copilot -- --help < /dev/null' "copilot preflight redirects stdin from /dev/null"
-  assert_contains "$b" '"$COPILOT_BIN" copilot -p "$PROMPT" \
+  assert_contains "$b" '"$COPILOT_BIN" --version < /dev/null' "copilot preflight redirects stdin from /dev/null"
+  assert_contains "$b" '"$COPILOT_BIN" -p "$PROMPT" \
+      --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
       < /dev/null' "copilot -p invocation redirects stdin from /dev/null"
+  assert_contains "$b" '"$CODEX_BIN" exec --oss -m "$CODEX_OSS_MODEL" -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
+    < /dev/null' "codex --oss invocation (the default path) redirects stdin from /dev/null"
+}
+
+test_council_codex_oss_default_and_model_pinned() {  # source-assertion (regression guard)
+  # codex's cloud path is account-quota-blocked (confirmed live 2026-06-26,
+  # resets ~Jul 20) — not fixable by model choice, it's an account wall. The
+  # free, immediately-usable path is codex's own first-party `--oss` flag
+  # routing to a local Ollama model. Default ON, pinned to the smaller,
+  # purpose-built coding model already verified installed and working
+  # (qwen2.5-coder:7b, 4.7GB) rather than the larger general-purpose
+  # gpt-oss:20b also present locally — "lowest yet impactful" per Jed.
+  local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
+  assert_contains "$b" 'CODEX_USE_OSS="${CODEX_USE_OSS:-1}"' "codex --oss mode defaults ON (free path, no account quota dependency)"
+  assert_contains "$b" 'CODEX_OSS_MODEL="${CODEX_OSS_MODEL:-qwen2.5-coder:7b}"' "codex --oss model pinned to the smaller, coding-purpose-built local model"
+  assert_contains "$b" '"$CODEX_BIN" exec --oss -m "$CODEX_OSS_MODEL"' "codex invocation passes --oss with the pinned (overridable) model"
+}
+
+test_council_codex_oss_disable_falls_back_to_cloud() {
+  local r; r=$(mk_repo); local bin; bin=$(mktemp -d)
+  _mk_codex_ok "$bin"; _mk_agy_ok "$bin"
+  local blob; blob=$(mktemp); echo "diff" > "$blob"
+  CODEX_BIN="$bin/codex" AGY_BIN="$bin/agy" COUNCIL_INCLUDE_COPILOT=0 CODEX_USE_OSS=0 \
+    bash "$SKILL/council.sh" crc10 "$blob" --repo "$r" --timeout 30 >/dev/null 2>&1
+  local cj="$r/.orchestration/crc10/council/council.json"
+  assert_eq "$(jq -r '.voices.codex.status' "$cj" 2>/dev/null)" "OK" "CODEX_USE_OSS=0 => falls back to the original cloud invocation, still works"
+}
+
+test_council_copilot_omits_unusable_model_flag() {  # source-assertion (regression guard)
+  # First attempt pinned --model gpt-5-mini (GitHub's own confirmed auto-mode
+  # default, tagged price_category="low"). Live testing immediately after
+  # (2026-06-27) proved every named model — gpt-5-mini included — fails
+  # identically via --model with "not available": an account-level
+  # model-access policy gate, not a naming problem. council.sh must NOT pass
+  # --model at all; the CLI's own auto-mode (which already self-selects the
+  # cheap tier, confirmed live) is the only path that actually works here.
+  local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
+  assert_not_contains "$b" '"$COPILOT_BIN" -p "$PROMPT" --model' "copilot invocation does not pass --model (confirmed non-functional on this account)"
+}
+
+test_council_copilot_voice_has_no_write_surface() {  # source-assertion (regression guard)
+  # The standalone copilot CLI is a full coding agent (can write files, run
+  # shell) unlike the old gh-copilot extension. --allow-all-tools is required
+  # for non-interactive mode (else it hangs on a confirmation prompt with no
+  # TTY), so write/shell must be explicitly denied to preserve the same "no
+  # write surface" contract codex (-s read-only) and agy (no --sandbox/
+  # --add-dir) already have. Denial rules take precedence over
+  # --allow-all-tools per the CLI's own documented permission model.
+  local b; b="$(cat "$SKILL/council.sh" 2>/dev/null)"
+  assert_contains "$b" "--deny-tool=write" "copilot voice denies the write tool despite --allow-all-tools"
+  assert_contains "$b" "--deny-tool=shell" "copilot voice denies shell despite --allow-all-tools (write also covers shell redirection bypass)"
 }
 
 test_council_quota_diagnostic_hints() {

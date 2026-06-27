@@ -83,9 +83,24 @@ $(cat "$BLOB")
 # stderr shows the stdin-wait message) — silently misread in the past as a
 # quota/auth issue. Same fix as agy's invocation below.
 codex_status="ABSENT"
+# CODEX_USE_OSS (default 1): codex's cloud path is account-quota-blocked
+# (confirmed live 2026-06-26: "ERROR: You've hit your usage limit... try
+# again at Jul 20th, 2026" — an account wall, not fixable by model choice).
+# codex's own first-party `--oss --local-provider ollama` flag routes to a
+# local model instead — free, no external quota. Pinned to qwen2.5-coder:7b
+# (smaller, coding-purpose-built; confirmed installed and working via `ollama
+# list` + a live generate call 2026-06-27) over the larger general-purpose
+# gpt-oss:20b also present locally — "lowest yet impactful" per Jed.
+CODEX_USE_OSS="${CODEX_USE_OSS:-1}"
+CODEX_OSS_MODEL="${CODEX_OSS_MODEL:-qwen2.5-coder:7b}"
 set +e
-run_with_timeout "$TIMEOUT" "$CODEX_BIN" exec -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
-  < /dev/null > "$OUT/.codex.raw" 2> "$OUT/.codex.raw.err"
+if [[ "$CODEX_USE_OSS" == "1" ]]; then
+  run_with_timeout "$TIMEOUT" "$CODEX_BIN" exec --oss -m "$CODEX_OSS_MODEL" -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
+    < /dev/null > "$OUT/.codex.raw" 2> "$OUT/.codex.raw.err"
+else
+  run_with_timeout "$TIMEOUT" "$CODEX_BIN" exec -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
+    < /dev/null > "$OUT/.codex.raw" 2> "$OUT/.codex.raw.err"
+fi
 codex_rc=$?
 set -e
 redact < "$OUT/.codex.raw" > "$OUT/codex.out"; redact < "$OUT/.codex.raw.err" > "$OUT/codex.err"
@@ -161,30 +176,39 @@ copilot_rc=0
 : > "$OUT/copilot.out"
 : > "$OUT/copilot.err"
 COUNCIL_INCLUDE_COPILOT="${COUNCIL_INCLUDE_COPILOT:-1}"
-COPILOT_BIN="${COPILOT_BIN:-gh}"
+# 2026-06-27: the `gh copilot` extension this used to target was sunset
+# Oct 2025. Replaced with the standalone `copilot` CLI (npm @github/copilot),
+# installed and confirmed live this session (already authenticated via the
+# existing gh keyring — no extra login step). No --model flag: every named
+# model (including gpt-5-mini, the account's own auto-mode default) fails
+# identically with "not available" when passed via --model — confirmed live
+# this session this is an account-level model-access policy gate, not a
+# naming problem, so pinning a name here would just break the voice. Omitting
+# --model lets the CLI's own auto-mode pick (confirmed live: it already picks
+# gpt-5-mini, tagged model_picker_price_category="low" — the cheap goal is
+# already met without a flag that doesn't actually work on this account).
+COPILOT_BIN="${COPILOT_BIN:-copilot}"
 if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   copilot_status="ABSENT"
-  # Pre-flight (FR-11): `gh copilot -- --help` passes --help THROUGH to the real
-  # Copilot CLI, so it returns rc=1 "Copilot CLI not installed" when the binary
-  # is absent and rc=0 only when it's genuinely installed (verified 2026-06-25:
-  # gh 2.92.0, Copilot CLI not installed -> rc=1, no download). NOTE: plain
-  # `gh copilot --help` is gh's OWN wrapper help and returns rc=0 regardless of
-  # install state — it must NOT be used as the gate. A failed probe routes
-  # straight to ABSENT so the `-p` call below is never reached blind (no hang,
-  # no possible first-run download).
-  # The pre-flight itself is bounded by run_with_timeout (council review finding 1):
-  # an UNBOUNDED probe that hung would abort the whole script under set -e BEFORE
-  # the codex/agy quorum check below — breaking the "copilot can't regress the
-  # 2-voice baseline" invariant in practice even though the quorum line is untouched.
-  if run_with_timeout 15 "$COPILOT_BIN" copilot -- --help < /dev/null >/dev/null 2>&1; then
+  # Pre-flight: `copilot --version` is fast/safe and fails when the binary is
+  # genuinely absent. Bounded by run_with_timeout (council review finding 1
+  # from the old design, still applies): an UNBOUNDED probe that hung would
+  # abort the whole script under set -e BEFORE the codex/agy quorum check
+  # below — breaking the "copilot can't regress the 2-voice baseline"
+  # invariant even with the quorum line itself untouched.
+  if run_with_timeout 15 "$COPILOT_BIN" --version < /dev/null >/dev/null 2>&1; then
     set +e
-    # FR-12: the `-p` form is the documented `gh copilot -p`, but is UNVERIFIED
-    # end-to-end until the Copilot CLI is actually installed (the pre-flight above
-    # makes this line unreachable until then). Validate the flag form on first
-    # real install before relying on this voice. < /dev/null guards against the
-    # same stdin-hang found in codex's invocation (2026-06-26) — untested here
-    # since the CLI isn't installed yet, but the same risk applies on principle.
-    run_with_timeout "$TIMEOUT" "$COPILOT_BIN" copilot -p "$PROMPT" \
+    # --allow-all-tools is required for non-interactive mode (the standalone
+    # CLI is a full coding agent — without it, a permission-confirmation
+    # prompt with no TTY to answer hangs forever). --deny-tool denials take
+    # precedence over --allow-all-tools (per the CLI's own documented
+    # permission model), so write/shell stay blocked — preserving the same
+    # "no write surface" contract codex (-s read-only) and agy (no
+    # --sandbox/--add-dir) already have; this voice is a critic, not an
+    # executor. < /dev/null guards the same stdin-hang class found in
+    # codex's invocation (2026-06-26).
+    run_with_timeout "$TIMEOUT" "$COPILOT_BIN" -p "$PROMPT" \
+      --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
       < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
     copilot_rc=$?
     set -e
@@ -195,7 +219,7 @@ if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
     fi
   else
     copilot_rc=$?   # reflect the pre-flight's real failure rc, not a misleading 0 (council review finding 6)
-    echo "ABSENT: gh copilot CLI not installed (pre-flight 'copilot -- --help' failed) — skipped to avoid a blind -p call / possible first-run download" >> "$OUT/copilot.out"
+    echo "ABSENT: copilot CLI not installed (pre-flight '--version' failed) — skipped to avoid a blind -p call" >> "$OUT/copilot.out"
   fi
 fi
 
