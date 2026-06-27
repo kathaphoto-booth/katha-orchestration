@@ -51,7 +51,7 @@ export async function submitBooking(payload: any) {
 
     if (resend) {
       await resend.emails.send({
-        from: 'Katha Booth <onboarding@resend.dev>', // Use resend test email if needed, or your domain
+        from: 'Katha Booth <hello@kathabooth.com>',
         to: 'kathabooth@gmail.com',
         subject: `🚀 New Zenith Lead: ${payload.name || 'New Client'}`,
         html: `<p>New lead submitted from Zenith!</p><pre>${JSON.stringify(payload, null, 2)}</pre>`

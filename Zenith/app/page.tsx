@@ -72,11 +72,11 @@ html, body {
   background-color: ${N.l0} !important;
   color: ${N.hi};
   margin: 0; padding: 0;
-  width: 100%; height: 100%;
+  width: 100%;
   overflow-x: hidden;
 }
 
-#root, #__next { min-height: 100vh; background-color: ${N.l0}; }
+#app { min-height: 100vh; background-color: ${N.l0}; }
 
 /* ── Cinematic Entrance ── */
 @keyframes weaveIn {from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -267,7 +267,7 @@ export default function App() {
   const [drawer, setDrawer] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [token] = useState(()=>Math.random().toString(36).substring(2,9).toUpperCase());
+  const [leadId, setLeadId] = useState<string|null>(null);
   const [lead, setLead] = useState({ name:"", email:"", date:"", venue: "", tier: "", template: "", phone: "" });
   const setL = (k: string) => (v: string) => setLead(p=>({...p,[k]:v}));
   
@@ -287,6 +287,7 @@ export default function App() {
         };
         const res = await submitBooking(payload);
         if (res?.success) {
+          setLeadId(res.lead?.id ?? null);
           setIsSuccess(true);
         } else {
           console.error("Booking failed:", res?.error);
@@ -318,7 +319,8 @@ export default function App() {
   };
   const calcTotal = (tiersData[calcTier] || 0) + Object.entries(calcAddons).filter(a=>a[1]).reduce((sum, a) => sum + addonsData[a[0]], 0);
 
-  useEffect(()=>{ const t=setTimeout(()=>setBridge(false), 3800); return ()=>clearTimeout(t); },[]);
+  // Bridge unmount is driven by the GSAP timeline's onComplete (see below) so the
+  // dissolve always finishes before unmount on any device speed — no magic-number race.
   useEffect(()=>{ const t=setTimeout(()=>setTemplatesLoading(false), 1200); return ()=>clearTimeout(t); },[]);
   
   useEffect(()=>{
@@ -354,8 +356,8 @@ export default function App() {
           { opacity: 0, filter: 'blur(20px)', scale: 1.1, y: 10 },
           { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0, duration: 2.4, ease: "power3.inOut" }
         )
-        .to('.bridge-container', 
-          { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 1.4, ease: "power2.inOut" },
+        .to('.bridge-container',
+          { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 1.4, ease: "power2.inOut", onComplete: () => setBridge(false) },
           "+=0.8"
         );
       } else {
@@ -384,7 +386,8 @@ export default function App() {
     
     mm.add("(prefers-reduced-motion: reduce)", () => {
       if (bridge) {
-        gsap.set(['.bridge-wordmark', '.bridge-container'], { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0 });
+        // Reduced motion: skip the cinematic intro entirely (no race on the old 3800ms timer).
+        setBridge(false);
       } else {
         gsap.set('.gsap-entrance', { opacity: 1, y: 0 });
         gsap.set('.pricing-grid > div', { opacity: 1, y: 0 });
@@ -791,7 +794,7 @@ export default function App() {
                     Thank you, {lead.name}. We have logged your inquiry and will be in touch shortly.
                   </p>
                 </div>
-                <button onClick={() => { router.push(`/portal/${token}/template-design`); }} style={{ marginTop:20, width:"100%", padding:"20px", background:"transparent", border:`1px solid ${N.hi}`,
+                <button onClick={() => { if (leadId) router.push(`/portal/${leadId}/template-design`); }} style={{ marginTop:20, width:"100%", padding:"20px", background:"transparent", border:`1px solid ${N.hi}`,
                   color:N.hi, fontFamily:F.m, fontSize:11, letterSpacing:"0.2em", textTransform:"uppercase", transition: "all 0.3s" }}
                   onMouseOver={(e) => { e.currentTarget.style.background = N.hi; e.currentTarget.style.color = N.l0; }}
                   onMouseOut={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = N.hi; }}>
