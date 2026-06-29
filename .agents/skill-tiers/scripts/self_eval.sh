@@ -27,15 +27,15 @@ sentinel_claims_complete() {
 }
 
 cmd_record() {
-  local RUN="" REPO="" TOKENS="null" CLAIMED="" SKILL="null" TIER="null" EXECUTOR="null" PHASES_RUN="null"  # JSON null token — do NOT change to "": jq --argjson would fail
+  local RUN="" REPO="" TOKENS="null" CLAIMED="" SKILL="" TIER="null" EXECUTOR="" PHASES_RUN="null"
   while [[ $# -gt 0 ]]; do case "$1" in
     --run)      RUN="$2";      shift 2;;
     --repo)     REPO="$2";     shift 2;;
     --tokens)   TOKENS="$2";   shift 2;;
     --claimed)  CLAIMED="$2";  shift 2;;
-    --skill)    SKILL="\"$2\""; shift 2;;
+    --skill)    SKILL="$2";    shift 2;;
     --tier)     TIER="$2";     shift 2;;
-    --executor) EXECUTOR="\"$2\""; shift 2;;
+    --executor) EXECUTOR="$2"; shift 2;;
     --phases)   PHASES_RUN="$2"; shift 2;;
     *) echo "unknown arg $1" >&2; exit 2;; esac; done
   [[ -n "$RUN" && -n "$REPO" ]] || {
@@ -80,12 +80,14 @@ cmd_record() {
   local TS; TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   jq -nc \
     --arg ts "$TS" --arg run "$RUN" --arg verdict "$status" \
-    --argjson skill "$SKILL" --argjson tier "$TIER" --argjson executor "$EXECUTOR" \
+    --arg skill "$SKILL" --argjson tier "$TIER" --arg executor "$EXECUTOR" \
     --argjson phases_run "$PHASES_RUN" \
     --argjson claimed "$claimed" --argjson honest "$honest" \
     --argjson lines "$lines" --argjson tokens "$TOKENS" --argjson reasons "$reasons" \
     --arg drift_check "$drift_check" --arg taste_checkpoint "$taste_checkpoint" \
-    '{ts:$ts, run:$run, skill:$skill, tier:$tier, executor:$executor, phases_run:$phases_run,
+    '{ts:$ts, run:$run, skill:(if $skill=="" then null else $skill end),
+      tier:$tier, executor:(if $executor=="" then null else $executor end),
+      phases_run:$phases_run,
       verdict:$verdict, claimed:$claimed, honest:$honest,
       lines:$lines, tokens:$tokens,
       t2d: (if $tokens==null then null else ($tokens / (if $lines>0 then $lines else 1 end)) end),
