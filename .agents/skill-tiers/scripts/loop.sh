@@ -10,7 +10,7 @@
 #
 # Usage:
 #   loop.sh --repo <dir> --run <prefix> --brief "<text>"
-#           [--executor agy|copilot] [--skill <name>] [--phase <name>]
+#           [--executor agy|copilot] [--skill <name>] [--phase <name>] [--tier <N>]
 #           [--vault <dir>] [--max 3] [--timeout 5m] [--gate fast|full|none]
 #
 # Standalone (not sourced) — set -euo pipefail is safe here.
@@ -24,17 +24,28 @@ EXECUTOR="agy"; SKILL=""; PHASE=""; TIER=""
 MAX=3; TIMEOUT="5m"; GATE="fast"
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --repo)     REPO="$2";       shift 2;;
-    --vault)    VAULT="$2";      shift 2;;
-    --run)      RUN_PREFIX="$2"; shift 2;;
-    --brief)    BRIEF="$2";      shift 2;;
-    --executor) EXECUTOR="$2";   shift 2;;
-    --skill)    SKILL="$2";      shift 2;;
-    --phase)    PHASE="$2";      shift 2;;
-    --tier)     TIER="$2";       shift 2;;
-    --max)      MAX="$2";        shift 2;;
-    --timeout)  TIMEOUT="$2";    shift 2;;
-    --gate)     GATE="$2";       shift 2;;
+    --repo)     [[ $# -ge 2 ]] || { echo "loop: --repo requires a value" >&2; exit 2; }
+                REPO="$2";       shift 2;;
+    --vault)    [[ $# -ge 2 ]] || { echo "loop: --vault requires a value" >&2; exit 2; }
+                VAULT="$2";      shift 2;;
+    --run)      [[ $# -ge 2 ]] || { echo "loop: --run requires a value" >&2; exit 2; }
+                RUN_PREFIX="$2"; shift 2;;
+    --brief)    [[ $# -ge 2 ]] || { echo "loop: --brief requires a value" >&2; exit 2; }
+                BRIEF="$2";      shift 2;;
+    --executor) [[ $# -ge 2 ]] || { echo "loop: --executor requires a value" >&2; exit 2; }
+                EXECUTOR="$2";   shift 2;;
+    --skill)    [[ $# -ge 2 ]] || { echo "loop: --skill requires a value" >&2; exit 2; }
+                SKILL="$2";      shift 2;;
+    --phase)    [[ $# -ge 2 ]] || { echo "loop: --phase requires a value" >&2; exit 2; }
+                PHASE="$2";      shift 2;;
+    --tier)     [[ $# -ge 2 ]] || { echo "loop: --tier requires a value" >&2; exit 2; }
+                TIER="$2";       shift 2;;
+    --max)      [[ $# -ge 2 ]] || { echo "loop: --max requires a value" >&2; exit 2; }
+                MAX="$2";        shift 2;;
+    --timeout)  [[ $# -ge 2 ]] || { echo "loop: --timeout requires a value" >&2; exit 2; }
+                TIMEOUT="$2";    shift 2;;
+    --gate)     [[ $# -ge 2 ]] || { echo "loop: --gate requires a value" >&2; exit 2; }
+                GATE="$2";       shift 2;;
     *) echo "unknown arg $1" >&2; exit 2;;
   esac
 done
@@ -42,6 +53,10 @@ done
   echo "usage: loop.sh --repo <dir> --run <prefix> --brief <text> [--executor agy|copilot] [--skill <name>] [--phase <name>] [--tier <N>] [--vault <dir>] [--max 3] [--timeout 5m] [--gate fast]" >&2
   exit 2
 }
+if [[ -n "$TIER" ]] && ! [[ "$TIER" =~ ^[0-4]$ ]]; then
+  echo "loop: --tier must be an integer 0-4, got '$TIER'" >&2
+  exit 2
+fi
 
 LOGDIR="$REPO/.orchestration/$RUN_PREFIX"
 mkdir -p "$REPO/.orchestration"

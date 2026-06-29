@@ -101,7 +101,7 @@ bash "$TMPD/loop.sh" \
 if [[ ! -f "$LEDGER_A" ]]; then
   fail "ledger_a not created"
 else
-  TIER_VAL="$(jq -r '.tier' "$LEDGER_A" 2>/dev/null || echo "ERR")"
+  TIER_VAL="$(tail -1 "$LEDGER_A" | jq -r '.tier' 2>/dev/null || echo "ERR")"
   if [[ "$TIER_VAL" == "1" ]]; then
     ok "tier:1 written to ledger when --tier 1 passed"
   else
@@ -127,12 +127,43 @@ bash "$TMPD/loop.sh" \
 if [[ ! -f "$LEDGER_B" ]]; then
   fail "ledger_b not created"
 else
-  TIER_VAL2="$(jq -r '.tier' "$LEDGER_B" 2>/dev/null || echo "ERR")"
+  TIER_VAL2="$(tail -1 "$LEDGER_B" | jq -r '.tier' 2>/dev/null || echo "ERR")"
   if [[ "$TIER_VAL2" == "null" ]]; then
     ok "tier:null when --tier omitted (no spurious forwarding)"
   else
     fail "expected null in ledger, got '$TIER_VAL2'"
   fi
+fi
+
+# ─── Test C: non-numeric --tier => exit 2 with clear error ───────────────────
+echo "Test C: --tier abc => exit 2 with clear error"
+
+LEDGER_C="$TMPD/ledger_c.jsonl"
+sed "s|__LEDGER__|$LEDGER_C|g" "$SE_TPL" > "$TMPD/self_eval.sh"
+chmod +x "$TMPD/self_eval.sh"
+
+set +e
+STDERR_C="$(bash "$TMPD/loop.sh" \
+  --repo "$REPO" \
+  --run "tier-c" \
+  --brief "smoke: non-numeric tier" \
+  --executor "copilot" \
+  --tier abc \
+  --max 1 \
+  --gate none 2>&1 >/dev/null)"
+RC_C=$?
+set -e
+
+if [[ "$RC_C" -eq 2 ]]; then
+  ok "exit code 2 for non-numeric --tier"
+else
+  fail "expected exit 2 for --tier abc, got $RC_C"
+fi
+
+if echo "$STDERR_C" | grep -q "must be an integer 0-4"; then
+  ok "stderr contains 'must be an integer 0-4' for non-numeric --tier"
+else
+  fail "expected error message about integer 0-4, got: '$STDERR_C'"
 fi
 
 # ─── Summary ─────────────────────────────────────────────────────────────────
