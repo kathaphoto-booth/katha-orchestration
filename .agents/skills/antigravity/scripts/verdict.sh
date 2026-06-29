@@ -3,5 +3,5 @@
 # Interface unchanged: --repo <dir> --digest <json> [--gate fast|full|none]
 # The skill-tiers version adds --prev-digest, --prev-screenshot, --curr-screenshot
 # (all optional; callers not passing them get the same behavior as before).
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 exec "$DIR/../../../skill-tiers/scripts/verdict.sh" "$@"
