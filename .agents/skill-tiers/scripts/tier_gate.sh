@@ -187,7 +187,7 @@ RESULT=$(jq -s --arg skill "$SKILL" \
   $runs[($last_dishonest + 1):] as $candidates |
 
   # A clean run: verdict==PASS AND honest==true AND all required_fields == "PASS".
-  # For the 3->4 gate: additionally requires human_ack_ts ack row newer than run.ts.
+  # For the 3->4 gate: additionally requires human_ack_ts ack row no earlier than run.ts.
   # Note: using `. as $r` avoids filter-argument context pollution when `is_clean`
   # is called inside map/select — a jq def(arg) filter is re-invoked with the
   # outer context inside combinators like all(), which causes indexing errors.
