@@ -185,11 +185,13 @@ STUB
 }
 
 test_loop_is_hardened() {                          # source-assertion
-  local src="$SKILL/loop.sh"
+  # Reads canonical implementation in skill-tiers (the shim in antigravity has
+  # no internal structure to assert — it is just an exec redirect).
+  local src="${SKILL_TIERS:-}/loop.sh"
   assert_eq "$([[ -f "$src" ]] && echo yes || echo no)" "yes" "loop.sh exists"
   local b; b="$(cat "$src" 2>/dev/null)"
   assert_contains "$b" "/checkpoint.sh" "calls checkpoint.sh by explicit path (no reimplemented snapshot/rollback)"
-  assert_contains "$b" "/delegate_agy.sh" "calls delegate_agy.sh by explicit path (no reimplemented delegation)"
+  assert_contains "$b" "/delegate.sh" "calls delegate.sh executor router (no reimplemented delegation)"
   assert_contains "$b" "/verdict.sh" "calls verdict.sh by explicit path (no reimplemented git-truth check)"
   assert_contains "$b" "/authority-guard.sh" "runs the authority gate each attempt"
   assert_contains "$b" "MAX" "has an explicit hard cap variable (not unbounded)"

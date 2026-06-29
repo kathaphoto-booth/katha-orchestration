@@ -3,6 +3,10 @@ set -uo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/lib_test.sh"
 SKILL="$(cd "$DIR/.." && pwd)/scripts"
+# Canonical implementation location after the shim refactor (2026-06-28).
+# Source-assertion tests that grep script internals must read from here, not
+# from the shim files in $SKILL.
+SKILL_TIERS="$(cd "$DIR/../../../skill-tiers/scripts" 2>/dev/null && pwd || echo "")"
 
 # Discover and source any test files (test_*.sh), each defining test_<name> funcs.
 shopt -s nullglob

@@ -1,6 +1,16 @@
 ---
 name: impeccable-looped-kit
 description: End-to-end automated impeccable designing workflow based on impeccable.style. Orchestrates the four-phase Impeccable loop (Start, Iterate, Polish, Maintain) to produce 80%+ complete, stress-tested frontend features without hallucinations. Trigger when the user wants a complete, robust, polished frontend design process or a looped kit workflow.
+tier:
+  current: 0        # 0 = manual/Claude Code supervised only. Jed edits this field to promote — never automated.
+  target: 1         # currently accumulating evidence for tier 1 (read-only copilot proof-of-concept)
+allowed_executors: [claude-code]
+allowed_phases: [init, shape, craft, typeset, layout, colorize, animate, critique, audit, clarify, harden, extract, document]
+max_iterations_per_phase: 1
+stop_condition: diff_produced
+output_format: git_diff_only
+requires_digest: true
+requires_sentinel: true
 ---
 
 # Impeccable Looped Kit Workflow
@@ -50,4 +60,26 @@ Ensure the design system doesn't drift.
 - **Anti-Pattern**: Treat it as an opinionated design partner, not just a validator. Push back with reasoning if you disagree.
 
 ## Automation Execution
-If the user asks to "automate the whole kit process", run through these phases autonomously. Start by creating `PRODUCT.md`, define the lane (Brand vs Product), create the visuals, write the component, run the audit, harden it, and document the final design tokens.
+
+Unattended execution outside Claude Code requires `tier.current >= 1` in this
+file's frontmatter. Runs below that threshold route through Claude Code with
+Jed supervising — the `/impeccable` slash command is the correct entry point
+for interactive sessions.
+
+When `tier.current >= 1`, unattended execution goes through:
+```
+.agents/skill-tiers/scripts/loop.sh \
+  --executor copilot \
+  --skill impeccable-looped-kit \
+  --phase <phase-name> \
+  --repo <repo> --run <run-id> --brief "<task>"
+```
+
+Only phases listed in `allowed_phases` above may be invoked. `max_iterations_per_phase`
+is a hard cap — never overridden by the brief. The run must produce a
+`STATUS: COMPLETE` sentinel and a `digest.json` manifest; verdict.sh verifies both
+against git truth before self_eval.sh records the result.
+
+This section is NOT a license for an external CLI to self-loop through all phases
+in sequence without human review between them. Multi-phase chains require
+`tier.current >= 2` (staged-diff-only) or higher to be safe.

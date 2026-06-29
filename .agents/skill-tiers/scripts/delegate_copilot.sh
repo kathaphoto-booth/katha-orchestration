@@ -90,9 +90,12 @@ elif [[ "$TIMEOUT" =~ ^([0-9]+)s$ ]]; then
   TIMEOUT_SECS="${BASH_REMATCH[1]}"
 fi
 
+# Log the invocation flags for tier gating audit trail (risk T7/T11 verification).
+echo "copilot flags: ${COPILOT_FLAGS[*]}" > "$OUT/.copilot.log.raw"
+
 set +e
 run_with_timeout "$TIMEOUT_SECS" "$COPILOT_BIN" -p "$PROMPT" "${COPILOT_FLAGS[@]}" \
-  < /dev/null > "$OUT/.copilot.log.raw" 2>&1
+  < /dev/null >> "$OUT/.copilot.log.raw" 2>&1
 rc=$?
 set -e
 # Redact before persisting — brief may carry secrets echoed back.

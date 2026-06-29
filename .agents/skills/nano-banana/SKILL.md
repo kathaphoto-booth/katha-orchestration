@@ -56,25 +56,19 @@ If the Stitch design introduces a new decorative asset, add it to the **Art Dire
 
 ## Phase 4: Base Layout Dimensions & Typography Rendering
 
-### Media Slot Mathematics & White Space Balancing
-Nano Banana has established official baseline dimensions for template formats based on 300 DPI grids, prioritizing exact slot mathematics based on the standard industry reference grids (text area anchored at bottom, slots 3:2 landscape):
-- **LAYOUT A: 2x6 Strip (3 Pose) - 600x1800px:**
-  - **Margins:** 45px (Top/Left/Right)
-  - **Slots (3):** 510x440px (balanced portrait aspect)
-  - **Spacing:** 20px gap between slots.
-  - **Text Space:** 350px area anchored exactly at the bottom.
+### Media Slot Dimensions — Grounded, Not Hardcoded
 
-- **LAYOUT G: 6x4 Landscape (2 Pose) - 1800x1200px:**
-  - **Margins:** 90px (Top/Left/Right)
-  - **Slots (2):** 795x530px (side-by-side, 3:2 aspect)
-  - **Spacing:** 30px gap between slots.
-  - **Text Space:** 490px area anchored exactly at the bottom spanning full layout.
+**Rule: Never state a slot, margin, or canvas dimension from memory or this SKILL.md.**
+Run the dimension lookup tool before any render, measurement, or calculation:
 
-- **LAYOUT E: 4x6 Portrait (2 Pose) - 1200x1800px:**
-  - **Margins:** 90px (Top/Left/Right)
-  - **Slots (2):** 1020x680px (stacked, 3:2 aspect)
-  - **Spacing:** 30px gap between slots.
-  - **Text Space:** 260px area anchored exactly at the bottom.
+```bash
+node .agents/skills/template-fidelity/scripts/lookup.mjs --layout <id>
+# --layout strip-3   (2x6 strip, 3 slots)
+# --layout pv-2      (4x6 portrait, 2 slots)
+# --layout pc-3-v    (6x4 landscape, 3 columns)
+```
+
+**Provenance note (2026-06-28):** A prior version of this file stated 510x440px for the 2x6/3-slot layout. The confirmed canon from `layouts.js strip-3` is **480x380px** (marginX=60). The 510x440 figure was never grounded in the actual codebase. See `.memory/handoff/2026-06-28_steven-cristalyn-drift_verify.md` for the full audit.
 
 ### Scripture & Typography Rendering
 - Never rely on AI image generators for high-fidelity calligraphy or script fonts (e.g., Hello Honey) as it introduces artifacts, noise, and warping.

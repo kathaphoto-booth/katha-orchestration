@@ -62,6 +62,8 @@ make_repo() {
 add_entry() {
   local repo="$1" skill="$2" verdict="$3" honest="$4" drift="$5" date="$6"
   local run; run="${skill}-run-$(date +%s%N 2>/dev/null || date +%s)-$RANDOM"
+  mkdir -p "$repo/.orchestration/$run"
+  echo "copilot flags: --deny-tool=write --deny-tool=shell" > "$repo/.orchestration/$run/copilot.log"
   jq -nc \
     --arg ts "${date}T12:00:00Z" --arg run "$run" \
     --arg skill "$skill" --argjson tier 0 --arg executor "copilot" \
@@ -73,6 +75,7 @@ add_entry() {
       lines:$lines,tokens:$tokens,t2d:100.0,reasons:[],
       drift_check:$drift,taste_checkpoint:$taste}' \
     >> "$repo/.orchestration/ledger.jsonl"
+  echo "$run"
 }
 
 SKILL="impeccable-looped-kit"
@@ -210,6 +213,8 @@ rm -f "$TIERS_TMP"
 add_entry_t3() {
   local repo="$1" skill="$2" verdict="$3" honest="$4" date="$5"
   local run; run="${skill}-t3run-$(date +%s%N 2>/dev/null || date +%s)-$RANDOM"
+  mkdir -p "$repo/.orchestration/$run"
+  echo "copilot flags: --deny-tool=shell" > "$repo/.orchestration/$run/copilot.log"
   jq -nc \
     --arg ts "${date}T10:00:00Z" --arg run "$run" \
     --arg skill "$skill" --argjson tier 3 --arg executor "copilot" \
@@ -315,6 +320,49 @@ assert_contains "PASS with acked clean runs (3->4)" "PASS" "$T11_OUT"
 assert_contains "ack count in PASS output" "human-acked" "$T11_OUT"
 rm -rf "$T11_REPO" "$T11_STATE"
 unset T11_RUNS
+
+# Test 12: 0->1 gate rejects copilot runs lacking deny-tool flags
+echo "Test 12: 0->1 gate holds if copilot runs lack --deny-tool flags"
+T12_REPO=$(make_repo)
+T12_STATE="$(mktemp -d)"
+cp "$GATES_FILE" "$T12_STATE/promotion-gates.json"
+touch "$T12_STATE/tiers.jsonl"
+
+# Add 5 clean runs but delete the log file for the last one (missing log)
+for i in 1 2 3 4 5; do
+  RUN_ID=$(add_entry "$T12_REPO" "$SKILL" "PASS" "true" "SKIPPED" "2026-01-0${i}")
+  if [[ "$i" -eq 5 ]]; then
+    rm -f "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
+  fi
+done
+T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+assert_contains "HOLD when log file missing" "HOLD" "$T12_OUT"
+
+# Clean up repo to re-test
+rm -rf "$T12_REPO"
+T12_REPO=$(make_repo)
+
+# Add 5 runs but without --deny-tool=write
+for i in 1 2 3 4 5; do
+  RUN_ID=$(add_entry "$T12_REPO" "$SKILL" "PASS" "true" "SKIPPED" "2026-01-0${i}")
+  echo "copilot flags: --deny-tool=shell" > "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
+done
+T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+assert_contains "HOLD when deny-tool=write missing at tier 0" "HOLD" "$T12_OUT"
+
+# Clean up repo to re-test
+rm -rf "$T12_REPO"
+T12_REPO=$(make_repo)
+
+# Add 5 runs but without --deny-tool=shell
+for i in 1 2 3 4 5; do
+  RUN_ID=$(add_entry "$T12_REPO" "$SKILL" "PASS" "true" "SKIPPED" "2026-01-0${i}")
+  echo "copilot flags: --deny-tool=write" > "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
+done
+T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+assert_contains "HOLD when deny-tool=shell missing at tier 0" "HOLD" "$T12_OUT"
+
+rm -rf "$T12_REPO" "$T12_STATE"
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

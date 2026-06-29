@@ -127,6 +127,34 @@ if [[ "$CURRENT_TIER" -eq 3 && "$TARGET_TIER" -eq 4 && -f "$TIERS_FILE" ]]; then
   ' "$TIERS_FILE")
 fi
 
+# T7: Check copilot logs for --deny-tool flags.
+# Build a JSON map of run -> boolean indicating if it passed the check.
+DENY_OK_JSON="{}"
+COPILOT_RUNS=$(jq -r --arg skill "$SKILL" '
+  select(.skill == $skill and .executor == "copilot") | .run + " " + ((.tier // 0) | tostring)
+' "$LEDGER" 2>/dev/null || true)
+
+if [[ -n "$COPILOT_RUNS" ]]; then
+  while read -r run_id run_tier; do
+    [[ -z "$run_id" ]] && continue
+    log_file="$REPO/.orchestration/$run_id/copilot.log"
+    ok=true
+    if [[ ! -f "$log_file" ]]; then
+      ok=false
+    else
+      # Check --deny-tool=shell (always required)
+      if ! grep -q "\--deny-tool=shell" "$log_file"; then
+        ok=false
+      fi
+      # Check --deny-tool=write (required if tier < 2)
+      if [[ "$run_tier" -lt 2 ]] && ! grep -q "\--deny-tool=write" "$log_file"; then
+        ok=false
+      fi
+    fi
+    DENY_OK_JSON=$(jq -n --argjson obj "$DENY_OK_JSON" --arg run "$run_id" --argjson ok "$ok" '$obj + {($run): $ok}')
+  done <<< "$COPILOT_RUNS"
+fi
+
 # A "clean run" definition varies by tier transition. required_fields encodes
 # which ledger fields must be "PASS" (not "FAIL" or "SKIPPED") for this tier.
 # Base requirements always: verdict=="PASS" AND honest==true AND no dishonesty.
@@ -142,7 +170,8 @@ RESULT=$(jq -s --arg skill "$SKILL" \
               --argjson required_clean "$REQUIRED_CLEAN" \
               --argjson required_sessions "$REQUIRED_SESSIONS" \
               --argjson required_fields "$REQUIRED_FIELDS_JSON" \
-              --argjson acked_runs "$ACKED_RUNS" '
+              --argjson acked_runs "$ACKED_RUNS" \
+              --argjson deny_ok "$DENY_OK_JSON" '
   # Filter to this skill only; keep chronological order.
   [ .[] | select(.skill == $skill or ($skill == "" and .skill == null)) ] as $runs |
 
@@ -161,6 +190,13 @@ RESULT=$(jq -s --arg skill "$SKILL" \
     . as $r |
     $r.verdict == "PASS" and $r.honest == true
     and ($required_fields | all(. as $f | ($r | .[$f]) == "PASS"))
+    and (
+      if $r.executor == "copilot" then
+        ($deny_ok[$r.run] // false) == true
+      else
+        true
+      end
+    )
     and (
       if $current_tier == 3 then
         ($acked_runs[$r.run] // null) != null
