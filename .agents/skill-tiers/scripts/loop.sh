@@ -20,7 +20,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/lib.sh"
 
 REPO=""; VAULT=""; RUN_PREFIX=""; BRIEF=""
-EXECUTOR="agy"; SKILL=""; PHASE=""; TIER=""
+EXECUTOR="agy"; SKILL=""; PHASE=""; TIER=""; PHASES=""
 MAX=3; TIMEOUT="5m"; GATE="fast"
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -40,6 +40,8 @@ while [[ $# -gt 0 ]]; do
                 PHASE="$2";      shift 2;;
     --tier)     [[ $# -ge 2 ]] || { echo "loop: --tier requires a value" >&2; exit 2; }
                 TIER="$2";       shift 2;;
+    --phases)   [[ $# -ge 2 ]] || { echo "loop: --phases requires a value" >&2; exit 2; }
+                PHASES="$2";     shift 2;;
     --max)      [[ $# -ge 2 ]] || { echo "loop: --max requires a value" >&2; exit 2; }
                 MAX="$2";        shift 2;;
     --timeout)  [[ $# -ge 2 ]] || { echo "loop: --timeout requires a value" >&2; exit 2; }
@@ -50,7 +52,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ -n "$REPO" && -n "$RUN_PREFIX" && -n "$BRIEF" ]] || {
-  echo "usage: loop.sh --repo <dir> --run <prefix> --brief <text> [--executor agy|copilot] [--skill <name>] [--phase <name>] [--tier <N>] [--vault <dir>] [--max 3] [--timeout 5m] [--gate fast]" >&2
+  echo "usage: loop.sh --repo <dir> --run <prefix> --brief <text> [--executor agy|copilot] [--skill <name>] [--phase <name>] [--phases <json>] [--tier <N>] [--vault <dir>] [--max 3] [--timeout 5m] [--gate fast]" >&2
   exit 2
 }
 if [[ -n "$TIER" ]] && ! [[ "$TIER" =~ ^[0-4]$ ]]; then
@@ -127,10 +129,11 @@ while [[ "$attempt" -le "$MAX" ]]; do
     fi
   fi
 
-  # Extended self_eval record with skill/tier/executor tags.
+  # Extended self_eval record with skill/tier/executor/phases tags.
   EVAL_ARGS=(record --run "$RUN_ID" --repo "$REPO" --executor "$EXECUTOR")
   [[ -n "$SKILL" ]] && EVAL_ARGS+=(--skill "$SKILL")
   [[ -n "$TIER" ]] && EVAL_ARGS+=(--tier "$TIER")
+  [[ -n "$PHASES" ]] && EVAL_ARGS+=(--phases "$PHASES")
   "$DIR/self_eval.sh" "${EVAL_ARGS[@]}" >/dev/null 2>&1 || true
 
   ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"

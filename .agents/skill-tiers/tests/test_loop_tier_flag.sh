@@ -68,14 +68,15 @@ cp "$SCRIPTS/loop.sh" "$TMPD/loop.sh"
 SE_TPL="$TMPD/self_eval_tpl.sh"
 cat > "$SE_TPL" << 'EOF'
 #!/usr/bin/env bash
-TIER=""
+TIER=""; PHASES_RUN="null"
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --tier) TIER="$2"; shift 2;;
+    --tier)   TIER="$2";       shift 2;;
+    --phases) PHASES_RUN="$2"; shift 2;;
     *) shift;;
   esac
 done
-printf '{"tier":%s}\n' "${TIER:-null}" >> "__LEDGER__"
+printf '{"tier":%s,"phases_run":%s}\n' "${TIER:-null}" "$PHASES_RUN" >> "__LEDGER__"
 EOF
 
 chmod +x "$TMPD/delegate.sh" "$TMPD/checkpoint.sh" "$TMPD/verdict.sh" \
@@ -164,6 +165,59 @@ if echo "$STDERR_C" | grep -q "must be an integer 0-4"; then
   ok "stderr contains 'must be an integer 0-4' for non-numeric --tier"
 else
   fail "expected error message about integer 0-4, got: '$STDERR_C'"
+fi
+
+# ─── Test D: --phases forwarded to ledger as phases_run ──────────────────────
+echo "Test D: --phases '[\"init\",\"craft\"]' appears in ledger as phases_run"
+
+LEDGER_D="$TMPD/ledger_d.jsonl"
+sed "s|__LEDGER__|$LEDGER_D|g" "$SE_TPL" > "$TMPD/self_eval.sh"
+chmod +x "$TMPD/self_eval.sh"
+
+bash "$TMPD/loop.sh" \
+  --repo "$REPO" \
+  --run "phases-d" \
+  --brief "smoke: phases flag" \
+  --executor "copilot" \
+  --phases '["init","craft"]' \
+  --max 1 \
+  --gate none >/dev/null 2>&1
+
+if [[ ! -f "$LEDGER_D" ]]; then
+  fail "ledger_d not created"
+else
+  PHASES_VAL="$(tail -1 "$LEDGER_D" | jq -r '.phases_run | @json' 2>/dev/null || echo "ERR")"
+  if [[ "$PHASES_VAL" == '["init","craft"]' ]]; then
+    ok "phases_run:[\"init\",\"craft\"] written to ledger when --phases passed"
+  else
+    fail "expected phases_run [\"init\",\"craft\"] in ledger, got '$PHASES_VAL'"
+  fi
+fi
+
+# ─── Test E: omitting --phases => phases_run:null in ledger ──────────────────
+echo "Test E: omitting --phases yields phases_run:null"
+
+LEDGER_E="$TMPD/ledger_e.jsonl"
+sed "s|__LEDGER__|$LEDGER_E|g" "$SE_TPL" > "$TMPD/self_eval.sh"
+chmod +x "$TMPD/self_eval.sh"
+
+bash "$TMPD/loop.sh" \
+  --repo "$REPO" \
+  --run "phases-e" \
+  --brief "smoke: no phases flag" \
+  --executor "copilot" \
+  --max 1 \
+  --gate none >/dev/null 2>&1
+
+if [[ ! -f "$LEDGER_E" ]]; then
+  fail "ledger_e not created"
+else
+  PHASES_VAL2="$(tail -1 "$LEDGER_E" | jq -r '.phases_run' 2>/dev/null || echo "ERR")"
+  if [[ "$PHASES_VAL2" == "null" ]]; then
+    ok "phases_run:null when --phases omitted (no spurious forwarding)"
+  else
+    fail "expected null for phases_run, got '$PHASES_VAL2'"
+  fi
 fi
 
 # ─── Summary ─────────────────────────────────────────────────────────────────

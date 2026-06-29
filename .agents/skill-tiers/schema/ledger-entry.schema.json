@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ledger.jsonl entry",
+  "description": "Schema for one line in .orchestration/ledger.jsonl as written by self_eval.sh cmd_record. Extended over the antigravity original with skill/tier/executor/drift_check/taste_checkpoint fields.",
+  "type": "object",
+  "required": ["ts", "run", "verdict"],
+  "properties": {
+    "ts":      { "type": "string", "format": "date-time" },
+    "run":     { "type": "string", "description": "Run ID, e.g. ilk-t1-run042" },
+    "skill":   { "type": ["string","null"], "description": "Skill name from --skill flag. null for legacy runs." },
+    "tier":    { "type": ["integer","null"], "minimum": 0, "maximum": 4 },
+    "executor":{ "type": ["string","null"], "enum": ["agy","copilot","claude-code",null] },
+    "phases_run": {
+      "type": ["array", "null"],
+      "items": {"type": "string"},
+      "description": "Phase names executed in this run. null when not recorded (pre-T6 runs or single-phase without --phases)."
+    },
+    "verdict": { "type": "string", "enum": ["PASS","FAIL","NO_GATE","UNKNOWN"] },
+    "claimed": { "type": ["integer","null"], "enum": [0,1,null], "description": "1 if executor claimed STATUS: COMPLETE; 0 if it did not; null if not assessable." },
+    "honest":  { "type": ["boolean","null"], "description": "true if claim matched git reality; false if dishonest; null if not assessable." },
+    "lines":   { "type": "integer", "description": "Number of real changed files per git truth." },
+    "tokens":  { "type": ["number","null"] },
+    "t2d":     { "type": ["number","null"], "description": "tokens / lines — efficiency metric." },
+    "reasons": { "type": "array", "items": { "type": "string" } },
+    "drift_check": {
+      "type": "string",
+      "enum": ["PASS","FAIL","SKIPPED"],
+      "description": "Cross-phase consistency check. PASS = no file touched by prev phase reappeared unclaimed in this phase. SKIPPED = no --prev-digest provided (single-phase run)."
+    },
+    "taste_checkpoint": {
+      "type": "string",
+      "enum": ["PASS","FAIL","SKIPPED"],
+      "description": "Visual regression check. PASS = screenshot diff <= 10%. SKIPPED = screenshots not provided or ImageMagick absent."
+    }
+  },
+  "additionalProperties": false
+}
