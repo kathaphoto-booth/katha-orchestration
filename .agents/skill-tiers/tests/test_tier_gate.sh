@@ -202,11 +202,11 @@ rm -f "$TIERS_TMP"
 #
 # We need a fresh isolated state dir for each test in this group because:
 #   - ack rows and evidence rows coexist in tiers.jsonl
-#   - run_gate_tier3_with_state pre-seeds an evidence row declaring CURRENT_TIER=3
+#   - run_gate_with_state pre-seeds an evidence row declaring CURRENT_TIER=3
 #
 # add_entry_t3: adds a tier-3-compatible ledger entry (all required_fields PASS).
 #   Returns the run ID on stdout.
-# run_gate_tier3_with_state: runs the gate check with a caller-owned fake_state dir.
+# run_gate_with_state: runs the gate check with a caller-owned fake_state dir.
 # run_ack_with_state: calls "ack" subcommand against a caller-owned fake_state dir.
 # seed_tier3_state: writes an evidence row declaring CURRENT_TIER=3 TARGET_TIER=4.
 
@@ -214,6 +214,8 @@ add_entry_t3() {
   local repo="$1" skill="$2" verdict="$3" honest="$4" date="$5"
   local run; run="${skill}-t3run-$(date +%s%N 2>/dev/null || date +%s)-$RANDOM"
   mkdir -p "$repo/.orchestration/$run"
+  # Only --deny-tool=shell: tier-3 runs have run_tier=3, which is not < 2,
+  # so the write-flag check in tier_gate.sh is a no-op for them.
   echo "copilot flags: --deny-tool=shell" > "$repo/.orchestration/$run/copilot.log"
   jq -nc \
     --arg ts "${date}T10:00:00Z" --arg run "$run" \
@@ -228,7 +230,7 @@ add_entry_t3() {
   echo "$run"
 }
 
-run_gate_tier3_with_state() {
+run_gate_with_state() {
   local repo="$1" fake_state="$2"
   local patched; patched="$(mktemp)"
   sed "s|STATE_DIR=\"\$DIR/../state\"|STATE_DIR=\"$fake_state\"|g" "$TIER_GATE" > "$patched"
@@ -281,7 +283,7 @@ seed_tier3_state "$T10_STATE" "$SKILL"
 for i in 1 2 3 4 5; do
   add_entry_t3 "$T10_REPO" "$SKILL" "PASS" "true" "2026-01-0${i}" > /dev/null
 done
-T10_OUT=$(run_gate_tier3_with_state "$T10_REPO" "$T10_STATE")
+T10_OUT=$(run_gate_with_state "$T10_REPO" "$T10_STATE")
 assert_contains "HOLD without ack (3->4)" "HOLD" "$T10_OUT"
 assert_not_contains "not PASS without ack (3->4)" "^PASS" "$T10_OUT"
 rm -rf "$T10_REPO" "$T10_STATE"
@@ -315,7 +317,7 @@ for entry in "${T11_RUNS[@]}"; do
     '{skill:$skill, run:$run, human_ack_ts:$ts, type:"ack"}' \
     >> "$T11_STATE/tiers.jsonl"
 done
-T11_OUT=$(run_gate_tier3_with_state "$T11_REPO" "$T11_STATE")
+T11_OUT=$(run_gate_with_state "$T11_REPO" "$T11_STATE")
 assert_contains "PASS with acked clean runs (3->4)" "PASS" "$T11_OUT"
 assert_contains "ack count in PASS output" "human-acked" "$T11_OUT"
 rm -rf "$T11_REPO" "$T11_STATE"
@@ -335,7 +337,7 @@ for i in 1 2 3 4 5; do
     rm -f "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
   fi
 done
-T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+T12_OUT=$(run_gate_with_state "$T12_REPO" "$T12_STATE")
 assert_contains "HOLD when log file missing" "HOLD" "$T12_OUT"
 
 # Clean up repo to re-test
@@ -347,7 +349,7 @@ for i in 1 2 3 4 5; do
   RUN_ID=$(add_entry "$T12_REPO" "$SKILL" "PASS" "true" "SKIPPED" "2026-01-0${i}")
   echo "copilot flags: --deny-tool=shell" > "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
 done
-T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+T12_OUT=$(run_gate_with_state "$T12_REPO" "$T12_STATE")
 assert_contains "HOLD when deny-tool=write missing at tier 0" "HOLD" "$T12_OUT"
 
 # Clean up repo to re-test
@@ -359,7 +361,7 @@ for i in 1 2 3 4 5; do
   RUN_ID=$(add_entry "$T12_REPO" "$SKILL" "PASS" "true" "SKIPPED" "2026-01-0${i}")
   echo "copilot flags: --deny-tool=write" > "$T12_REPO/.orchestration/$RUN_ID/copilot.log"
 done
-T12_OUT=$(run_gate_tier3_with_state "$T12_REPO" "$T12_STATE")
+T12_OUT=$(run_gate_with_state "$T12_REPO" "$T12_STATE")
 assert_contains "HOLD when deny-tool=shell missing at tier 0" "HOLD" "$T12_OUT"
 
 rm -rf "$T12_REPO" "$T12_STATE"
