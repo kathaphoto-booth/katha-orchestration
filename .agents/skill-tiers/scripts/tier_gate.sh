@@ -56,6 +56,11 @@ if [[ "${1:-}" == "ack" ]]; then
     exit 2
   }
   mkdir -p "$STATE_DIR"
+  if [[ -f "$TIERS_FILE" ]] && jq -e --arg skill "$ACK_SKILL" --arg run "$ACK_RUN" \
+      'select(.type=="ack" and .skill==$skill and .run==$run)' "$TIERS_FILE" > /dev/null 2>&1; then
+    echo "human_ack_ts already recorded: skill='$ACK_SKILL' run='$ACK_RUN' (idempotent — no duplicate written)"
+    exit 0
+  fi
   ACK_TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
   ACK_ROW=$(jq -cn \
     --arg skill "$ACK_SKILL" --arg run "$ACK_RUN" --arg ts "$ACK_TS" \
@@ -124,7 +129,7 @@ if [[ "$CURRENT_TIER" -eq 3 && "$TARGET_TIER" -eq 4 && -f "$TIERS_FILE" ]]; then
   ACKED_RUNS=$(jq -rsc --arg skill "$SKILL" '
     [ .[] | select(.type == "ack" and .skill == $skill) | {(.run): .human_ack_ts} ] |
     add // {}
-  ' "$TIERS_FILE")
+  ' "$TIERS_FILE" || echo "{}")
 fi
 
 # T7: Check copilot logs for --deny-tool flags.
@@ -200,7 +205,7 @@ RESULT=$(jq -s --arg skill "$SKILL" \
     and (
       if $current_tier == 3 then
         ($acked_runs[$r.run] // null) != null
-        and ($acked_runs[$r.run] > $r.ts)
+        and ($acked_runs[$r.run] >= $r.ts)
       else
         true
       end
@@ -216,7 +221,7 @@ RESULT=$(jq -s --arg skill "$SKILL" \
   ($runs | map(select(.honest == false)) | length) as $total_dishonest |
 
   # For observability: how many of the human-acked runs are among the clean runs.
-  ($clean_runs | map(select(($acked_runs[.run] // null) != null and ($acked_runs[.run] > .ts))) | length) as $acked_clean_count |
+  ($clean_runs | map(select(($acked_runs[.run] // null) != null and ($acked_runs[.run] >= .ts))) | length) as $acked_clean_count |
 
   {
     skill: $skill,
