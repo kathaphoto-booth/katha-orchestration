@@ -51,7 +51,12 @@ redact() {
   | sed -E \
       -e 's/[sS][kK]-[A-Za-z0-9_-]{16,}/[REDACTED]/g' \
       -e 's/[aA][iI][zZ][aA][0-9A-Za-z_-]{30,}/[REDACTED]/g' \
-      -e 's/[xX][oO][xX][baprsBAPRS]-[A-Za-z0-9-]{6,}/[REDACTED]/g'
+      -e 's/[xX][oO][xX][baprsBAPRS]-[A-Za-z0-9-]{6,}/[REDACTED]/g' \
+      -e 's/eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/[JWT_REDACTED]/g' \
+      -e 's/AKIA[0-9A-Z]{16}/[AWS_KEY_REDACTED]/g' \
+      -e 's/ghp_[A-Za-z0-9]{36}/[GH_TOKEN_REDACTED]/g' \
+      -e 's/glpat-[A-Za-z0-9_-]{20,}/[GL_TOKEN_REDACTED]/g' \
+      -e 's/npm_[A-Za-z0-9]{36}/[NPM_TOKEN_REDACTED]/g'
 }
 
 # run_with_timeout <secs> <cmd...> -> runs cmd bounded by <secs>; returns cmd's
@@ -61,9 +66,13 @@ redact() {
 # Pure-bash background-watcher pattern (council-recommended).
 run_with_timeout() {
   local secs="$1"; shift
-  "$@" &
+  # macOS ships without GNU setsid; perl's POSIX::setsid() is always present and
+  # creates a new process group so the watcher can kill the whole tree (not just
+  # the parent), closing the TOCTOU window where orphaned children keep writing
+  # result.md / digest.json after the harness declares FAILED and starts rollback.
+  perl -e 'use POSIX "setsid"; setsid(); exec @ARGV' -- "$@" &
   local pid=$!
-  ( sleep "$secs"; kill -9 "$pid" 2>/dev/null ) &
+  ( sleep "$secs"; kill -9 -"$pid" 2>/dev/null ) &
   local watcher=$!
   local rc=0
   wait "$pid" 2>/dev/null || rc=$?
