@@ -39,7 +39,7 @@ fi
 # macOS awk (one true awk) does not support IGNORECASE; use tolower() instead.
 # awk exits with code 1 on a match; the if-else block detects that.
 if awk '
-  function matches_name(s,    l) { l=tolower(s); return (l=="jed"||l=="cc"||l=="vince"||l=="misty"||l=="brock") }
+  function matches_name(s,    l) { l=tolower(s); return (l~/(^|[[:space:]])jed([[:space:]]|$)/||l~/(^|[[:space:]])cc([[:space:]]|$)/||l~/vince/||l~/misty/||l~/brock/) }
   function matches_verb(s,    l) { l=tolower(s); return (l~/approved/||l~/decided/||l~/rescinded/||l~/authorized/||l~/confirmed/||l~/locked/||l~/retired/||l~/granted/||l~/has final authority/) }
   { trimmed=$0; gsub(/^[[:space:]]+|[[:space:]]+$/, "", trimmed) }
   matches_name(trimmed) { found=NR }
