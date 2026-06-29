@@ -148,11 +148,11 @@ if [[ -n "$COPILOT_RUNS" ]]; then
       ok=false
     else
       # Check --deny-tool=shell (always required)
-      if ! grep -q "\--deny-tool=shell" "$log_file"; then
+      if ! grep -q -- "--deny-tool=shell" "$log_file"; then
         ok=false
       fi
       # Check --deny-tool=write (required if tier < 2)
-      if [[ "$run_tier" -lt 2 ]] && ! grep -q "\--deny-tool=write" "$log_file"; then
+      if [[ "$run_tier" -lt 2 ]] && ! grep -q -- "--deny-tool=write" "$log_file"; then
         ok=false
       fi
     fi
