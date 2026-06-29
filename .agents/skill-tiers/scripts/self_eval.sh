@@ -27,7 +27,7 @@ sentinel_claims_complete() {
 }
 
 cmd_record() {
-  local RUN="" REPO="" TOKENS="null" CLAIMED="" SKILL="null" TIER="null" EXECUTOR="null" PHASES_RUN="null"
+  local RUN="" REPO="" TOKENS="null" CLAIMED="" SKILL="null" TIER="null" EXECUTOR="null" PHASES_RUN="null"  # JSON null token — do NOT change to "": jq --argjson would fail
   while [[ $# -gt 0 ]]; do case "$1" in
     --run)      RUN="$2";      shift 2;;
     --repo)     REPO="$2";     shift 2;;

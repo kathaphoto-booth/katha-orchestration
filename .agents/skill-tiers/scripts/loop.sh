@@ -59,6 +59,12 @@ if [[ -n "$TIER" ]] && ! [[ "$TIER" =~ ^[0-4]$ ]]; then
   echo "loop: --tier must be an integer 0-4, got '$TIER'" >&2
   exit 2
 fi
+if [[ -n "$PHASES" ]]; then
+  if ! jq -e . <<< "$PHASES" > /dev/null 2>&1; then
+    echo "loop: --phases is not valid JSON (got: $PHASES)" >&2
+    exit 2
+  fi
+fi
 
 LOGDIR="$REPO/.orchestration/$RUN_PREFIX"
 mkdir -p "$REPO/.orchestration"
