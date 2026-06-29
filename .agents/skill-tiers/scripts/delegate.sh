@@ -27,14 +27,14 @@ PHASE=""
 TIER=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --executor) EXECUTOR="$2"; shift 2;;
-    --repo)     REPO="$2";     shift 2;;
-    --run)      RUN="$2";      shift 2;;
-    --brief)    BRIEF="$2";    shift 2;;
-    --timeout)  TIMEOUT="$2";  shift 2;;
-    --skill)    SKILL="$2";    shift 2;;
-    --phase)    PHASE="$2";    shift 2;;
-    --tier)     TIER="$2";     shift 2;;
+    --executor) [[ $# -ge 2 ]] || { echo "delegate: --executor requires a value" >&2; exit 2; }; EXECUTOR="$2"; shift 2;;
+    --repo)     [[ $# -ge 2 ]] || { echo "delegate: --repo requires a value" >&2; exit 2; }; REPO="$2";     shift 2;;
+    --run)      [[ $# -ge 2 ]] || { echo "delegate: --run requires a value" >&2; exit 2; }; RUN="$2";      shift 2;;
+    --brief)    [[ $# -ge 2 ]] || { echo "delegate: --brief requires a value" >&2; exit 2; }; BRIEF="$2";    shift 2;;
+    --timeout)  [[ $# -ge 2 ]] || { echo "delegate: --timeout requires a value" >&2; exit 2; }; TIMEOUT="$2";  shift 2;;
+    --skill)    [[ $# -ge 2 ]] || { echo "delegate: --skill requires a value" >&2; exit 2; }; SKILL="$2";    shift 2;;
+    --phase)    [[ $# -ge 2 ]] || { echo "delegate: --phase requires a value" >&2; exit 2; }; PHASE="$2";    shift 2;;
+    --tier)     [[ $# -ge 2 ]] || { echo "delegate: --tier requires a value" >&2; exit 2; }; TIER="$2";     shift 2;;
     *) echo "unknown arg $1" >&2; exit 2;;
   esac
 done
@@ -54,6 +54,7 @@ case "$EXECUTOR" in
     ;;
   copilot)
     COPILOT_ARGS=(--repo "$REPO" --run "$RUN" --brief "$BRIEF" --timeout "$TIMEOUT")
+    # 2>/dev/null: suppresses arithmetic error when TIER is non-integer; comparison safely returns false
     if [[ -n "$TIER" ]] && [[ "$TIER" -ge 2 ]] 2>/dev/null; then
       COPILOT_ARGS+=(--allow-write)
     fi
