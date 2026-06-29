@@ -105,6 +105,7 @@ while [[ "$attempt" -le "$MAX" ]]; do
   DELEGATE_ARGS=(--repo "$REPO" --run "$RUN_ID" --brief "$BRIEF_CUR" --timeout "$TIMEOUT" --executor "$EXECUTOR")
   [[ -n "$SKILL" ]] && DELEGATE_ARGS+=(--skill "$SKILL")
   [[ -n "$PHASE" ]] && DELEGATE_ARGS+=(--phase "$PHASE")
+  [[ -n "$TIER" ]] && DELEGATE_ARGS+=(--tier "$TIER")
 
   set +e
   "$DIR/delegate.sh" "${DELEGATE_ARGS[@]}" >/dev/null 2>&1
