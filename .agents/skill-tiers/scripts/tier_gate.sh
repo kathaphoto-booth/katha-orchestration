@@ -165,7 +165,7 @@ fi
 # Base requirements always: verdict=="PASS" AND honest==true AND no dishonesty.
 #
 # For the 3->4 gate, a clean run additionally requires a human_ack_ts ack row
-# that is newer than the run's own ts.
+# that is no earlier than the run's own ts.
 #
 # One dishonest run RESETS THE STREAK TO ZERO — it cannot be averaged out.
 # We compute the streak by finding the longest suffix of runs that are all clean
@@ -260,8 +260,9 @@ TIERS_ROW=$(jq -cn \
 # -c flag keeps other-skill rows compact (one per line) so the file stays valid JSONL.
 mkdir -p "$STATE_DIR"
 TIERS_TMP="$(mktemp)"
+trap 'rm -f "${TIERS_TMP:-}"' EXIT
 if [[ -f "$TIERS_FILE" ]]; then
-  jq -rc --arg skill "$SKILL" 'select(.skill != $skill or .type == "ack")' "$TIERS_FILE" > "$TIERS_TMP" || true
+  jq -rc --arg skill "$SKILL" 'select(.skill != $skill or .type == "ack")' "$TIERS_FILE" > "$TIERS_TMP" || { rm -f "$TIERS_TMP"; echo "tier_gate: jq failed filtering tiers.jsonl — aborting to avoid cache wipe" >&2; exit 3; }
 fi
 echo "$TIERS_ROW" >> "$TIERS_TMP"
 mv "$TIERS_TMP" "$TIERS_FILE"
