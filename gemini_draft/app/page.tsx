@@ -219,7 +219,7 @@ export default function Page() {
               },
               {
                 ordinal: '03',
-                title: 'The Keepsake',
+                title: 'The Edition',
                 body: 'Archival cotton prints, debossed with the KTHA mark. A digital vault, not a gallery link. Passed down, not deleted.',
               },
             ].map((phase) => (

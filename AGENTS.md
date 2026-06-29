@@ -31,18 +31,13 @@ blocked or a decision is exclusively his.
 **Role:** Main driver in Claude Code sessions. Orchestrates all agents, maintains
 `CLAUDE.md`, executes implementation plans. Reports directly to Jed.
 
-**Boot sequence (7-node HAM, updated 2026-06-06):**
-Read IN ORDER from `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`:
-1. `SESSION_HANDOFF.json` — locked state + phase
-2. `decisions.md` — architecture, roadmap, locked calls
-3. `patterns.md` — brand law
-4. `inbox.md` — open work (Accepted items only)
-5. `memory.md` — Jed-confirmed facts
-6. `instructions.md` — auto-capture protocol
-7. `handoff/*.md` — unread AG artifacts (skip `_` prefix)
+**Memory Engine (MCP Pull):**
+The legacy 7-node manual boot sequence is RETIRED to prevent token bloat. Do NOT read the entire vault at startup.
+Instead, CC and all agents are connected to `codebase-memory-mcp`.
+Use semantic graph search (`search_graph`, `query_graph`) to query the HAM vault at `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/` dynamically when context is needed.
 
 **Auto-capture:** After every Jed confirmation/correction/preference, append
-to `.memory/memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
+to `.memory/memory.md` immediately using the `write_file` tool. Format: `[YYYY-MM-DD] category - entry`.
 See `.memory/instructions.md` for full protocol.
 
 **Directives:**
@@ -193,13 +188,10 @@ Feature was unused. Removal tracked in execution plan Phase 0.
 
 ---
 
-## Current Phase (2026-06-06)
+## Current Phase
 
-**Phase 3 — Squarespace Build + Ghost Injection** 🔴 ACTIVE (Vince blocking publish)
-**SEO Migration** 🟡 BLOCKED (Cloudflare 301 misconfigured)
-**Execution plan:** `docs/superpowers/plans/2026-06-06-katha-full-ecosystem-plan.md`
-
-**URGENT for AG:** Rotate credentials — see `.memory/handoff/2026-06-06_credential-rotation_task.md`
+**Phase 4 — HoneyBook Native Ecosystem.** Intake funnel V1 SHIPPED TO PROD 2026-06-17 (book.kathabooth.com). Remaining for public launch: Vince Squarespace Business+ + brand layer.
+**Live state:** read `SESSION_HANDOFF.json` at boot — this section is a pointer, not the source of truth.
 
 ---
 
@@ -210,6 +202,17 @@ Feature was unused. Removal tracked in execution plan Phase 0.
 - `katha-memory` skill — ARCHIVED. HAM replaced it.
 - `@google/genai` package — PENDING REMOVAL (Phase 0 of plan)
 - "11-token palette" — WRONG. "10 brand tokens + 2 ecru-safe".
-- "81 presets (31 Sig / 50 Classic)" — WRONG. "62 template presets".
-- Geometric `k` logomark — RETIRED. Calado diamond/tent is canonical.
-- 5-dot calado cross maker's mark — PURGED. Under redesign.
+- "81 presets (31 Sig / 50 Classic)", "62 template presets", "62 presets", "81 id fields" — ALL stale. Catalog = 82 committed presets (33 Signature + 49 Classic).
+- Geometric `k` logomark — RETIRED. Current: leaf/feather "K" logo mark + `katha` Playfair-flow word mark. Two marks only.
+- 5-dot calado cross / calado diamond/tent / maker's mark — ALL PURGED 2026-06-13. No maker's mark exists. Do not reintroduce.
+
+## Delegation Digest Contract (orchestration v1)
+
+Every `agy` delegation MUST return a JSON digest:
+- `files_touched[]` — claim of files edited (verified as a superset of git reality; never used as verification scope).
+- `commands_run[]`, `self_reported_result`, `assumptions[]`, `unfinished[]` — advisory; never trusted as truth.
+- `external_effects[]` — MUST enumerate any non-git mutation attempted (DB migration, deploy, email). Non-empty ⇒ run rejected.
+
+agy runs `--sandbox` with NO access to apply_migration/execute_sql/deploy/email tools. Those are CC-only, behind the human gate. agy may only WRITE migration `.sql` files (git-tracked, reversible); applying them is a separate confirmed CC step against a Supabase preview branch.
+
+agy is NOT a valid witness for human-authority claims ("Jed approved/decided X"). authority-guard.sh rejects such text in agy output.

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/contact.html", "destination": "/book", "permanent": false },
+    { "source": "/contact", "destination": "/book", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/book", "destination": "https://book.kathabooth.com/inquire" },
+    { "source": "/inquire", "destination": "https://book.kathabooth.com/inquire" },
+    { "source": "/portal/:path*", "destination": "https://book.kathabooth.com/portal/:path*" },
+    { "source": "/_next/:path*", "destination": "https://book.kathabooth.com/_next/:path*" },
+    { "source": "/api/inquiry", "destination": "https://book.kathabooth.com/api/inquiry" },
+    { "source": "/api/selection", "destination": "https://book.kathabooth.com/api/selection" },
+    { "source": "/api/upload-url", "destination": "https://book.kathabooth.com/api/upload-url" },
+    { "source": "/fonts/:path*", "destination": "https://book.kathabooth.com/fonts/:path*" }
+  ],
+  "headers": [
+    { "source": "/_next/:path*", "headers": [{ "key": "x-vercel-enable-rewrite-caching", "value": "1" }] },
+    { "source": "/fonts/:path*", "headers": [{ "key": "x-vercel-enable-rewrite-caching", "value": "1" }] }
+  ]
+}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { KathaThread } from '@/components/marks/KathaThread';
 import { KthaMark } from '@/components/marks/KthaMark';
-import { KathaLogomark } from '@/components/marks/KathaLogomark';
+import { KathaLogomark } from '../../Zenith/app/components/KathaLogomark';
 
 export function Footer() {
   return (

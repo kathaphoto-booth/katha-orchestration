@@ -10,7 +10,11 @@ tags:
   - core-memory
 ---
 
-> **MCP DIRECTIVE:** Use MCP tools to query the `.memory/` vault for historical context rather than requesting manual text injections.
+> **MCP DIRECTIVE:** `codebase-memory-mcp` indexes code structure only (functions,
+> classes, call chains, routes) — it is blind to markdown prose (verified
+> 2026-06-25, see vault `README.md` "Querying" section: zero hits for known
+> vault content). Use it for code lookups only; for `.memory/` vault context,
+> read the plain files directly — see CONTEXT RETRIEVAL below.
 
 # Katha Booth — CLAUDE.md (HAM Router)
 # CC reads this file automatically on every session startup.
@@ -37,37 +41,28 @@ For deep-dive work, consult these directory-scoped context files:
 - Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
 - Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
 
-## BOOT ORDER (Systemic Injection)
+## CONTEXT RETRIEVAL (Direct Pull — corrected 2026-06-25)
 Memory lives at the absolute vault path (Samsung 970, always mounted):
 **`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
 
-**SYSTEM ENFORCEMENT:** 
-The 7 HAM nodes (`SESSION_HANDOFF.json`, `decisions.md`, `patterns.md`, `inbox.md`, `memory.md`, `instructions.md`, `handoff/*.md`) are now auto-compiled into a single file by the pre-flight `compile-ham.sh` wrapper.
+**SYSTEM ENFORCEMENT:**
+The legacy "Push Memory" (forcing agents to read `COMPILED_HAM.md` or 7 nodes at boot) is **RETIRED** to prevent token bloat. Do not read the entire vault at startup.
 
-Read the single compiled node IN ORDER from the vault:
-1. `COMPILED_HAM.md` — Contains the entire locked state, decisions, brand law, and memory.
+`codebase-memory-mcp` is connected, but it indexes code symbols only — it
+returns zero hits for vault markdown prose (verified empirically 2026-06-25).
+Pull facts via direct, targeted file reads instead — bounded and on-demand,
+never a full vault sweep.
 
-No symlink, no mirror, no boot script. The vault is the single source of truth.
-Use Obsidian as the visual interface — open the vault root as an Obsidian vault.
+- **Check Project State:** Read `SESSION_HANDOFF.json` directly.
+- **Check Brand Law:** Read `patterns.md` directly.
+- **Check Recent Approvals:** Read the tail of `memory.md` directly.
 
-**Staleness check (mandatory):** After reading `COMPILED_HAM.md`, compare its
-embedded `memory.md` newest dated entry and its `inbox.md` last "Pending
-(AG-proposed)" line against the embedded `SESSION_HANDOFF.json`'s
-`.latest_memory_entry` / `.latest_inbox_entry_date` (inside `COMPILED_HAM.md`
-these are the `## 5. memory.md`, `## 4. inbox.md`, and `## 1. SESSION_HANDOFF.json`
-sections). If either tail is newer than the recorded checkpoint, read the new
-entries before proceeding — never rely on SESSION_HANDOFF's narrative fields
-(`.session`, `.phase`, `.current_task`) alone; they describe intent, not the
-vault's actual tail. Run `bash .agents/skills/handoff/sync.sh` (or `/handoff`)
-at the end of any session that adds `memory.md`/`inbox.md` entries, to refresh
-the checkpoint for the next session.
+**Staleness Check:** If you suspect drift, read `.latest_memory_entry` in
+`SESSION_HANDOFF.json` and compare it against the tail of `memory.md` directly
+— NOT via `search_graph`, which cannot see this content. If out of sync, run
+`/handoff` via the mechanical sync skill.
 
-**Auto-capture rule:** After every Jed confirmation, correction, or preference,
-append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`.
-See `instructions.md` for the full protocol. Do not let facts slip through.
-
-> Deprecated boots: do NOT read HCL.md, HCL_DASHBOARD.html, STATE.md, or
-> BRAND_GENESIS_PLAN.md (archived in Vault `_deprecated_pre_HAM/`).
+**Auto-capture rule:** After every Jed confirmation, correction, or preference, append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`. Use the `write_file` tool to append. Do not let facts slip through.
 
 ---
 
@@ -81,31 +76,65 @@ Iron Bark `#241E1A` (frame/text-on-light, **not** the wordmark), Hammered Sequin
 Abel Slate `#5A5D5A`, Capiz Sage `#B5B8A3`. Ecru-safe text: `#5A564E`, `#6E6A62`.
 **Forbidden hex:** pure `#000`/`#fff`, `#F9F6F0`, legacy OAX `#0a0806`/`#bf9d2c`/`#c4c1b8`.
 
-**Type:** Fraunces (display, SOFT 100 WONK 1, never 700) · EB Garamond (body) ·
-Inter (UI) · JetBrains Mono (meta). Forbidden: Cormorant, Italiana on Signature.
+**Type (Vince-Alignment 2.1, 2026-06-18 — full portal bend):**
+- **Both surfaces lead pair:** **IvyMode (display) + Proxima Nova (body @ 15px)** —
+  the portal (`book.kathabooth.com`) now BENDS FULLY toward Vince's stack so the
+  funnel handoff feels like one brand. **Free near-match used NOW** until license
+  procurement: **Playfair Display (display) + Hanken Grotesk (body)** — hot-swap to
+  licensed IvyMode/Proxima Nova when the Adobe Fonts kit lands (Jed action).
+- **Fraunces + EB Garamond are FULLY RETIRED** (Vince-Alignment 2.2). Playfair Display and Hanken Grotesk lead the portal chrome, templates, and emails. Fraunces and EB Garamond have been completely purged from the repository.
+- **UI + meta everywhere:** Inter (UI) · JetBrains Mono (meta) — unchanged.
+- **Forbidden:** Cormorant, Italiana on Signature.
 
-**Voice:** peer-executive, no sentimentality. Forbidden words: keepsake, luxury/
-premium (≤1/page, specs only), stunning, amazing, unforgettable, magic(al),
-journey, vibe, experience, curated, authentic + agentic/SDK/MCP vocab in client
-copy. Describe craft, not luxury. Master CTA: **"Commission"** (no "KTHA" suffix).
+**Voice (Vince-Alignment 2.0, updated 2026-06-18 — re-narrowed):**
+- **Permitted on BOTH surfaces — ≤3 uses MAX per page each:** `Curated`,
+  `Handcrafted`. (Vince granted Jed permission to refine; we narrowed the
+  previously-broader Squarespace carve-out to just these two terms with the
+  cap.) The brand-guard counts occurrences and logs a `console.warn` when
+  threshold exceeded — does NOT auto-rewrite excess; editorial discipline.
+- **Forbidden EVERYWHERE (both surfaces):** keepsake, luxury/premium (≤1/page
+  specs-only carve-out), stunning, amazing, unforgettable, magic(al), journey,
+  vibe, authentic, Instagrammable, **timeless, experience, experiences,
+  curating, curation, elevate, elevating** + agentic/SDK/MCP vocab in client
+  copy. (The 2026-06-17 Squarespace-side permission for timeless/experience/
+  curating/curation is RESCINDED; only Curated + Handcrafted remain permitted.)
+- **Redundancy (2026-06-18 Jed):** reduce the "architecture/-al/-es" saturation in
+  Vince's copy (nav, hero, every tier, the "Secure An Architecture" CTA, body) and
+  de-duplicate repeated tier boilerplate. Vary with installation, booth, build,
+  frame, form, shell, setup.
+- **Unified CTA system (2026-06-18 Jed — SUPERSEDES preserve-verbatim + Commission-master):**
+  ONE refined CTA set across BOTH surfaces. **"Commission" is RETIRED** as the master
+  verb. Refined-keep-intent labels: **"Request a Proposal"** (was "Request Bespoke
+  Proposal"), **"Reserve Your Date"** (was "Secure An Architecture"), **"Begin Your
+  Inquiry"** (was "Inquire Now"), **"Send Inquiry"** (was "Submit"), keep "Sign Me Up".
+  The portal adopts these same labels — it bends toward Vince's surface. Tone stays
+  peer-executive. (Flag for Jed: confirm Commission fully retired vs kept as one option.)
+- **Filipino heritage register (both surfaces, 2026-06-18 Jed lock):** STAYS
+  VERY QUIET. Heritage vocabulary (Barong piña, calado, T'nalak, Inabel,
+  Taheng Grepo, Tagalog word-origin) does NOT lead surface-facing copy. It
+  lives as deep background in design-system docs and materials but never as
+  primary register on hero/philosophy/tier/CTA copy.
 
-**Marks (LOCKED 2026-06-13 by Jed):** exactly TWO — **word mark** (`katha` Fraunces-flow,
-swash off the k) and **logo mark** (leaf/feather "K"). There is **NO maker's mark / brass
-ring.** Files: `wordmark-{obsidian,ecru}.png`, `logo-{obsidian,ecru}.png`. (The
-`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust/`rounded-` source guard — **keep it**;
+**Marks (LOCKED 2026-06-13 by Jed; scope 2026-06-18):** exactly TWO — **word mark**
+(`katha` Playfair-flow, swash off the k) and **logo mark** (leaf/feather "K"). There is
+**NO maker's mark / brass ring.** Files: `wordmark-{obsidian,ecru}.png`,
+`logo-{obsidian,ecru}.png`. **Marks are used ONLY in the Next.js portal
+(`book.kathabooth.com`)** — they are NOT placed on Vince's Squarespace storefront or the
+proposal clone, which use his text "KATHA BOOTH" header (Jed 2026-06-18). (The
+`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust source guard — **keep it**;
 it does NOT enforce any maker's mark. Ignore any stale skill blurb claiming a "KTHA closing stroke.")
 
-**Layout:** Fukinsei = brand chrome only (client templates stay symmetric); Ma
-negative space; deckled edges, no `border-radius`; no 6/6 grids; no drop-shadows
-on light; `pointer-events-none` on z≥10 overlays. Guard: `npm run guard`.
+**Layout:** Ma negative space preferred; deckled edges and calado dividers preferred.
+No layout restrictions enforced — the Squarespace storefront is the reference aesthetic.
+Guard: `npm run guard`.
 
-**Wabi-Sabi Shield:** No gradients, no glassmorphism, no gloss/glow effects, and
-no neon/OLED pure-black grounds — that's generic Awwwards-luxury, not Katha.
-Materiality over polish: paper-weight texture, grain, and deckled/calado edges
-read as intentional imperfection, not bugs. If a component leans on frosted
-glass, radial mesh, or drop-shadow stacks, strip it back to flat tonal fields +
-the Loom Silence elevation already codified in `DESIGN.md` ("Elevation":
-deckled edges, sombrado, calado divider, no drop-shadows on light).
+**Wabi-Sabi Shield (UPDATED 2026-06-17 — Jed override: full lift):** All Wabi-Sabi
+visual restrictions are **LIFTED**. Gradients, gloss, metallic, glassmorphism, frosted
+glass, drop-shadows, border-radius, neon/OLED grounds — all **PERMITTED**. The
+Squarespace storefront Vince builds is the reference aesthetic; his design decisions are
+authoritative. Deckled edges, calado dividers, and paper-weight texture remain *preferred*
+Katha hallmarks — not enforced. Core brand law (palette/type/marks/voice/CTA) is unchanged.
+Palette forbidden-hex rule still governs (no pure `#000`/`#fff`, no legacy OAX hex).
 
 ---
 
@@ -146,11 +175,16 @@ deckled edges, sombrado, calado divider, no drop-shadows on light).
 - **`/verify`** → built-in `superpowers:verification-before-completion`
   (chrome-devtools-mcp for visual proof), scored against `DESIGN.md` + vault
   `patterns.md`.
-- **`/antigravity`** → Delegation: pre-inject this file's ALWAYS-ON CANON
-  (palette/type/voice/layout) + vault `patterns.md` into AG's instructions. AG
-  writes to vault `.memory/handoff/<date>_<slug>_<type>.md` and appends a line
-  to `inbox.md`; CC reads at boot (mechanically checked via the staleness check
-  above) — the convention AG's own handoffs already use.
+- **`/antigravity`** → **executable skill** `.agents/skills/antigravity/SKILL.md`
+  (no longer prose). Leak-proof delegation to `agy`: `checkpoint.sh` snapshots
+  repo+vault → `delegate_agy.sh` runs agy **sandboxed** with a completion sentinel
+  → `verdict.sh` decides PASS/FAIL from **git reality, never agy's self-report**
+  (unclaimed change or declared `external_effects[]` ⇒ leak) → `authority-guard.sh`
+  blocks agy-authored human-authority claims → PASS promotes to HAM + `sync.sh`,
+  FAIL rolls back transactionally. agy still writes ONLY `inbox.md`+`handoff/`;
+  canon needs a `PROPOSAL:` + Jed/CC approval. Multi-model *opinion* (distinct from
+  agentic delegation) = the `gemini`+OSS-`qwen` council, CC chairman; `agy` is never
+  a council voice on its own work. Tests: `bash .agents/skills/antigravity/tests/run.sh`.
 - **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
 - **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
 
@@ -172,9 +206,11 @@ deckled edges, sombrado, calado divider, no drop-shadows on light).
 ---
 
 ## STARTUP COMMAND
-Announce your presence, acknowledge the team, confirm you read the 4 vault HAM
-nodes + any unread `.memory/handoff/` artifacts, and state the current Phase
-position before asking Jed to authorize the next step.
+Announce your presence, acknowledge the team, confirm you read
+`SESSION_HANDOFF.json` + the tail of `inbox.md` directly (NOT the full 7-node
+push — that pattern is retired, see CONTEXT RETRIEVAL) + any unread
+`.memory/handoff/` artifacts, and state the current Phase position before
+asking Jed to authorize the next step.
 
 ---
 

@@ -15,3 +15,11 @@ tsconfig.tsbuildinfo
 # Generated State Map dashboard (regenerate from .memory/)
 KATHA_STATE.html
 __pycache__/
+
+# Vendored/cloned third-party skill repos — never tracked, never indexed
+scratch/
+
+# Separate git repo (own remote: kathaphoto-booth/template-studio), not a
+# submodule of this one — never tracked here, ignored to stop the confusing
+# "modified: photobooth-template-studio (untracked content)" git-status noise
+photobooth-template-studio/

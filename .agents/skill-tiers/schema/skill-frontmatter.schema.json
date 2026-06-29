@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Skill SKILL.md frontmatter tier block",
+  "description": "Validates the tier governance fields added to any skill's YAML frontmatter. All fields are optional for tier-0 (manual-only) skills; required for tier >= 1.",
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "tier": {
+      "type": "object",
+      "required": ["current", "target"],
+      "properties": {
+        "current": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4,
+          "description": "Current promotion tier. 0 = manual/supervised only. ONLY a human (Jed) may edit this field — tier_gate.sh recommends but never self-promotes."
+        },
+        "target": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4,
+          "description": "The tier this skill is currently accumulating evidence toward."
+        }
+      },
+      "additionalProperties": false
+    },
+    "allowed_executors": {
+      "type": "array",
+      "items": { "enum": ["claude-code", "agy", "copilot"] },
+      "description": "Executors permitted to run this skill. tier >= 1 adds copilot; tier >= 2 adds agy with write surface."
+    },
+    "allowed_phases": {
+      "type": "array",
+      "items": {
+        "enum": ["init","shape","craft","typeset","layout","colorize","animate","critique","audit","clarify","harden","extract","document"]
+      },
+      "description": "Explicit phase allowlist — never a wildcard. Only phases listed here may be invoked in unattended execution."
+    },
+    "max_iterations_per_phase": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Hard cap on loop iterations per phase. Raised only by explicit promotion. Never 'unlimited'."
+    },
+    "stop_condition": {
+      "enum": ["diff_produced", "tests_pass", "gate_pass", "human_ack"],
+      "description": "Objective, observable stop condition for unattended runs. Never 'when_satisfied' or open-ended prose."
+    },
+    "output_format": {
+      "enum": ["git_diff_only", "result_md_only", "result_md_and_diff"],
+      "description": "What the run surfaces to the human. git_diff_only is required below tier 3 — Jed should never be assembling phase outputs manually."
+    },
+    "requires_digest": {
+      "type": "boolean",
+      "description": "When true, the executor must emit digest.json with files_touched[] + external_effects[] on every run."
+    },
+    "requires_sentinel": {
+      "type": "boolean",
+      "description": "When true, the executor's result.md must end with the exact literal 'STATUS: COMPLETE' as its final line."
+    }
+  },
+  "required": ["name", "description"]
+}

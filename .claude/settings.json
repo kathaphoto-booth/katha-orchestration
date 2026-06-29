@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash .agents/skills/antigravity/tests/run.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/verdict.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/checkpoint.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/delegate_agy.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/authority-guard.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/council.sh*)",
+      "Bash(bash .agents/skills/antigravity/scripts/self_eval.sh*)",
+      "Bash(bash scripts/agy-tier-run.sh*)",
+      "Bash(bash bin/compile-ham.sh*)",
+      "mcp__ccd_session__mark_chapter"
+    ]
+  }
+}

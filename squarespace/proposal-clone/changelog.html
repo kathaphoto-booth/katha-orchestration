@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog — Katha Booth</title>
+  <meta name="description" content="Internal change record for the Katha Booth proposal clone — voice and vocabulary substitutions, unified CTA labels, OAX legacy cleanup, redundancy reduction, plus recommendations for the live site.">
+  <link rel="stylesheet" href="clone.css">
+  <style>
+    .changelog-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+      font-family: var(--body);
+    }
+    .changelog-table th, .changelog-table td {
+      border: 1px solid var(--taupe);
+      padding: 12px;
+      text-align: left;
+    }
+    .changelog-table th {
+      background-color: var(--beige);
+      font-weight: bold;
+    }
+    .changelog-list {
+      padding-left: 20px;
+      margin-top: 16px;
+      font-family: var(--body);
+      line-height: 1.6;
+    }
+    .changelog-list li {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <div class="nav__links" id="nav-links">
+        <a href="installations.html">Installations</a>
+        <a href="founders.html">Founders</a>
+        <a href="/book">Contact</a>
+      </div>
+      <a class="nav__brand" href="index.html">KATHA BOOTH</a>
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-links">Menu</button>
+    </nav>
+  </header>
+
+  <section class="section">
+    <div class="wrap">
+      <h1 class="center">Proposal Clone Changelog</h1>
+
+      <div class="section" style="padding-top: 48px;">
+        <h2>1. What we changed — within Vince's permission</h2>
+        <p style="margin-top: 16px;">Summarizing voice subs, CTA refinements, OAX cleanup, and redundancy reduction across all pages.</p>
+        <table class="changelog-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Changes Made</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Voice & Vocabulary</td>
+              <td>Removed forbidden vocabulary such as 'timeless', 'experience', 'curating', 'elevate', 'keepsake', 'journey', 'aesthetic'. Limited 'Curated' and 'Handcrafted' to 3 uses max per page.</td>
+            </tr>
+            <tr>
+              <td>Redundancy</td>
+              <td>Reduced the saturation of 'architecture'/'architectures' across all copy. De-duplicated tier boilerplate copy so each tier reads distinctly.</td>
+            </tr>
+            <tr>
+              <td>Unified CTAs</td>
+              <td>Refined the CTA system to use a consistent set of labels: 'Request a Proposal', 'Reserve Your Date', 'Begin Your Inquiry', 'Send Inquiry', and 'Sign Me Up'.</td>
+            </tr>
+            <tr>
+              <td>Legacy Cleanup</td>
+              <td>Removed references to 'OAX Photo Booth' and updated contact emails.</td>
+            </tr>
+            <tr>
+              <td>Visual Identity</td>
+              <td>Removed legacy Katha logos/marks on this surface to ensure focus remains squarely on the content, leaving the plain text header "KATHA BOOTH" as the primary anchor. Limited the 'Sacred CTA' (Loko Rust color) to exactly one per page.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" style="padding-top: 48px;">
+        <h2>2. Recommendations for your live site — your call</h2>
+        <ul class="changelog-list">
+          <li><strong>SEO/AIO:</strong> The live site is currently private (nothing is indexable). When ready, publish and allow indexing. Fix the H1 typo `ARCHTECURE` to `ARCHITECTURE` on the Home page. Add meta descriptions and OpenGraph data. Add LocalBusiness and Service structured data (including the 4 tiers with pricing) for local and AI search. Add image alt text.</li>
+          <li><strong>Accessibility:</strong> Raise contrast on the Philosophy text-over-texture. The footer logo image is broken (missing asset). Confirm form focus states are clearly visible.</li>
+          <li><strong>Site bugs:</strong> The Architectures CTA to `/about` is a 404 dead link. The Process "04. DELIVERY" step is duplicated on the live site. The tier dropdown options in the contact form do not match the offerings (fixed in this clone).</li>
+          <li><strong>Testimonials:</strong> Lightly softened in this mock to drop forbidden vocabulary. Confirm any wording changes with the client, or revert to verbatim if preferred.</li>
+        </ul>
+      </div>
+
+      <div class="section" style="padding-top: 48px;">
+        <h2>3. Open proposals</h2>
+        <ul class="changelog-list">
+          <li><strong>Tier naming:</strong> Open to renaming the four tier categories (currently Signature // Oak, Editorial // Oak, Modernist // White, Monochrome // White). Pricing and structure are unchanged — only the labels are up for discussion.</li>
+          <li><strong>Section renaming:</strong> The "Architectures" section was renamed to "Installations" to improve clarity and reduce term saturation. Happy to revert if you prefer the original name.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-explore">
+        <h4>Explore</h4>
+        <a href="founders.html">About</a>
+        <a href="installations.html">Installations</a>
+        <a href="terms.html">T&amp;C</a>
+        <a href="/book">Contact</a>
+      </div>
+      <div>
+        <h4>Exclusive offers straight to your inbox</h4>
+        <form class="newsletter" onsubmit="return false">
+          <input type="email" placeholder="Email Address" aria-label="Email Address">
+          <button class="cta" type="submit">Sign Me Up</button>
+        </form>
+      </div>
+      <div>
+        <h4>Katha Booth</h4>
+        <p class="footer-tag">
+          High-end photo installations for Southern California's most intentional
+          hosts. Custom builds. Studio-grade prints.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/clone.js"></script>
+</body>
+</html>

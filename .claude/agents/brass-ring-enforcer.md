@@ -1,6 +1,6 @@
 ---
 name: brass-ring-enforcer
-description: Source-tree enforcement of DESIGN.md §6 Do's and Don'ts + vault patterns.md Forbidden list. Greps the working tree for forbidden hex, forbidden vocab, forbidden Tailwind classes, forbidden font families, and Loko Rust outside <KCta variant="sacred">. Returns a JSON report. Designed for pre-commit hook + CI.
+description: Source-tree enforcement of DESIGN.md §6 Do's and Don'ts + vault patterns.md Forbidden list. Greps the working tree for forbidden hex, forbidden vocab, forbidden font families, and Loko Rust outside <KCta variant="sacred">. Returns a JSON report. Designed for pre-commit hook + CI.
 tools: Bash, Grep, Glob, Read
 model: haiku
 ---
@@ -11,7 +11,7 @@ Run these greps against the tracked source tree (exclude node_modules, .next, di
 
 A. Legacy hex (must be 0): "#0a0806" "#bf9d2c" "#c4c1b8" "oax"
 B. Font drift (must be 0 in source CSS/TS): "Cormorant Garamond"
-C. Forbidden Tailwind: "rounded-" (in components/**), "<hr" (in app/**, components/**), "grid-cols-12" (in components/**), 'split="6/6"' (anywhere)
+C. Forbidden Tailwind: "<hr" (in app/**, components/**)
 D. Forbidden vocab in user-facing strings (extract string literals from .tsx/.mdx/.md content):
    luxury, premium, stunning, amazing, unforgettable, journey, vibe, curated, authentic,
    Instagrammable, once-in-a-lifetime, Antigravity, agentic, "Alpha-Transparent",

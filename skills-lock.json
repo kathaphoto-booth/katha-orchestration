@@ -25,12 +25,6 @@
       "skillPath": "skills/frontend-mobile-development-component-scaffold/SKILL.md",
       "computedHash": "36423b38da93d75f7d3138e38a4930a6d1e784e53e1de14922188902ead057b7"
     },
-    "hierarchical-agent-memory": {
-      "source": "sickn33/antigravity-awesome-skills",
-      "sourceType": "github",
-      "skillPath": "skills/hierarchical-agent-memory/SKILL.md",
-      "computedHash": "e4d476398cefe37d0182ec9b0e4701d6437e065c7b0b835e7764949e8f2ab02d"
-    },
     "high-end-visual-design": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",

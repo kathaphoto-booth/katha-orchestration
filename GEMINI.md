@@ -3,17 +3,17 @@ type: "constitution"
 node_id: "GEMINI.md"
 owner: "AG"
 status: "active"
-last_updated: "2026-06-14"
-description: "Antigravity Execution Engine Charter"
+last_updated: "2026-06-25"
+description: "Antigravity Execution Engine Charter (slimmed 2026-06-25 — duplicated brand law and stale sections cut to pointers; Workflow Gates added)"
 tags:
   - katha-booth
   - core-memory
   - execution-layer
 ---
 # Antigravity (AG) Project Charter
-# Last updated: 2026-06-14 (CC, HAM-hardening sync — boot staleness check, /handoff
-# mechanical skill, two-marks lock, impeccable-looped-kit routing, 4 service tiers,
-# catalog count. Prior full rewrite: 2026-06-06.)
+# Last updated: 2026-06-25 (CC — slim pass per docs/superpowers/specs/2026-06-25-gemini-copilot.md:
+# cut duplicated/stale §3,§5,§6-trivia,§7,§11,§12; added §11 Workflow Gates. Prior: 2026-06-23 HAM
+# retirement, 2026-06-14 hardening sync, 2026-06-06 full rewrite.)
 
 ---
 
@@ -30,38 +30,17 @@ AG reads and writes to the **HAM vault** at:
 `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
 
 No scattered local knowledge. No private `~/.gemini/antigravity/brain/` memory
-of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
+of record. All findings → vault.
 
 ---
 
-## §3. Katha Laws ($10K Brief)
+## §3. Katha Laws (pointer)
 
-- **Living law**: root `DESIGN.md` + vault `patterns.md` — `patterns.md` wins any
-  conflict (per `PRODUCT.md`). `DESIGN.md` is currently HELD with known marks-canon
-  drift (`SESSION_HANDOFF.json flags_for_jed`); when docs disagree on marks,
-  `patterns.md` / `memory.md` are authoritative.
-- **Marks (LOCKED 2026-06-13)**: exactly TWO — word mark (`katha` Fraunces-flow,
-  swash off the k) + logo mark (leaf/feather "K"). There is **NO maker's mark and
-  NO brass ring**. Master CTA = **"Commission"** — never "Commission KTHA", no
-  "KTHA" suffix. Do not reintroduce a maker's mark / KTHA closing stroke.
-- **Palette**: 10 brand tokens + 2 ecru-safe text tokens (see `patterns.md §1`).
-  Canonical phrasing: "10 brand tokens + 2 ecru-safe". NOT "11-token".
-- **Two-Tier Rule** (design tiers): Katha Signature presets (id `^katha-`) held to
-  palette + Fraunces. Classic wedding presets exempt.
-- **Catalog count**: 82 committed presets (33 Signature + 49 Classic) in
-  `lib/templates.ts` since slot-law enforcement (2026-06-12); slot-count law
-  (2/3/4 only) + symmetry enforced by `npm run guard`. (The old "62 presets" /
-  "81 id fields" phrasings are stale.)
-- **Service Installation Tiers** (4 — a DISTINCT axis from the design tiers above):
-  Signature Installation/Oak $949 · Editorial Installation/Oak $1,149 · Modernist
-  Installation/White $749 · Monochrome Installation/White $949. Old tiers (Glam
-  Editorial / Architectural / Katha Booth) are SUPERSEDED. Tier copy needs a voice
-  scrub before any UI (`handoff/2026-06-13_service-tiers-update_spec.md`).
-- **Forbidden**: OAX tokens, pure `#000`/`#fff`, "keepsake", technical/agentic
-  vocab client-facing, `oax-impeccable-bridge` skill, `oax-audit-monster` MCP.
-- **Output Validation**: Must pass `npm run guard` (P0:0 P1:0).
-- **Typography** (ratified 2026-06-04, Jed): Fraunces (display) · EB Garamond
-  (body) · Inter (UI) · JetBrains Mono (meta). "Outfit" is RETIRED.
+Brand law lives in `CLAUDE.md` + vault `patterns.md` (`patterns.md` wins any
+conflict). Do not restate brand facts here — maintain this as a pointer only,
+never as restatement of palette, typography, marks, or voice rules. Query
+`patterns.md` directly for palette, type, voice/tone, CTA labels, and service
+tiers.
 
 ---
 
@@ -73,9 +52,7 @@ of record. All findings → vault. Migrated 2026-06-04 from old 9-file protocol.
   Config: `~/.gemini/antigravity-cli/`. PATH has 3 entries (local, vault, IDE bin).
 - Linting: `npm run guard` in `photobooth-template-studio/`.
 - Standing subagents: `loom-auditor` (live render) + `brass-ring-enforcer`
-  (source-tree drift). Both at `.claude/agents/`. NB: `brass-ring-enforcer` is a
-  forbidden-hex/vocab/rust/`rounded-` source guard — it does **not** enforce any
-  maker's mark (ignore any stale skill blurb claiming a "KTHA closing stroke").
+  (source-tree drift). Both at `.claude/agents/`.
 - **Brand governance / generation**: `impeccable-looped-kit` (master 4-phase
   Start/Iterate/Polish/Maintain) is the brand-governance workflow; `/impeccable`
   = its Polish phase. Generation engine = `nano-banana` (Stitch MCP + GenKit) —
@@ -115,59 +92,44 @@ Use for: status checks, vault queries, AND infrastructure execution tasks.
 - Quick queries + template work: `--model "Gemini 3.5 Flash (Medium)"` (default)
 - Brand-critical review (palette audit, copy check): `--model "Claude Sonnet 4.6 (Thinking)"`
 
-**Available models (8 total):**
-Gemini 3.1 Pro (Low/High) · Gemini 3.5 Flash (Low/Medium/High) ·
-Claude Sonnet 4.6 (Thinking) · Claude Opus 4.6 (Thinking) · GPT-OSS 120B (Medium)
-
-**AG MCP servers (12 installed at `~/.gemini/antigravity-cli/mcp/`):**
+**AG MCP servers (12 installed; operational subset for Katha work — full list via `agy`):**
 | Server | Use |
 |--------|-----|
 | `chrome-devtools-mcp` | Browser automation (ONLY browser MCP allowed for Katha work) |
 | `filesystem` | File read/write operations |
 | `firecrawl` | Web scraping + crawling |
-| `context7` | Library documentation queries |
-| `genkit-mcp-server` | Google Genkit integration |
-| `gsap` | Animation library reference |
-| `magic-21st` | Component generation |
-| `StitchMCP` | Design/component system |
-| `sequential-thinking` | Structured reasoning |
+| `StitchMCP` | Design/component system (generation engine — not source of truth) |
 | `oax-audit-monster` | ⛔ BANNED for all Katha work — never invoke on kat_ha_pb |
 
 **Projects tracked (auto-registered):**
 - `/Users/jedg./Desktop/kat_ha_pb` → ID `984a8a3a-...`
 - `/Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio` → ID `d86f27a9-...`
 
-**Keybindings:** `~/.gemini/antigravity-cli/keybindings.json` (customizable)
-**Recent conversations:** `~/.gemini/antigravity-cli/cache/last_conversations.json`
-
 ---
 
-## §5. Voice
+## §6. Context Retrieval (MCP Pull)
 
-Peer executive. No "extraordinary," "you are absolutely right," "audacity of
-austerity," or reflected-praise. Deliver output directly and confidently.
+The legacy 7-node manual boot sequence is RETIRED to eliminate token bloat. Do not attempt to read the entire vault at startup.
+AG is now connected to `codebase-memory-mcp`. You must query the vault dynamically.
 
----
+**Canonical vault path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
 
-## §6. AG Boot Sequence (HAM 7-Node, updated 2026-06-06)
+**`codebase-memory-mcp` indexes headers/code symbols only — never markdown body
+content (verified 2026-06-25, both BM25 and semantic_query modes). Never query
+it for vault decisions, brand law, or session state. Use the plain vault files
+below instead.**
 
-On every new session, read ALL 7 nodes IN ORDER before anything else:
+When beginning a task, use the vault's plain files directly:
+- To understand current state: read `SESSION_HANDOFF.json` and `handoff/gemini_consolidated_session.md`.
+- To verify rules: read `patterns.md` and `instructions.md`.
+- To record actions: append to `inbox.md` or `memory.md` via `write_file`.
 
-1. `.memory/SESSION_HANDOFF.json` — locked state, roadmap, resume instruction
-2. `.memory/decisions.md` — architecture, team, roadmap, infra, locked calls
-3. `.memory/patterns.md` — brand law (palette, type, voice, layout)
-4. `.memory/inbox.md` — open work (append proposals; CC approves)
-5. `.memory/memory.md` — Jed-confirmed facts (append-only log, auto-capture)
-6. `.memory/instructions.md` — agent boundaries, auto-capture protocol
-7. `.memory/handoff/*.md` — unread AG artifacts (skip `_` prefix files)
+**Auto-Context Consolidation:** If the session context becomes too long or momentum is degrading, run the `gemini-session-ingest` tool to compress the active architectural state into `.memory/handoff/gemini_consolidated_session.md` (see `instructions.md` Boot Order for the full procedure). Treat that file as the authoritative compressed memory state.
 
-**Canonical path:** `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`
+> If Samsung 970 is unmounted, do NOT proceed — report the drive is
+> unavailable and wait for Jed.
 
-> `scripts/memory_boot_check.sh` is DELETED (2026-06-04). No symlink. No mirror.
-> Read the vault directly. If Samsung 970 is unmounted, do NOT proceed — report
-> the drive is unavailable and wait for Jed.
-
-**Staleness check (mandatory — added 2026-06-14):** After reading nodes 1, 4, 5,
+**Staleness check (mandatory):** After reading nodes 1, 4, 5,
 compare `memory.md`'s newest dated entry and `inbox.md`'s last "Pending
 (AG-proposed)" line against `SESSION_HANDOFF.json`'s `.latest_memory_entry` /
 `.latest_inbox_entry_date`. If either is newer than the recorded checkpoint, read
@@ -190,19 +152,11 @@ not write canon — see §8; surface any drift in your handoff output for CC.)
 
 ---
 
-## §7. Auto-Capture Rule (NEW — 2026-06-06)
+## §7. Auto-Capture Rule (pointer)
 
-Whenever Jed confirms, corrects, or states a preference during a session,
-append to `.memory/memory.md` immediately:
-
-```
-[YYYY-MM-DD] category - entry text
-```
-
-Categories: `instruction` | `preference` | `correction` | `identity` | `project-fact`
-
-Do not wait. Do not batch. Do not skip "minor" items.
-See `.memory/instructions.md` for the full protocol.
+Whenever Jed confirms, corrects, or states a preference: append to
+`.memory/memory.md` immediately. Do not wait, batch, or skip "minor" items.
+Full protocol (format, categories, trigger words): `.memory/instructions.md`.
 
 ---
 
@@ -258,34 +212,16 @@ read and follow `.memory/handoff/_ag-recovery-prompt.md`
 
 ---
 
-## §11. Current Phase + Open Tasks
+## §11. Workflow Gates (always enforced)
 
-Phase, current task, and open blockers are **volatile** — do NOT hardcode them
-here (that duplication is exactly the drift the §6 staleness check exists to
-prevent). Read them live at boot from `SESSION_HANDOFF.json` (`.phase`,
-`.current_task`, `.next_build`, `.pending_blockers`, `.flags_for_jed`) plus the
-`memory.md` / `inbox.md` tails.
+AG does not initiate feature work, design changes, or refactors without a
+Decision Record. Before touching code or design on any new feature, spec, or
+refactor task: run `.agents/skills/grill-me/SKILL.md` (the same 11-question
+gate CC runs) and produce its 5-bullet Decision Record BEFORE writing a
+handoff artifact or touching the working tree. Paste the Decision Record at
+the top of the `.memory/handoff/<date>_<slug>_plan.md` you write under §10.
 
-As of the 2026-06-14 sync: **Phase 4 — HoneyBook Native Ecosystem**; next build =
-Unified Next.js Intake Funnel (V1 manual handoff), **BUILD HELD by Jed** at the
-execution gate. Verify against `SESSION_HANDOFF.json` before acting — this line
-is a convenience pointer, not the source of truth.
-
----
-
-## §12. Deprecated (do not reference)
-
-- `scripts/memory_boot_check.sh` — DELETED 2026-06-04
-- `.memory.mirror/` — REMOVED 2026-06-04
-- `.memory` symlink — REMOVED 2026-06-04
-- `HCL.md`, `HCL_DASHBOARD.html`, `STATE.md` — archived in `_deprecated_pre_HAM/`
-- `katha_design_agent.py` — PENDING DELETION (Phase 0 of execution plan)
-- `@google/genai` npm package — PENDING REMOVAL (Phase 0)
-- `GEMINI_API_KEY` — NOT required. AI feature removed.
-- "11-token palette" phrasing — WRONG. Use "10 brand tokens + 2 ecru-safe".
-- "81 presets (31 Sig / 50 Classic)", "62 template presets", "62 presets", "81 id fields" — ALL stale. Catalog = 82 committed presets (33 Signature + 49 Classic).
-- "git submodule" for photobooth-template-studio — WRONG. Standalone nested repo.
-- `katha-protocol` skill — PURGED 2026-06-13. Brand governance → `impeccable-looped-kit` / `/impeccable`.
-- `DESIGN_SYSTEM.v2.md` / `BRAND_GENESIS_PLAN.md` — SUPERSEDED. Living law = root `DESIGN.md` + vault `patterns.md`.
-- Old service tiers "Glam Editorial / Architectural / Katha Booth" — SUPERSEDED by the 4 Installation tiers (§3).
-- Maker's mark / brass ring / "Commission KTHA" — PURGED 2026-06-13. Two marks only; CTA = "Commission".
+If the task is execution-only against an already-approved Decision Record
+(e.g., a CC-issued `--print` task with explicit success criteria per §4a),
+skip grill-me — it is not a re-approval gate, it is a no-Decision-Record-yet
+gate.

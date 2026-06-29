@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 # backup-vault.sh — Automated backup and git commit for Katha memory vault
 #
-# ⚠️ SOFT SAFETY ONLY — NOT a durable/offsite backup:
-#   • the vault git repo lives ON the Samsung 970 (same fault domain as the data
-#     it tracks — a drive failure loses both the data AND its git history);
-#   • the rsync target (~/.katha-vault-backups) is on the same MacBook;
-#   • there is no remote origin, so nothing leaves this machine.
-#   This protects against accidental edits/rm, NOT against drive loss or theft.
-#   TODO (durability): add a remote git origin (private GitHub) and push here,
-#   and/or an offsite copy (iCloud/Time Machine). Until then, treat the vault as
-#   single-copy-at-risk.
+# DURABILITY:
+#   • Offsite git push is wired but INERT until KATHA_VAULT_REMOTE is set (Jed
+#     creates a PRIVATE GitHub repo + provides the URL). Once set, every run
+#     pushes the committed vault (incl. the now-versioned COMPILED_HAM.md) offsite.
+#   • Until then this is SOFT SAFETY ONLY: the vault git repo lives ON the Samsung
+#     970 (same fault domain) and the rsync target (~/.katha-vault-backups) is on
+#     the same MacBook — protects against accidental edits/rm, NOT drive loss/theft.
+#   • Run with the remote:  KATHA_VAULT_REMOTE="git@github.com:<user>/katha-vault.git" bash scripts/backup-vault.sh
 set -euo pipefail
 
 VAULT="/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory"
@@ -29,7 +28,6 @@ if [[ ! -d .git ]]; then
   git init
   cat > .gitignore <<EOF
 .sync.lock
-COMPILED_HAM.md
 EOF
   git add .
   git commit -m "Initial commit of memory vault"
@@ -43,10 +41,25 @@ else
   fi
 fi
 
+# 1b. Push to a private remote for offsite durability (survives drive loss).
+# INERT until KATHA_VAULT_REMOTE is set — Jed creates the private repo and
+# provides the SSH/HTTPS URL; CC never publishes to an external service before
+# that repo exists. With it unset, the vault is committed locally only.
+VAULT_REMOTE="${KATHA_VAULT_REMOTE:-}"
+if [[ -n "$VAULT_REMOTE" ]]; then
+  if ! git remote | grep -qx origin; then
+    git remote add origin "$VAULT_REMOTE"
+  fi
+  git push -u origin HEAD 2>&1 || echo "WARN: vault push failed (offline?); local commit retained."
+else
+  echo "WARN: KATHA_VAULT_REMOTE unset — vault committed locally only, no offsite copy."
+fi
+
 # 2. Synchronize vault files to local home directory backup
 echo "=== Synchronizing Vault to local backup directory ==="
 mkdir -p "$BACKUP_DIR"
-# Copy files, excluding git dir, COMPILED_HAM.md and lock
-rsync -av --exclude='.git' --exclude='.sync.lock' --exclude='COMPILED_HAM.md' "$VAULT/" "$BACKUP_DIR/"
+# Copy files, excluding only the git dir and the lock (COMPILED_HAM.md is now
+# versioned + mirrored so the boot artifact is diffable and offsite-recoverable)
+rsync -av --exclude='.git' --exclude='.sync.lock' "$VAULT/" "$BACKUP_DIR/"
 
 echo "Backup complete. Files synced to $BACKUP_DIR"

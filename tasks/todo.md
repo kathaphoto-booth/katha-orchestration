@@ -1,49 +1,80 @@
-# TODO — Template Gallery → HoneyBook → Launch
+# TODO — Katha Genesis Operating Workflow
 
-Status: ☐ todo · ◐ in progress · ☑ done. See `tasks/plan.md` for full detail, acceptance criteria, and dependency graph.
+Status: ☐ todo · ◐ in progress · ☑ done. See `tasks/plan.md` for full detail, acceptance criteria,
+dependency graph. Genesis revision 2026-06-13: picks up from uncompleted checkpoints + drift since
+the 2026-05-30 plan (whose Phases A–D + the broader HoneyBook pipeline are ☑ in code).
 
-## ✅ Already done (2026-05-30)
-- ☑ Extract shared catalog → `lib/templates.ts` (single source of truth)
-- ☑ Unify render paths (preview == export)
-- ☑ 6 Katha Signature templates (all 3 formats)
-- ☑ Client gallery `/gallery` (text-free, tier filter, personalize modal)
-- ☑ Fix AI routes (valid model + brand-safe prompts)
+## ✅ Already shipped (carried forward, verified)
+- ☑ Single catalog `lib/templates.ts` (82 presets); preview==export render unification.
+- ☑ `/api/inquiry` (Supabase `Inquired` + Resend + HoneyBook ping), `/api/selection` (Supabase
+  `Enriched`), `/api/webhooks/honeybook` (HMAC inbound → `Contracted & Paid`),
+  `/api/admin/{notify,status}`, `/api/upload-url`.
+- ☑ `middleware.ts` gates `/studio` + `/admin` via `STUDIO_PASSWORD` (Jun-11 regression fixed).
+- ☑ `/portal/[id]/template-design`, `/admin`, `/admin/[id]` built.
+- ☑ Deploy: `book.kathabooth.com` live on Vercel; Porkbun CNAME; env set.
+- ☑ Squarespace injection CSS in place.
+- ☑ **Phase 0 brand marks LOCKED** — candidate fixed, CLAUDE.md canon updated, vault `memory.md`
+  recorded (2026-06-13). Marks: word mark + logo mark only. NO maker's mark. CTA = "Commission".
 
-## Phase A — Make the pick actionable + protect the studio  ✅ DONE
-- ☑ **A1** `/api/selection` route built: pluggable dispatch (Resend email + HoneyBook stub). Returns 202 (no env) or 200 (dispatched). Forbidden-word guard active.
-- ☑ **A2** Gallery POSTs to `/api/selection` on confirm, with `?lead=<token>` threading + localStorage fallback. Soft-success on network error.
-- ☑ **A3** `middleware.ts` Basic-auth gates `/` + `/api/generate*` via `STUDIO_PASSWORD`. `/gallery` + `/api/selection` public. Disabled if password unset (local dev).
-- ☑ Verified: tsc clean, build passes, curl test of /api/selection returns 202 with proper dispatch report.
+## Phase 1 — Homepage as the booking home
+- ☐ **1A** Resolve uncommitted Task-B `next/image` work in `app/page.tsx` (finish OR revert) so the
+  branch is clean before grafting. AC: working tree clean on `feat/fable6-port`.
+- ☐ **1B** Remove maker's-mark drift in `app/page.tsx`: `.makers-mark` SVG, `logo-paint` "process
+  seal", `KTHA` marginalia, every "Commission KTHA" → "Commission".
+- ☐ **1C** Graft the three keepers from `useful studio ai tool/`: template-library aesthetic, hard
+  `16px 16px 0` sombrado shadows, black barong (`velvet-obsidian-bg.jpeg`) plate.
+- ☐ **1D** Wire real `PRESETS` (`lib/templates.ts`) + `resolveLayout`/`VIEWBOX`; swap `<img>` → `next/image`;
+  fonts via `lib/fonts.ts` CSS vars; inline `<style>` → `app/globals.css`.
+- ☐ **1E** Judgment fixes from AI Studio app: dynamic catalog count (no false "Sixty-three"); XSS-
+  escape user text in any SVG; remove `rounded-full` swatches/dots; remove soft shadows/blur; copy
+  pass ("Curated"/"Bespoke"/"flawless"/"masterpiece" → on-voice); modal a11y (`role=dialog`, focus-
+  trap, focus-return, `inert`, labeled `<X>`).
+- ☐ **Checkpoint 1 (Jed):** desktop + 375px screenshots; brand guard green; visual sign-off.
 
-## Phase B — Deploy + branded URL  ← IN PROGRESS
-- ☑ **B-infra** GitHub: code pushed to `kathaphoto-booth/template-studio` (force-push to overwrite empty init). Vercel collaborator setup unblocked.
-- ☑ **B1** `.env.example` full production inventory (STUDIO_PASSWORD, RESEND_API_KEY, NOTIFICATION_EMAIL, GEMINI_API_KEY, HoneyBook/Supabase Phase-D slots).
-- ☑ **B2-dashboard** Connect Vercel project to `kathaphoto-booth/template-studio` repo via the dashboard (replaces stale CLI link). Steps in `DEPLOY.md`.
-- ☑ **B2-env** Set env vars in Vercel: `STUDIO_PASSWORD`, `RESEND_API_KEY`, `NOTIFICATION_EMAIL`. Redeploy.
-- ☑ **B2-protection** Disable Vercel Deployment Protection for production → gallery accessible.
-- ☑ **B3** Porkbun DNS → CNAME `book` → `cname.vercel-dns.com.`. Add `book.kathabooth.com` in Vercel Domains.
-- ☐ **Checkpoint B** — phone test branded URL + pick → email arrives.
+## Phase 2 — Reconcile drift + close C2 (inquiry path)
+- ☐ **2A** **Reconcile HoneyBook pid** — pick widget `6809e4c1…` vs `/api/inquiry`/spec `679039857c…`;
+  update the survivor in code + HONEYBOOK_CRM.md.
+- ☐ **2B** Add **`/inquire`** page route (full-page form; same `InquiryPayload` shape as the modal).
+- ☐ **2C** Change `/api/inquiry` form to trust **response body `ok`**, not just `res.ok` (degraded-env
+  202 must NOT show "Received").
+- ☐ **2D** Phone smoke test the branded URL: tap "Commission" → submit → Supabase `Inquired` row +
+  Resend mail with portal link arrives.
+- ☐ **Checkpoint 2 (Jed):** the 2026-05-30 Checkpoint B (uncompleted) — phone test signed off.
 
-## Phase C — HoneyBook integration (link + identity)
-- ☑ **C1** Gallery reads `?lead=<token>` → include in payload. _AC: pick attributable to client._
-- ☐ **C2** HoneyBook form → button/link to gallery (tokenized if possible). _AC: HoneyBook → gallery → recorded + emailed._
-- ☐ **Checkpoint C** — one real/test client end-to-end.
+## Phase 3 — Portal → Enriched (C4)
+- ☐ **3A** Spec/code alignment: standardize on `/portal/[id]/template-design` (drop `/reserve` in
+  HONEYBOOK_CRM.md OR add `/reserve` → `/portal` alias).
+- ☐ **3B** Audit `/api/selection` XSS-safety: escape `<>&"'` in names/date/venue before any SVG
+  interpolation.
+- ☐ **3C** Verify `/api/upload-url` (reference photo upload): signed URL works, size/type caps enforced.
+- ☐ **Checkpoint 3 (Jed):** real (or test) client end-to-end through portal → `Enriched`.
 
-## Phase D — Upgrade notification → HoneyBook contract sync ("convert #1 into #2")
-- ☑ **D1** Add HoneyBook (API or Zapier) as dispatch target #2 in `/api/selection`. _AC: pick appears in HoneyBook project PID 679039857c7a9b001f4098a8._
-- ☐ **Checkpoint D** — pick → email + HoneyBook both update.
+## Phase 4 — HoneyBook contract + ops dispatch (C5 + O3–O5)
+- ☐ **4A** Wire the chosen HoneyBook path (widget OR `/api/inquiry` outbound) to the surviving pid.
+- ☐ **4B** **Build ops-dispatch email** on `Enriched` → parameter checklist to Vince & Jed
+  (template, layout, names/date, venue/address, add-ons). _The only unbuilt spec piece._
+- ☐ **4C** Simulate HoneyBook `payment_completed` webhook → confirm lead flips to `Contracted & Paid`.
+- ☐ **Checkpoint 4 (Jed):** the 2026-05-30 Checkpoint D (uncompleted) — both email + HoneyBook update.
 
+## Phase 5 — Fix storefront bridge + checkpoints C/E
+- ☐ **5A** `squarespace/01_hero.html` — change dead `/inquire` → `https://book.kathabooth.com/inquire`
+  (or `/#commission`); CTA text "Commission" (drop "KTHA"); preserve `?lead=` forwarding per
+  `squarespace/HANDOFF_GUIDE.md`.
+- ☐ **5B** Prepare CSS-only injection snippet (raster fallback per Squarespace constraint) — Jed/Vince
+  paste it via CMS.
+- ☐ **5C** App SEO: metadata + canonical + OG/Twitter on `app/layout.tsx` + `app/page.tsx`;
+  `app/sitemap.ts` + `app/robots.ts` list only live routes; LocalBusiness/Organization JSON-LD.
+- ☐ **Checkpoint 5 (Jed):** the 2026-05-30 Checkpoints C + E (uncompleted) — storefront button reaches
+  live funnel; Vince launch review.
 
-## Phase E — Squarespace launch integration (when site live)
-- ☑ **E-injection** Inject `katha-injection.css` into Squarespace Header Code Injection.
-- ☑ **E1** `kathabooth.com/template-gallery` → redirect/iframe to Vercel gallery.
-- ☑ **E2** Storefront CTAs link to gallery.
-- ☐ **Checkpoint E** — launch review with Vince.
+## Phase 6 — Verify, adversarial re-review, ship
+- ☐ **6A** Run the end-to-end smoke test (plan §End-to-end verification): C1→C9 + O1→O8.
+- ☐ **6B** Re-run the parallel adversarial swarm on the integrated code.
+- ☐ **6C** Retire the legacy `template-studio` Vercel git integration (doomed ERROR build).
+- ☐ **6D** **Jed ratifies** `feat/fable6-port` → `main`; push to deploy.
 
-
-## Backlog (non-blocking)
-- ☐ Classic-template vertical-postcard decorations
-- ☑ Fraunces font for Katha templates
-- ☑ Supabase `selections`/`leads` tables; move persistence off localStorage
-- ☑ Full `HONEYBOOK_CRM.md` pipeline (`/api/inquiry` 3-field intake + Resend enrichment + `/reserve` panel)
-
+## Open / risks
+- ☑ Decide HoneyBook pid: `679039857c…` is canonical.
+- ☑ Widget vs owned-data: Owned-data model is canonical.
+- ☐ Rotate the AI Studio access token pasted earlier (live credential — security).
+- ☐ Squarespace injection deploy needs Vince/CMS access.

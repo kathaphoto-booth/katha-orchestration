@@ -28,8 +28,8 @@ export { KBinakulField } from './KBinakulField';
 export { SequinCanvas } from './SequinCanvas';
 
 // Marks (re-exported for one-stop importing)
-export { KathaWordmark } from '../marks/KathaWordmark';
-export { KathaLogomark } from '../marks/KathaLogomark';
+export { KathaWordmark } from '../../../Zenith/app/components/KathaWordmark';
+export { KathaLogomark } from '../../../Zenith/app/components/KathaLogomark';
 export { KthaMark } from '../marks/KthaMark';
 export { KathaThread } from '../marks/KathaThread';
 export { CaladoDivider } from '../marks/CaladoDivider';

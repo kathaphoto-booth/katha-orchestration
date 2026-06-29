@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Katha Booth — How It Works · A Workbook for Vince</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#EAE2D5; --beige:#ECE4DA; --near-black:#36302A; --ink:#36302A;
+    --ink-soft:#574C3F; --muted:#7B736B; --hairline:rgba(87,76,63,.18);
+    --sage:#B5B8A3; --sage-deep:#5A5D5A; --champagne:#C4B59D; --rust:#8C382A;
+    --obsidian:#111112; --display:'ivymode','Playfair Display',Georgia,serif;
+    --body:'proxima-nova','Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:var(--body); font-size:16px; line-height:1.7; font-weight:400;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:780px; margin:0 auto; padding:0 28px;}
+  h1,h2,h3{font-family:var(--display); font-weight:400; line-height:1.1; letter-spacing:-.01em; color:var(--ink);}
+  p{max-width:64ch;}
+  .eyebrow{font-family:var(--body); font-size:.7rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin:0 0 14px;}
+  .rule{border:0; border-top:1px solid var(--hairline); margin:0;}
+  .diamonds{font-size:.7rem; letter-spacing:.5em; color:var(--ink-soft); margin:28px 0;}
+
+  /* Cover */
+  .cover{background:var(--near-black); color:var(--cream); padding:84px 0 72px;}
+  .cover .eyebrow{color:var(--champagne);}
+  .cover h1{color:var(--cream); font-size:clamp(2.6rem,7vw,4.4rem); margin:0 0 18px;}
+  .cover h1 em{font-style:italic; color:var(--champagne);}
+  .cover p{color:rgba(234,226,213,.82); font-size:1.05rem; max-width:52ch;}
+  .cover .meta{margin-top:36px; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(234,226,213,.55);}
+
+  section{padding:64px 0;}
+  section + section{border-top:1px solid var(--hairline);}
+  section h2{font-size:clamp(1.8rem,4vw,2.6rem); margin:0 0 8px;}
+  .lead{font-family:var(--display); font-style:italic; font-size:1.25rem; color:var(--ink-soft); max-width:50ch; margin:0 0 24px;}
+
+  /* Note card */
+  .note{background:var(--beige); border-left:3px solid var(--sage-deep); padding:22px 26px; margin:28px 0; font-size:.98rem;}
+  .note strong{font-weight:600;}
+
+  /* Flow steps */
+  .flow{counter-reset:step; margin-top:28px;}
+  .flow-step{display:grid; grid-template-columns:44px 1fr; gap:20px; padding:20px 0; border-top:1px solid var(--hairline);}
+  .flow-step:first-child{border-top:0;}
+  .flow-num{font-family:var(--display); font-size:1.5rem; color:var(--sage-deep); line-height:1;}
+  .flow-step h3{font-size:1.15rem; margin:0 0 4px;}
+  .flow-step p{margin:0; color:var(--ink-soft); font-size:.96rem;}
+
+  /* Two surfaces */
+  .surfaces{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--hairline); margin-top:28px;}
+  .surface{padding:28px;}
+  .surface + .surface{border-left:1px solid var(--hairline);}
+  .surface h3{font-size:1.3rem; margin:0 0 6px;}
+  .surface .url{font-family:var(--body); font-size:.78rem; letter-spacing:.04em; color:var(--sage-deep); font-weight:600; text-transform:uppercase; margin:0 0 12px;}
+  .surface p{font-size:.92rem; color:var(--ink-soft); margin:0;}
+
+  /* What changed */
+  .change{padding:22px 0; border-top:1px solid var(--hairline);}
+  .change:first-of-type{border-top:0;}
+  .change h3{font-size:1.15rem; margin:0 0 12px;}
+  .ba{display:grid; grid-template-columns:1fr 1fr; gap:14px; font-size:.9rem;}
+  .ba .before, .ba .after{padding:12px 16px; border:1px solid var(--hairline);}
+  .ba .before{background:rgba(140,56,42,.05);}
+  .ba .after{background:rgba(181,184,163,.14);}
+  .ba .tag{display:block; font-size:.62rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; margin-bottom:6px;}
+  .ba .before .tag{color:var(--rust);}
+  .ba .after .tag{color:var(--sage-deep);}
+  .ba s{color:var(--muted); text-decoration-color:var(--rust);}
+
+  /* Palette */
+  .swatches{display:flex; flex-wrap:wrap; gap:14px; margin-top:24px;}
+  .sw{width:128px;}
+  .sw .chip{height:64px; border:1px solid var(--hairline);}
+  .sw .name{font-size:.78rem; font-weight:600; margin-top:8px; display:block;}
+  .sw .hex{font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .sw .role{font-size:.7rem; color:var(--ink-soft); display:block; margin-top:2px;}
+
+  /* Do / Don't */
+  .dd{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px;}
+  .dd .col{padding:20px 22px; border:1px solid var(--hairline);}
+  .dd .col h3{font-size:1rem; margin:0 0 12px; letter-spacing:.02em;}
+  .dd ul{margin:0; padding-left:18px;}
+  .dd li{margin-bottom:7px; font-size:.92rem; color:var(--ink-soft);}
+  .dd .do h3{color:var(--sage-deep);}
+  .dd .dont h3{color:var(--rust);}
+
+  .pillrow{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;}
+  .pill{font-size:.8rem; padding:8px 16px; border:1px solid var(--sage-deep); color:var(--ink); background:var(--sage);}
+  .pill.retired{border-color:var(--hairline); color:var(--muted); background:transparent; text-decoration:line-through; text-decoration-color:var(--rust);}
+
+  footer{background:var(--near-black); color:rgba(234,226,213,.7); padding:48px 0; font-size:.82rem;}
+  footer .wrap{text-align:center;}
+  footer .mark{font-family:var(--display); font-size:1.4rem; color:var(--cream); letter-spacing:.08em;}
+
+  @media(max-width:680px){
+    .surfaces,.ba,.dd{grid-template-columns:1fr;}
+    .surface + .surface{border-left:0; border-top:1px solid var(--hairline);}
+    section{padding:48px 0;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===================== COVER ===================== -->
+  <header class="cover">
+    <div class="wrap">
+      <p class="eyebrow">A Workbook · For Vince</p>
+      <h1>Katha Booth,<br><em>and how it all works.</em></h1>
+      <p>Everything we built, why it changed, and how a client gets from your site to a booked date — written for the person who owns the brand.</p>
+      <p class="meta">Prepared by Jed · Internal · Not a public page</p>
+    </div>
+  </header>
+
+  <!-- ===================== READ ME FIRST ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Read me first</p>
+      <h2>Your site is the brand law.</h2>
+      <p class="lead">You own the storefront. Nothing here overrides what you build.</p>
+      <p>The pieces we made are a <strong>light coexistence layer</strong>, not a cage. Your Squarespace design choices stand — your fonts, your palette, your sections, your photographs. The brand layer catches a couple of narrow things the old "OAX" identity left behind (a pure-black overlay, some legacy text) and gives you ready-made signature pieces you can drop in where you want a Katha moment. Beyond that, build it the way you see it.</p>
+      <div class="note">
+        <strong>One ask:</strong> the voice and the CTA labels are the two things worth keeping consistent across both surfaces, because that's what makes the hand-off from your site to the booking portal feel like one brand. The quick reference at the bottom is the whole rulebook on a page.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== THE TWO SURFACES ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">The Architecture · in plain terms</p>
+      <h2>Two surfaces, one brand.</h2>
+      <p>There are two websites working together. You own the first. The second does the booking machinery.</p>
+      <div class="surfaces">
+        <div class="surface">
+          <h3>The storefront</h3>
+          <p class="url">kathabooth.com</p>
+          <p>Your Squarespace site. The face of the brand — story, installations, galleries, the first impression. You design and run it. The brand layer (two paste-in files) keeps it quietly on-palette.</p>
+        </div>
+        <div class="surface">
+          <h3>The booking portal</h3>
+          <p class="url">book.kathabooth.com</p>
+          <p>The working engine. When a guest taps "Begin Your Inquiry," they land here — a short form, template choices, and (soon) a live calendar. Inquiries come to you and Jed by email.</p>
+        </div>
+      </div>
+      <div class="note">
+        Every booking button on your site points to the portal. A client never feels the seam — same fonts, same voice, same colours. That's the whole point of keeping the two consistent.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== THE BOOKING FLOW ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">The Workflow</p>
+      <h2>How a client gets to a booked date.</h2>
+      <p class="lead">As close to automatic as it can be — while you still press send.</p>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-num">01</div><div><h3>They find you</h3><p>A guest lands on kathabooth.com, reads the story, sees the installations, and taps <em>Begin Your Inquiry</em>.</p></div></div>
+        <div class="flow-step"><div class="flow-num">02</div><div><h3>They inquire</h3><p>They arrive at the portal and leave the essentials — name, email, event date. Nothing heavy.</p></div></div>
+        <div class="flow-step"><div class="flow-num">03</div><div><h3>You hear about it</h3><p>You and Jed get the inquiry by email the moment it's sent. No dashboard to babysit — it comes to your inbox.</p></div></div>
+        <div class="flow-step"><div class="flow-num">04</div><div><h3>You reply &amp; propose</h3><p>You review, then send the proposal — the smart file: invoice, payment, contract, all in one (HoneyBook). This is the one place a human decides; you press send.</p></div></div>
+        <div class="flow-step"><div class="flow-num">05</div><div><h3>They sign &amp; pay</h3><p>The client signs and pays inside the smart file. A thank-you note goes out. The date is held.</p></div></div>
+        <div class="flow-step"><div class="flow-num">06</div><div><h3>You build it</h3><p>Installation day. The booth, the prints, the hand-operated craft — the part only you two do.</p></div></div>
+      </div>
+      <div class="note"><strong>Coming next:</strong> a branded calendar inside the portal so clients can see open dates, and the smart-file flow tightened to a hybrid (invoice → payment → contract). The principle stays: simple, and you keep the final send.</div>
+    </div>
+  </section>
+
+  <!-- ===================== WHAT CHANGED ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">What Changed · and why</p>
+      <h2>The refinements, in the open.</h2>
+      <p>We tightened the copy and the structure of the storefront draft. Nothing here is precious — push back on anything. Here's every meaningful change, before → after.</p>
+
+      <div class="change">
+        <h3>1 · Voice — jargon out, craft in</h3>
+        <p>The biggest pass. We removed words that read as marketing rather than craft — and the repeated word "architecture," which was doing a lot of heavy lifting.</p>
+        <div class="ba">
+          <div class="before"><span class="tag">Before</span>"Editorial booth <s>architecture</s>." · "your <s>luxury</s> photo booth <s>experience</s>." · "<s>curated</s> and delivered." · "output is <s>timeless</s>." · "align with your <s>aesthetic</s>."</div>
+          <div class="after"><span class="tag">After</span>"Editorial portraiture, built by hand." · "operated by hand throughout your event." · "finished and handed to you." · "ages the way good photography should." · "with your vision."</div>
+        </div>
+      </div>
+
+      <div class="change">
+        <h3>2 · Headlines — plainer, stronger</h3>
+        <div class="ba">
+          <div class="before"><span class="tag">Before</span>"EDITORIAL BOOTH ARCHTECURE" (typo) · "Booth Architectures" · "CURATED ARCHITECTURE"</div>
+          <div class="after"><span class="tag">After</span>"Editorial portraiture, built by hand." · "Choose Your Installation" · "Our Installations"</div>
+        </div>
+      </div>
+
+      <div class="change">
+        <h3>3 · One set of buttons, everywhere</h3>
+        <p>Every call-to-action now draws from a single set — so your site and the portal speak the same way.</p>
+        <div class="pillrow">
+          <span class="pill">Begin Your Inquiry</span>
+          <span class="pill">Request a Proposal</span>
+          <span class="pill">Reserve Your Date</span>
+          <span class="pill">Send Inquiry</span>
+        </div>
+        <div class="pillrow">
+          <span class="pill retired">Commission KTHA</span>
+          <span class="pill retired">Request Bespoke Proposal</span>
+          <span class="pill retired">Submit</span>
+        </div>
+      </div>
+
+      <div class="change">
+        <h3>4 · Structure</h3>
+        <div class="ba">
+          <div class="before"><span class="tag">Before</span>Founders as name + role lines with face-photo placeholders · tiers as flat stacked cards · a "Venues" section · a fake "what changed" toggle</div>
+          <div class="after"><span class="tag">After</span>Founders as two text-led manifesto cards (no face photos until you have real ones) · tiers as a tap-to-expand accordion · "Venues" removed (no real sponsorships to claim) · this workbook replaces the toggle</div>
+        </div>
+      </div>
+
+      <div class="note"><strong>Flag for you:</strong> two testimonials were lightly softened to drop "curation / experience." Please confirm with those clients before they go live — we don't want to put words in their mouths.</div>
+    </div>
+  </section>
+
+  <!-- ===================== BRAND QUICK REFERENCE ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Quick Reference · the whole rulebook</p>
+      <h2>If you remember nothing else.</h2>
+
+      <h3 style="margin-top:32px;font-size:1.05rem;">Palette</h3>
+      <div class="swatches">
+        <div class="sw"><div class="chip" style="background:#111112"></div><span class="name">Obsidian Weave</span><span class="hex">#111112</span><span class="role">base / text</span></div>
+        <div class="sw"><div class="chip" style="background:#EAE2D5"></div><span class="name">Piña Ecru</span><span class="hex">#EAE2D5</span><span class="role">light ground</span></div>
+        <div class="sw"><div class="chip" style="background:#8C382A"></div><span class="name">Loko Rust</span><span class="hex">#8C382A</span><span class="role">sacred CTA only · ≤1 per screen</span></div>
+        <div class="sw"><div class="chip" style="background:#B5B8A3"></div><span class="name">Capiz Sage</span><span class="hex">#B5B8A3</span><span class="role">soft accent</span></div>
+        <div class="sw"><div class="chip" style="background:#C4B59D"></div><span class="name">Champagne</span><span class="hex">#C4B59D</span><span class="role">on dark only</span></div>
+        <div class="sw"><div class="chip" style="background:#574C3F"></div><span class="name">Walnut</span><span class="hex">#574C3F</span><span class="role">body on light</span></div>
+      </div>
+      <div class="note">Never pure black (<code>#000</code>) or pure white (<code>#fff</code>). Rust is the one sacred button colour — one per screen, nothing else.</div>
+
+      <h3 style="margin-top:36px;font-size:1.05rem;">Type</h3>
+      <p><strong>Now:</strong> Playfair Display for headlines, Hanken Grotesk for body — free near-matches that read like the real thing. <strong>Soon:</strong> the licensed pair you flagged — <em>IvyMode</em> (headlines, via Adobe Fonts) + <em>Proxima Nova</em> (body, via Canva/Adobe). The site is already wired so the swap is one line — the moment the Adobe Fonts kit is added, it switches with zero rework.</p>
+
+      <h3 style="margin-top:36px;font-size:1.05rem;">Voice</h3>
+      <div class="dd">
+        <div class="col do">
+          <h3>Lean in</h3>
+          <ul>
+            <li>Plain craft language — DSLR, archival cotton, hand-operated, on-site print</li>
+            <li>Peer-to-peer, calm, specific</li>
+            <li>"Curated" / "Handcrafted" — fine, but ≤3 times per page</li>
+          </ul>
+        </div>
+        <div class="col dont">
+          <h3>Leave out</h3>
+          <ul>
+            <li>luxury, premium, experience, keepsake, timeless</li>
+            <li>curating / curation / elevate, journey, stunning, magical, authentic</li>
+            <li>"architecture" as filler — vary with installation, booth, build, form</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="margin-top:36px;font-size:1.05rem;">Marks</h3>
+      <p>Two marks only — the <strong>wordmark</strong> (katha) and the <strong>logo mark</strong> (the leaf/feather "K"). There is <strong>no maker's-mark stamp / brass ring</strong>. Your storefront simply uses the text header <strong>KATHA BOOTH</strong> — that's correct and canon.</p>
+    </div>
+  </section>
+
+  <!-- ===================== CLOSE ===================== -->
+  <section>
+    <div class="wrap">
+      <p class="diamonds" aria-hidden="true">&#9670; &#9670; &#9670;</p>
+      <h2>Your move.</h2>
+      <p>This is a starting draft, not a verdict. Change the words, move the sections, swap the photos — it's your storefront. When you're ready, the booking machinery behind it is already running and waiting.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p class="mark">katha</p>
+      <p>Katha Booth · Carson &amp; Long Beach, CA · Internal workbook — not for public distribution</p>
+    </div>
+  </footer>
+
+</body>
+</html>

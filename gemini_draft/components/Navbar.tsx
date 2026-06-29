@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-import { KathaWordmark } from '@/components/marks/KathaWordmark';
+import { KathaWordmark } from '../../Zenith/app/components/KathaWordmark';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);

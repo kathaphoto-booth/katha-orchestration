@@ -53,3 +53,32 @@ If the Stitch design introduces a new decorative asset, add it to the **Art Dire
 2. Once approved, inject the high-fidelity SVG assets into the component library.
 3. Inject the `PhotoboothPreset` JSON configuration into `lib/templates.ts`.
 4. Ensure the design passes `npm run guard` and respects all Lighthouse performance rules (e.g., zero-JS states where applicable).
+
+## Phase 4: Base Layout Dimensions & Typography Rendering
+
+### Media Slot Dimensions — Grounded, Not Hardcoded
+
+**Rule: Never state a slot, margin, or canvas dimension from memory or this SKILL.md.**
+Run the dimension lookup tool before any render, measurement, or calculation:
+
+```bash
+node .agents/skills/template-fidelity/scripts/lookup.mjs --layout <id>
+# --layout strip-3   (2x6 strip, 3 slots)
+# --layout pv-2      (4x6 portrait, 2 slots)
+# --layout pc-3-v    (6x4 landscape, 3 columns)
+```
+
+**Provenance note (2026-06-28):** A prior version of this file stated 510x440px for the 2x6/3-slot layout. The confirmed canon from `layouts.js strip-3` is **480x380px** (marginX=60). The 510x440 figure was never grounded in the actual codebase. See `.memory/handoff/2026-06-28_steven-cristalyn-drift_verify.md` for the full audit.
+
+### Scripture & Typography Rendering
+- Never rely on AI image generators for high-fidelity calligraphy or script fonts (e.g., Hello Honey) as it introduces artifacts, noise, and warping.
+- Use Python/PIL-based native text rendering with exact TTF/OTF files.
+- Manually map PUA (Private Use Area) Unicode characters to achieve perfect ligatures and swashes (e.g., `U+E025` for heart connections, `U+E046` for left tails).
+- Calculate the exact alpha bounding box of the rendered script, then scale it precisely to align perfectly with the media slot boundaries (e.g., width exactly matching the slot width of 1020px).
+
+## Phase 5: Automated Custom Script Replication (Zero-Code Flow)
+When a client requests a personalized or custom font/script that deviates from the core brand:
+1. **Identify & Copycat**: Through research or uploaded image references, identify the closest or exact font match.
+2. **Breakdown & Restructure**: Mathematically break down the font's structure and reconstruct it to fit the official Media Slot Mathematics (e.g., precise positioning in the 320px bottom margin of a 4x6).
+3. **Impeccable Polish**: Apply the `impeccable` standard—perfect negative space, strict alignment, and a high-end luxury feel, removing all unnecessary artifacts.
+4. **Visual Proofing**: Output a final, rendered visual proof (via Python/PIL image generation) to show the client exactly how it looks. **Do not** adjust the coding of the web studio (e.g., `templates.ts`) for these one-off custom font requests unless explicitly asked. The goal is to generate working visual proofs to see if they work.
