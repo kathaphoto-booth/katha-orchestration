@@ -85,7 +85,7 @@ done
   exit 2
 }
 
-LEDGER="$REPO/.orchestration/ledger.jsonl"
+LEDGER="$REPO/.agents/skill-tiers/state/ledger.jsonl"
 [[ -f "$LEDGER" ]] || {
   echo "HOLD: no ledger yet at $LEDGER (0 runs recorded for skill '$SKILL')"
   exit 0

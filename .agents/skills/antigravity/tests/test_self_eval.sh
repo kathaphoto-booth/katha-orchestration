@@ -14,7 +14,7 @@ test_self_eval_flags_overstated_completion() {        # the core: self-admit dis
   printf '{"status":"FAIL","gate":"skipped","real_changes":["x.ts"],"reasons":["unclaimed change: x.ts"]}' > "$d/.verdict.json"
   printf 'work done\nSTATUS: COMPLETE\n' > "$d/.orchestration/r1/result.md"   # run CLAIMS complete
   bash "$SKILL/self_eval.sh" record --run r1 --repo "$d" >/dev/null 2>&1
-  local line; line=$(tail -n1 "$d/.orchestration/ledger.jsonl")
+  local line; line=$(tail -n1 "$d/.agents/skill-tiers/state/ledger.jsonl")
   assert_eq "$(printf '%s' "$line" | jq -r '.honest')" "false" "claimed COMPLETE but gate FAILed => honest:false (self-admit)"
   assert_eq "$(printf '%s' "$line" | jq -r '.verdict')" "FAIL" "verdict is taken from git-truth .verdict.json, not the claim"
 }
@@ -25,7 +25,7 @@ test_self_eval_pass_with_matching_claim_is_honest() {
   printf '{"status":"PASS","gate":"tsc:pass","real_changes":["a.ts","b.ts"],"reasons":[]}' > "$d/.verdict.json"
   printf 'done\nSTATUS: COMPLETE\n' > "$d/.orchestration/r2/result.md"
   bash "$SKILL/self_eval.sh" record --run r2 --repo "$d" --tokens 2000 >/dev/null 2>&1
-  local line; line=$(tail -n1 "$d/.orchestration/ledger.jsonl")
+  local line; line=$(tail -n1 "$d/.agents/skill-tiers/state/ledger.jsonl")
   assert_eq "$(printf '%s' "$line" | jq -r '.honest')" "true" "PASS + claimed-complete => honest:true"
   assert_eq "$(printf '%s' "$line" | jq -r '.t2d')" "1000" "T2D = tokens(2000)/lines(2) = 1000"
 }
@@ -36,7 +36,7 @@ test_self_eval_admits_missing_tokens() {              # never fake a metric
   printf '{"status":"PASS","gate":"skipped","real_changes":["a.ts"],"reasons":[]}' > "$d/.verdict.json"
   printf 'done\nSTATUS: COMPLETE\n' > "$d/.orchestration/r3/result.md"
   bash "$SKILL/self_eval.sh" record --run r3 --repo "$d" >/dev/null 2>&1   # no --tokens
-  local line; line=$(tail -n1 "$d/.orchestration/ledger.jsonl")
+  local line; line=$(tail -n1 "$d/.agents/skill-tiers/state/ledger.jsonl")
   assert_eq "$(printf '%s' "$line" | jq -r '.t2d')" "null" "no token count => t2d null (self-admit missing data, not 0)"
 }
 

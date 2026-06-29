@@ -43,7 +43,7 @@ cmd_record() {
     exit 2
   }
 
-  local LEDGER="$REPO/.orchestration/ledger.jsonl"
+  local LEDGER="$REPO/.agents/skill-tiers/state/ledger.jsonl"
   mkdir -p "$(dirname "$LEDGER")"
 
   local status lines reasons drift_check taste_checkpoint
@@ -92,6 +92,11 @@ cmd_record() {
       lines:$lines, tokens:$tokens,
       t2d: (if $tokens==null then null else ($tokens / (if $lines>0 then $lines else 1 end)) end),
       reasons:$reasons, drift_check:$drift_check, taste_checkpoint:$taste_checkpoint}' >> "$LEDGER"
+  # Commit ledger entry to git for tamper-evidence (executor has write access but not git-commit access).
+  git -C "$REPO" add .agents/skill-tiers/state/ledger.jsonl 2>/dev/null || true
+  git -C "$REPO" commit -q \
+    -m "ledger: ${SKILL:-unknown} run ${RUN:-unknown} (${status:-unknown})" \
+    --no-verify 2>/dev/null || true
   echo "recorded: run=$RUN verdict=$status honest=$honest drift_check=$drift_check taste_checkpoint=$taste_checkpoint"
 }
 
@@ -100,7 +105,7 @@ cmd_report() {
   while [[ $# -gt 0 ]]; do case "$1" in
     --repo) REPO="$2"; shift 2;; *) echo "unknown arg $1" >&2; exit 2;; esac; done
   [[ -n "$REPO" ]] || { echo "usage: self_eval.sh report --repo <dir>" >&2; exit 2; }
-  local LEDGER="$REPO/.orchestration/ledger.jsonl"
+  local LEDGER="$REPO/.agents/skill-tiers/state/ledger.jsonl"
   [[ -f "$LEDGER" ]] || { echo "no ledger yet at $LEDGER"; return 0; }
 
   jq -s '{

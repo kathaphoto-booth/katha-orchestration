@@ -52,6 +52,7 @@ make_repo() {
   local dir; dir="$(mktemp -d)"
   mkdir -p "$dir/.orchestration"
   echo '*' > "$dir/.orchestration/.gitignore"
+  mkdir -p "$dir/.agents/skill-tiers/state"
   git -C "$dir" init -q
   git -C "$dir" commit --allow-empty -m "init" -q
   echo "$dir"
@@ -74,7 +75,7 @@ add_entry() {
       verdict:$verdict,claimed:$claimed,honest:$honest,
       lines:$lines,tokens:$tokens,t2d:100.0,reasons:[],
       drift_check:$drift,taste_checkpoint:$taste}' \
-    >> "$repo/.orchestration/ledger.jsonl"
+    >> "$repo/.agents/skill-tiers/state/ledger.jsonl"
   echo "$run"
 }
 
@@ -226,7 +227,7 @@ add_entry_t3() {
       verdict:$verdict,claimed:$claimed,honest:$honest,
       lines:$lines,tokens:$tokens,t2d:100.0,reasons:[],
       drift_check:"PASS",taste_checkpoint:"PASS"}' \
-    >> "$repo/.orchestration/ledger.jsonl"
+    >> "$repo/.agents/skill-tiers/state/ledger.jsonl"
   echo "$run"
 }
 
