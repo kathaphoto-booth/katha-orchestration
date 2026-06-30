@@ -6,14 +6,17 @@ import { ZDrawer } from '@/app/components/ZDrawer';
 import { TierCard } from '@/app/components/TierCard';
 import { FeaturedTemplateRow } from '@/app/components/FeaturedTemplateRow';
 import { AvailabilityCalendar } from '@/app/components/AvailabilityCalendar';
+import { PresetGrid } from '@/app/components/PresetGrid';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { TIERS } from '@/lib/tiers';
+import { PRESETS } from '@/lib/templates';
 import type { PhotoboothPreset } from '@/lib/templates';
 import { finalizeBooking, type Lead } from './actions';
 
 const N = { l0: '#161311', l1: '#211D1A', l2: '#3D352E', hi: '#ECE7DB', mut: '#AAA8A2', fnt: '#8F8C8A', loko: '#882D17', ln: 'rgba(236, 231, 219, 0.12)' };
 const F = { d: 'var(--font-fh-ronaldson-display), serif', b: "'Cormorant', serif", m: "'Courier Prime', monospace" };
 
-type Step = 'summary' | 'date' | 'notes' | 'success';
+type Step = 'summary' | 'date' | 'notes' | 'success' | 'browse';
 type State = {
   step: Step;
   tier: string | null;
@@ -47,6 +50,12 @@ type Props = {
 };
 
 export function PortalClient({ lead, featured, blockedDates }: Props) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const showAll = searchParams.get('showAll') === 'true';
+  const formatFilter = searchParams.get('format') || 'all';
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -113,10 +122,20 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
       </section>
 
       <section style={{ padding: 'clamp(48px, 6vw, 80px) clamp(20px, 5vw, 32px)', borderTop: `1px solid ${N.ln}`, maxWidth: 1400, margin: '0 auto' }}>
-        <p style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: N.loko, marginBottom: 12 }}>Featured Templates</p>
-        <h2 style={{ fontFamily: F.d, fontWeight: 300, fontSize: 'clamp(28px, 4vw, 40px)', color: N.hi, marginBottom: 24 }}>
-          Six designs to set the tone.
-        </h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
+          <div>
+            <p style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: N.loko, marginBottom: 12 }}>Featured Templates</p>
+            <h2 style={{ fontFamily: F.d, fontWeight: 300, fontSize: 'clamp(28px, 4vw, 40px)', color: N.hi }}>
+              Six designs to set the tone.
+            </h2>
+          </div>
+          <button 
+            onClick={() => { dispatch({ type: 'goto', value: 'browse' }); setDrawerOpen(true); }}
+            style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.hi, background: 'transparent', border: `1px solid ${N.ln}`, padding: '12px 24px', cursor: 'pointer' }}
+          >
+            Browse All Templates
+          </button>
+        </div>
         <FeaturedTemplateRow presets={featured} selectedId={state.template?.id ?? null} onSelect={openWithTemplate} />
       </section>
 
@@ -147,6 +166,67 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
                 style={{ width: '100%', padding: 16, background: (state.tier || state.template) ? N.loko : 'transparent', color: (state.tier || state.template) ? N.hi : N.fnt, border: `1px solid ${(state.tier || state.template) ? N.loko : N.ln}`, fontFamily: F.m, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: (state.tier || state.template) ? 'pointer' : 'not-allowed' }}>
                 Continue to Date →
               </button>
+            </>
+          )}
+
+          {state.step === 'browse' && (
+            <>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+                <div>
+                  <h2 style={{ fontFamily: F.d, fontSize: 40, fontWeight: 300, color: N.hi, marginBottom: 8 }}>Browse Templates</h2>
+                  <p style={{ fontFamily: F.b, fontSize: 18, fontStyle: 'italic', color: N.mut }}>Find the perfect frame for your evening.</p>
+                </div>
+                
+                <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
+                  {[
+                    { id: 'all', label: 'All Formats' },
+                    { id: 'strip', label: 'Strip' },
+                    { id: 'postcard', label: 'Postcard' },
+                    { id: 'postcard-vertical', label: 'Postcard Vertical' }
+                  ].map(f => {
+                    const active = formatFilter === f.id;
+                    return (
+                      <button
+                        key={f.id}
+                        onClick={() => {
+                          const params = new URLSearchParams(searchParams.toString());
+                          params.set('format', f.id);
+                          router.push(pathname + '?' + params.toString(), { scroll: false });
+                        }}
+                        style={{
+                          fontFamily: F.m, fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase',
+                          color: active ? N.hi : N.fnt, background: 'transparent', border: 'none',
+                          borderBottom: active ? `1px solid ${N.loko}` : '1px solid transparent',
+                          padding: '0 0 4px 0', cursor: 'pointer', whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {f.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {!showAll && (
+                <div style={{ marginBottom: 24 }}>
+                  <button 
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams.toString());
+                      params.set('showAll', 'true');
+                      router.push(pathname + '?' + params.toString(), { scroll: false });
+                    }}
+                    style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.hi, background: N.loko, border: 'none', padding: '12px 24px', cursor: 'pointer', width: '100%' }}
+                  >
+                    See All 82 Presets
+                  </button>
+                </div>
+              )}
+              
+              <PresetGrid 
+                presets={showAll ? PRESETS : featured} 
+                selectedFormat={formatFilter} 
+                onSelect={openWithTemplate} 
+              />
             </>
           )}
 
