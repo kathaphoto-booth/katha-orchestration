@@ -1,5 +1,7 @@
 'use server';
 
+import { randomUUID } from 'crypto';
+
 import { Resend } from 'resend';
 import { supabaseAdmin } from '@/lib/supabase';
 
@@ -42,6 +44,9 @@ export async function submitInquiry(lead: any) {
 
 export async function submitBooking(payload: any) {
   try {
+    if (!payload.lead_hash) {
+      payload.lead_hash = randomUUID();
+    }
     const { data, error } = await supabaseAdmin
       .from('leads')
       .insert([payload])

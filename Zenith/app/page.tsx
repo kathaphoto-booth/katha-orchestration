@@ -257,13 +257,10 @@ export default function App() {
       setIsSubmitting(true);
       try {
         const payload = {
-          name: lead.name,
-          email: lead.email,
+          client_name: lead.name,
+          client_email: lead.email,
+          client_phone: lead.phone || '',
           event_date: lead.date,
-          venue_name: lead.venue,
-          tier_selected: lead.tier,
-          template_selected: lead.template,
-          addons: Object.keys(calcAddons).filter(k => calcAddons[k]).join(', ')
         };
         const res = await submitBooking(payload);
         if (res?.success) {
