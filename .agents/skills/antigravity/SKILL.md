@@ -1,10 +1,6 @@
 ---
 name: antigravity
-description: Leak-proof delegation to the agy CLI with a deterministic, non-LLM verification gate. Use when CC should hand bulk agentic work (multi-file edits, scaffolding, refactors) to Antigravity (agy) and must verify the result before trusting it — i.e. whenever you would otherwise take a CLI's "done" on faith. Routes execution to agy (sandboxed, per-run isolated), verifies via verdict.sh (truth computed from git, never from agy's self-report), and rolls back transactionally on any leak. NOT for fast opinion/critique — use the codex+agy council for that.
-allowed-tools: [Bash, Read, Write]
-tier:
-  current: 1
-  target: 2
+description: "Leak-proof delegation to the agy CLI with a deterministic, non-LLM verification gate. Use when CC should hand bulk agentic work (multi-file edits, scaffolding, refactors) to Antigravity (agy) and must verify the result before trusting it — i.e. whenever you would otherwise take a CLI's "done" on faith. Routes execution to agy (sandboxed, per-run isolated), verifies via verdict.sh (truth computed from git, never from agy's self-report), and rolls back transactionally on any leak. NOT for fast opinion/critique — use the codex+agy council for that."
 ---
 # Pointer: antigravity
 

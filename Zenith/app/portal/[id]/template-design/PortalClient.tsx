@@ -4,19 +4,36 @@ import { useReducer, useState } from 'react';
 import { KathaWordmark } from '@/app/components/KathaWordmark';
 import { ZDrawer } from '@/app/components/ZDrawer';
 import { TierCard } from '@/app/components/TierCard';
-import { FeaturedTemplateRow } from '@/app/components/FeaturedTemplateRow';
-import { AvailabilityCalendar } from '@/app/components/AvailabilityCalendar';
-import { PresetGrid } from '@/app/components/PresetGrid';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { TIERS } from '@/lib/tiers';
-import { PRESETS } from '@/lib/templates';
 import type { PhotoboothPreset } from '@/lib/templates';
 import { finalizeBooking, type Lead } from './actions';
 
-const N = { l0: '#161311', l1: '#211D1A', l2: '#3D352E', hi: '#ECE7DB', mut: '#AAA8A2', fnt: '#8F8C8A', loko: '#882D17', ln: 'rgba(236, 231, 219, 0.12)' };
-const F = { d: 'var(--font-fh-ronaldson-display), serif', b: "'Cormorant', serif", m: "'Courier Prime', monospace" };
+// New deconstructed components
+import { TemplateGallery } from '@/app/components/booking/TemplateGallery';
+import { PersonalizationPanel } from '@/app/components/booking/PersonalizationPanel';
+import { ReviewScreen } from '@/app/components/booking/ReviewScreen';
+import { ConfirmationScreen } from '@/app/components/booking/ConfirmationScreen';
 
-type Step = 'summary' | 'date' | 'notes' | 'success' | 'browse';
+const N = {
+  l0: '#161311',
+  l1: '#211D1A',
+  l2: '#3D352E',
+  hi: '#ECE7DB',
+  mut: '#AAA8A2',
+  fnt: '#8F8C8A',
+  loko: '#882D17',
+  ln: 'rgba(236, 231, 219, 0.12)'
+};
+
+const F = {
+  d: 'var(--font-fh-ronaldson-display), serif',
+  b: "'Cormorant', serif",
+  m: "'Courier Prime', monospace"
+};
+
+type Step = 'summary' | 'date' | 'notes' | 'success' | 'browse' | 'review';
+
 type State = {
   step: Step;
   tier: string | null;
@@ -24,6 +41,7 @@ type State = {
   date: string | null;
   notes: string;
 };
+
 type Action =
   | { type: 'set-tier'; value: string }
   | { type: 'set-template'; value: PhotoboothPreset }
@@ -50,12 +68,6 @@ type Props = {
 };
 
 export function PortalClient({ lead, featured, blockedDates }: Props) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const showAll = searchParams.get('showAll') === 'true';
-  const formatFilter = searchParams.get('format') || 'all';
-
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -67,10 +79,22 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
     notes: '',
   });
 
-  const closeDrawer = () => { setDrawerOpen(false); setTimeout(() => dispatch({ type: 'goto', value: 'summary' }), 600); };
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    setTimeout(() => dispatch({ type: 'goto', value: 'summary' }), 600);
+  };
 
-  const openWithTier = (tier: string) => { dispatch({ type: 'set-tier', value: tier }); setDrawerOpen(true); };
-  const openWithTemplate = (preset: PhotoboothPreset) => { dispatch({ type: 'set-template', value: preset }); setDrawerOpen(true); };
+  const openWithTier = (tier: string) => {
+    dispatch({ type: 'set-tier', value: tier });
+    dispatch({ type: 'goto', value: 'summary' });
+    setDrawerOpen(true);
+  };
+
+  const openWithTemplate = (preset: PhotoboothPreset) => {
+    dispatch({ type: 'set-template', value: preset });
+    dispatch({ type: 'goto', value: 'summary' });
+    setDrawerOpen(true);
+  };
 
   const submit = async () => {
     if (!state.date) return;
@@ -82,12 +106,16 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
       notes: state.notes || undefined,
     });
     setSubmitting(false);
-    if (res.success) dispatch({ type: 'goto', value: 'success' });
-    else setSubmitError(res.error ?? 'Something went wrong — please try again.');
+    if (res.success) {
+      dispatch({ type: 'goto', value: 'success' });
+    } else {
+      setSubmitError(res.error ?? 'Something went wrong — please try again.');
+    }
   };
 
   return (
     <div style={{ minHeight: '100dvh', background: N.l0, color: N.hi }}>
+      {/* Sticky Premium Nav */}
       <nav style={{ position: 'sticky', top: 0, zIndex: 200, padding: '24px clamp(20px, 5vw, 32px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(22, 19, 17, 0.85)', backdropFilter: 'blur(16px)', borderBottom: `1px solid ${N.ln}` }}>
         <KathaWordmark style={{ height: 26, width: 'auto', color: N.hi }} />
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
@@ -100,6 +128,7 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
         </div>
       </nav>
 
+      {/* Screen 2: Main Client Landing & Living Specimen Template Gallery */}
       <section style={{ padding: 'clamp(64px, 9vw, 120px) clamp(20px, 5vw, 32px) 48px', maxWidth: 1100, margin: '0 auto' }}>
         <p style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: N.loko, marginBottom: 12 }}>Welcome, {lead.client_name ?? 'Friend'}</p>
         <h1 style={{ fontFamily: F.d, fontWeight: 300, fontSize: 'clamp(40px, 6vw, 64px)', lineHeight: 1.05, color: N.hi, marginBottom: 16 }}>
@@ -109,7 +138,7 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
           We respond within 24 hours · Southern California only
         </p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 3 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
           {TIERS.map(t => (
             <TierCard
               key={t.id}
@@ -121,29 +150,18 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
         </div>
       </section>
 
+      {/* Living Specimen Collection / Gallery */}
       <section style={{ padding: 'clamp(48px, 6vw, 80px) clamp(20px, 5vw, 32px)', borderTop: `1px solid ${N.ln}`, maxWidth: 1400, margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <p style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: N.loko, marginBottom: 12 }}>Featured Templates</p>
-            <h2 style={{ fontFamily: F.d, fontWeight: 300, fontSize: 'clamp(28px, 4vw, 40px)', color: N.hi }}>
-              Six designs to set the tone.
-            </h2>
-          </div>
-          <button 
-            onClick={() => { dispatch({ type: 'goto', value: 'browse' }); setDrawerOpen(true); }}
-            style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.hi, background: 'transparent', border: `1px solid ${N.ln}`, padding: '12px 24px', cursor: 'pointer' }}
-          >
-            Browse All Templates
-          </button>
-        </div>
-        <FeaturedTemplateRow presets={featured} selectedId={state.template?.id ?? null} onSelect={openWithTemplate} />
+        <TemplateGallery presets={featured} onSelect={openWithTemplate} />
       </section>
 
+      {/* Elegant Footer */}
       <footer style={{ padding: '64px clamp(20px, 5vw, 32px) 48px', borderTop: `1px solid ${N.ln}`, textAlign: 'center' }}>
         <KathaWordmark style={{ height: 32, width: 'auto', color: N.hi, margin: '0 auto' }} />
         <p style={{ fontFamily: F.m, fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: N.fnt, marginTop: 20 }}>© 2026 Katha Studio</p>
       </footer>
 
+      {/* Slide-out Inquiry Workspace */}
       <ZDrawer open={drawerOpen} onClose={closeDrawer}>
         <div style={{ padding: '48px clamp(24px, 5vw, 48px)', minHeight: '100%' }}>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 32 }}>
@@ -152,135 +170,44 @@ export function PortalClient({ lead, featured, blockedDates }: Props) {
             </button>
           </div>
 
+          {/* Screen 3: Post-Selection Personalization Panel */}
           {state.step === 'summary' && (
-            <>
-              <h2 style={{ fontFamily: F.d, fontSize: 40, fontWeight: 300, color: N.hi, marginBottom: 8 }}>Your Selection</h2>
-              <p style={{ fontFamily: F.b, fontSize: 18, fontStyle: 'italic', color: N.mut, marginBottom: 32 }}>Confirm the package and template you'd like.</p>
-              <dl style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 40 }}>
-                <div><dt style={{ fontFamily: F.m, fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.fnt, marginBottom: 4 }}>Package</dt><dd style={{ fontFamily: F.d, fontSize: 22, color: N.hi }}>{state.tier ?? '—'}</dd></div>
-                <div><dt style={{ fontFamily: F.m, fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.fnt, marginBottom: 4 }}>Template</dt><dd style={{ fontFamily: F.d, fontSize: 22, color: N.hi }}>{state.template?.name ?? '—'}</dd></div>
-              </dl>
-              <button
-                onClick={() => dispatch({ type: 'goto', value: 'date' })}
-                disabled={!state.tier && !state.template}
-                style={{ width: '100%', padding: 16, background: (state.tier || state.template) ? N.loko : 'transparent', color: (state.tier || state.template) ? N.hi : N.fnt, border: `1px solid ${(state.tier || state.template) ? N.loko : N.ln}`, fontFamily: F.m, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: (state.tier || state.template) ? 'pointer' : 'not-allowed' }}>
-                Continue to Date →
-              </button>
-            </>
+            <PersonalizationPanel
+              selectedTier={state.tier}
+              selectedTemplate={state.template}
+              selectedDate={state.date}
+              notes={state.notes}
+              blockedDates={blockedDates}
+              onSetTier={(tier) => dispatch({ type: 'set-tier', value: tier })}
+              onSetDate={(date) => dispatch({ type: 'set-date', value: date })}
+              onSetNotes={(notes) => dispatch({ type: 'set-notes', value: notes })}
+              onNextStep={() => dispatch({ type: 'goto', value: 'review' })}
+            />
           )}
 
-          {state.step === 'browse' && (
-            <>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
-                <div>
-                  <h2 style={{ fontFamily: F.d, fontSize: 40, fontWeight: 300, color: N.hi, marginBottom: 8 }}>Browse Templates</h2>
-                  <p style={{ fontFamily: F.b, fontSize: 18, fontStyle: 'italic', color: N.mut }}>Find the perfect frame for your evening.</p>
-                </div>
-                
-                <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
-                  {[
-                    { id: 'all', label: 'All Formats' },
-                    { id: 'strip', label: 'Strip' },
-                    { id: 'postcard', label: 'Postcard' },
-                    { id: 'postcard-vertical', label: 'Postcard Vertical' }
-                  ].map(f => {
-                    const active = formatFilter === f.id;
-                    return (
-                      <button
-                        key={f.id}
-                        onClick={() => {
-                          const params = new URLSearchParams(searchParams.toString());
-                          params.set('format', f.id);
-                          router.push(pathname + '?' + params.toString(), { scroll: false });
-                        }}
-                        style={{
-                          fontFamily: F.m, fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase',
-                          color: active ? N.hi : N.fnt, background: 'transparent', border: 'none',
-                          borderBottom: active ? `1px solid ${N.loko}` : '1px solid transparent',
-                          padding: '0 0 4px 0', cursor: 'pointer', whiteSpace: 'nowrap'
-                        }}
-                      >
-                        {f.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {!showAll && (
-                <div style={{ marginBottom: 24 }}>
-                  <button 
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams.toString());
-                      params.set('showAll', 'true');
-                      router.push(pathname + '?' + params.toString(), { scroll: false });
-                    }}
-                    style={{ fontFamily: F.m, fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: N.hi, background: N.loko, border: 'none', padding: '12px 24px', cursor: 'pointer', width: '100%' }}
-                  >
-                    See All 82 Presets
-                  </button>
-                </div>
-              )}
-              
-              <PresetGrid 
-                presets={showAll ? PRESETS : featured} 
-                selectedFormat={formatFilter} 
-                onSelect={openWithTemplate} 
-              />
-            </>
+          {/* Screen 4: Review Summary Stage */}
+          {state.step === 'review' && (
+            <ReviewScreen
+              selectedTier={state.tier}
+              selectedTemplateName={state.template?.name ?? null}
+              selectedDate={state.date}
+              notes={state.notes}
+              submitting={submitting}
+              submitError={submitError}
+              onSubmit={submit}
+              onEditSection={(sectionStep) => dispatch({ type: 'goto', value: sectionStep })}
+            />
           )}
 
-          {state.step === 'date' && (
-            <>
-              <h2 style={{ fontFamily: F.d, fontSize: 40, fontWeight: 300, color: N.hi, marginBottom: 8 }}>Reserve Your Date</h2>
-              <p style={{ fontFamily: F.b, fontSize: 18, fontStyle: 'italic', color: N.mut, marginBottom: 32 }}>Struck dates are booked or blocked.</p>
-              <AvailabilityCalendar
-                blockedDates={blockedDates}
-                value={state.date}
-                onChange={(d) => dispatch({ type: 'set-date', value: d })}
-              />
-              <button
-                onClick={() => dispatch({ type: 'goto', value: 'notes' })}
-                disabled={!state.date}
-                style={{ marginTop: 32, width: '100%', padding: 16, background: state.date ? N.loko : 'transparent', color: state.date ? N.hi : N.fnt, border: `1px solid ${state.date ? N.loko : N.ln}`, fontFamily: F.m, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: state.date ? 'pointer' : 'not-allowed' }}>
-                Continue →
-              </button>
-            </>
-          )}
-
-          {state.step === 'notes' && (
-            <>
-              <h2 style={{ fontFamily: F.d, fontSize: 40, fontWeight: 300, color: N.hi, marginBottom: 8 }}>One Last Thing</h2>
-              <p style={{ fontFamily: F.b, fontSize: 18, fontStyle: 'italic', color: N.mut, marginBottom: 32 }}>Anything we should know about the event?</p>
-              <textarea
-                value={state.notes}
-                onChange={(e) => dispatch({ type: 'set-notes', value: e.target.value })}
-                placeholder="Optional"
-                style={{ width: '100%', minHeight: 140, background: N.l1, border: `1px solid ${N.ln}`, color: N.hi, padding: 16, fontFamily: F.m, fontSize: 13, resize: 'vertical' }}
-              />
-              {submitError && (
-                <p style={{ marginTop: 16, fontFamily: F.m, fontSize: 11, color: '#C0584A' }}>{submitError}</p>
-              )}
-              <button
-                onClick={submit}
-                disabled={submitting}
-                style={{ marginTop: 16, width: '100%', padding: 16, background: N.loko, color: N.hi, border: `1px solid ${N.loko}`, fontFamily: F.m, fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', cursor: submitting ? 'wait' : 'pointer' }}>
-                {submitting ? 'Reserving…' : 'Reserve Your Date'}
-              </button>
-            </>
-          )}
-
+          {/* Screen 5: Succinct, Calm Confirmation State */}
           {state.step === 'success' && (
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', borderTop: `1px solid ${N.ln}`, borderBottom: `1px solid ${N.ln}`, padding: '64px 0' }}>
-              <p style={{ fontFamily: F.m, fontSize: 11, letterSpacing: '0.25em', textTransform: 'uppercase', color: N.loko, marginBottom: 24 }}>// Status: Secured</p>
-              <h2 style={{ fontFamily: F.d, fontSize: 56, fontWeight: 300, color: N.hi, lineHeight: 1.05, marginBottom: 24 }}>
-                Date <br /><em style={{ fontFamily: F.b, fontStyle: 'italic', color: N.mut }}>Reserved.</em>
-              </h2>
-              <div style={{ width: '100%', height: 1, background: N.ln, marginBottom: 24 }} />
-              <p style={{ fontFamily: F.m, fontSize: 14, color: N.mut, lineHeight: 1.6 }}>
-                We've sent a confirmation to {lead.client_email}. Expect a follow-up within 24 hours.
-              </p>
-            </div>
+            <ConfirmationScreen
+              clientEmail={lead.client_email ?? ''}
+              onReset={() => {
+                dispatch({ type: 'reset' });
+                closeDrawer();
+              }}
+            />
           )}
         </div>
       </ZDrawer>

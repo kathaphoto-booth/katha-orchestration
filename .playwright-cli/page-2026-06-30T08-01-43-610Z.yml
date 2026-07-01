@@ -1,0 +1,121 @@
+- generic [ref=e2]:
+  - img "Katha Logo" [ref=e5]
+  - generic [ref=e6]:
+    - navigation [ref=e7]:
+      - img "Katha Logo" [ref=e8]
+      - generic [ref=e9]:
+        - generic [ref=e10]: Southern California
+        - button "Inquire Now" [ref=e11] [cursor=pointer]
+    - generic [ref=e12]:
+      - generic:
+        - img
+      - generic [ref=e13]:
+        - paragraph [ref=e14]: Katha Photo Booth · Southern California
+        - generic [ref=e16]:
+          - paragraph [ref=e17]: Eighty-two print designs, drawn by hand and held to one standard. Find the one that fits your event — we shape the details with you.
+          - button "Inquire Now →" [ref=e18] [cursor=pointer]
+    - generic [ref=e33]:
+      - generic [ref=e35]:
+        - button "All" [ref=e36] [cursor=pointer]
+        - button "Signature" [ref=e37] [cursor=pointer]
+        - button "Classic" [ref=e38] [cursor=pointer]
+      - generic [ref=e61]:
+        - generic [ref=e62]: ↓ scroll to pan the exhibition ↓
+        - img [ref=e64]
+    - generic [ref=e66]:
+      - generic [ref=e67]:
+        - paragraph [ref=e68]: Tiers
+        - heading "Two booths. Four ways to hold the night." [level=2] [ref=e69]:
+          - text: Two booths. Four ways to
+          - emphasis [ref=e70]: hold the night.
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - img "Weathered Oak Booth" [ref=e75]
+            - generic [ref=e76]:
+              - generic [ref=e77]: The Oak Installation
+              - generic [ref=e78]: Carson · Long Beach
+          - generic [ref=e79]:
+            - heading "Estimate Summary" [level=3] [ref=e80]
+            - generic [ref=e81]:
+              - generic [ref=e82]: Signature Package
+              - generic [ref=e83]: $949
+            - generic [ref=e84]:
+              - generic [ref=e85] [cursor=pointer]:
+                - generic [ref=e88]: Heirloom Guestbook
+                - generic [ref=e89]: +$150
+              - generic [ref=e90] [cursor=pointer]:
+                - generic [ref=e93]: Extra Hour of Service
+                - generic [ref=e94]: +$200
+              - generic [ref=e95] [cursor=pointer]:
+                - generic [ref=e98]: Custom Backdrop
+                - generic [ref=e99]: +$250
+            - generic [ref=e100]:
+              - generic [ref=e101]: Total
+              - generic [ref=e102]: $949
+            - button "Inquire Now →" [ref=e103] [cursor=pointer]
+        - generic [ref=e104]:
+          - button "Signature ◆ Oak Booth · 2×6 or 4×6 $949 Weathered oak booth, DSLR capture, archival cotton prints handed over in the room. Selected" [pressed] [ref=e105] [cursor=pointer]:
+            - generic [ref=e106]:
+              - generic [ref=e107]:
+                - generic [ref=e108]: Signature
+                - generic [ref=e109]: ◆ Oak Booth · 2×6 or 4×6
+              - generic [ref=e110]: $949
+            - paragraph [ref=e111]: Weathered oak booth, DSLR capture, archival cotton prints handed over in the room.
+            - generic [ref=e112]: Selected
+          - button "Flagship Editorial ◆ Oak Booth · 4×6 $1,149 The full build — oak booth, refined black-and-white retouching, every print hand-finished. Select Package" [ref=e113] [cursor=pointer]:
+            - text: Flagship
+            - generic [ref=e114]:
+              - generic [ref=e115]:
+                - generic [ref=e116]: Editorial
+                - generic [ref=e117]: ◆ Oak Booth · 4×6
+              - generic [ref=e118]: $1,149
+            - paragraph [ref=e119]: The full build — oak booth, refined black-and-white retouching, every print hand-finished.
+            - generic [ref=e120]: Select Package
+          - button "Modernist White Booth · 2×6 or 4×6 $749 The white shell booth, built for galleries, lofts, and modern rooms. Select Package" [ref=e121] [cursor=pointer]:
+            - generic [ref=e122]:
+              - generic [ref=e123]:
+                - generic [ref=e124]: Modernist
+                - generic [ref=e125]: White Booth · 2×6 or 4×6
+              - generic [ref=e126]: $749
+            - paragraph [ref=e127]: The white shell booth, built for galleries, lofts, and modern rooms.
+            - generic [ref=e128]: Select Package
+          - button "Monochrome White Booth · 4×6 $949 The white booth tuned for high-contrast black-and-white, razor frames that last. Select Package" [ref=e129] [cursor=pointer]:
+            - generic [ref=e130]:
+              - generic [ref=e131]:
+                - generic [ref=e132]: Monochrome
+                - generic [ref=e133]: White Booth · 4×6
+              - generic [ref=e134]: $949
+            - paragraph [ref=e135]: The white booth tuned for high-contrast black-and-white, razor frames that last.
+            - generic [ref=e136]: Select Package
+    - contentinfo [ref=e137]:
+      - generic [ref=e138]:
+        - img "Katha Logo" [ref=e139]
+        - paragraph [ref=e140]: Southern California
+        - paragraph [ref=e141]: kathabooth@gmail.com
+      - paragraph [ref=e142]: © 2026 Katha Studio
+  - dialog [ref=e143]:
+    - generic [ref=e145]:
+      - button "Close ✕" [ref=e147] [cursor=pointer]
+      - generic [ref=e148]:
+        - heading "Frictionless Intake" [level=2] [ref=e149]
+        - paragraph [ref=e150]: Enter your details to log the lead and continue to your template.
+        - generic [ref=e151]:
+          - generic [ref=e152]:
+            - generic [ref=e154]: Your Name*
+            - textbox "Your Name*" [ref=e156]:
+              - /placeholder: Marisol & Diego
+          - generic [ref=e158]:
+            - generic [ref=e160]: Email Address*
+            - textbox "Email Address*" [ref=e162]:
+              - /placeholder: you@email.com
+          - generic [ref=e164]:
+            - generic [ref=e166]: Event Date*
+            - generic [ref=e167]:
+              - textbox "Event Date*" [ref=e168]
+              - img
+          - generic [ref=e170]:
+            - generic [ref=e172]: Venue Name & City (Optional)
+            - textbox "Venue Name & City (Optional)" [ref=e174]:
+              - /placeholder: The Fig House, Los Angeles
+        - button "Submit Inquiry →" [disabled] [ref=e177] [cursor=pointer]

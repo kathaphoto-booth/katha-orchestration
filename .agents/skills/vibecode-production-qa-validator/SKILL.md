@@ -1,15 +1,6 @@
 ---
 name: vibecode-production-qa-validator
 description: "End-to-end production QA, build verification, and launch-readiness checklist for fullstack Next.js apps. Covers TypeScript, linting, tests, build, SEO tags, route regression, and sitemap validation."
-category: devops
-risk: safe
-source: self
-source_type: self
-date_added: "2026-05-31"
-author: Whoisabhishekadhikari
-tags: [qa, testing, nextjs, production, build-validation, deployment, seo]
-tools: [claude, cursor, gemini, claude-code]
-version: 1.0.0
 ---
 # Pointer: vibecode-production-qa-validator
 

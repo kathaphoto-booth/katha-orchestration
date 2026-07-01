@@ -16,6 +16,7 @@ import { Print, Tag } from './components/PrintCard';
 import { TIERS, ADDONS } from '@/lib/tiers';
 import { TierCard } from './components/TierCard';
 import { ZDrawer } from './components/ZDrawer';
+import { CinematicVoid } from '@/app/components/CinematicVoid';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -80,6 +81,32 @@ html, body {
 }
 
 #app { min-height: 100vh; background-color: ${N.l0}; }
+
+/* ── Quiet Lux Void Effects ── */
+.lux-void {
+  position: absolute; inset: 0; overflow: hidden; background: #161311; z-index: -1;
+}
+.lux-leak {
+  position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6;
+}
+.lux-leak-1 {
+  top: -20%; left: -10%; width: 70vw; height: 70vw;
+  background: radial-gradient(circle, rgba(136, 45, 23, 0.15) 0%, transparent 70%); /* Kobe Rust */
+  animation: float1 20s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+.lux-leak-2 {
+  bottom: -30%; right: -10%; width: 80vw; height: 80vw;
+  background: radial-gradient(circle, rgba(61, 53, 46, 0.4) 0%, transparent 70%); /* Black Coffee */
+  animation: float2 25s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+.lux-leak-3 {
+  top: 40%; left: 30%; width: 50vw; height: 50vw;
+  background: radial-gradient(circle, rgba(136, 45, 23, 0.08) 0%, transparent 70%); /* Subtle Kobe */
+  animation: float3 22s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+@keyframes float1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(8%, 12%) scale(1.15); } }
+@keyframes float2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-8%, -15%) scale(1.1); } }
+@keyframes float3 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(12%, -8%) scale(1.2); } }
 
 /* ── Cinematic Entrance ── */
 @keyframes weaveIn {from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -314,14 +341,36 @@ export default function App() {
     const mm = gsap.matchMedia();
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       if (bridge) {
+        const paths = ['#katha-k', '#katha-a1', '#katha-t', '#katha-h', '#katha-a2'];
+        
+        // Initial setup for weaving outline (scale 0.1 means strokeWidth of 20 = 2px)
+        gsap.set(paths, { 
+          stroke: '#ECE7DB', 
+          strokeWidth: 20, 
+          fill: 'rgba(236, 231, 219, 0)', 
+          strokeDasharray: 12000, 
+          strokeDashoffset: 12000 
+        });
+        
+        gsap.set('.bridge-wordmark', { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0 });
+
         const tl = gsap.timeline();
-        tl.fromTo('.bridge-wordmark', 
-          { opacity: 0, filter: 'blur(20px)', scale: 1.1, y: 10 },
-          { opacity: 1, filter: 'blur(0px)', scale: 1, y: 0, duration: 2.4, ease: "power3.inOut" }
-        )
+        tl.to(paths, {
+          strokeDashoffset: 0,
+          duration: 1.0,
+          ease: "power2.inOut",
+          stagger: 0.1
+        })
+        .to(paths, {
+          fill: '#ECE7DB',
+          strokeWidth: 0,
+          duration: 0.6,
+          ease: "power1.inOut",
+          stagger: 0.05
+        }, "-=0.6")
         .to('.bridge-container',
-          { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 1.4, ease: "power2.inOut", onComplete: () => setBridge(false) },
-          "+=0.8"
+          { opacity: 0, filter: 'blur(20px)', scale: 1.08, duration: 0.8, ease: "power2.inOut", onComplete: () => setBridge(false) },
+          "+=0.2"
         );
       } else {
         gsap.fromTo('.gsap-entrance',
@@ -423,7 +472,9 @@ export default function App() {
         <div className="bridge-container" style={{ position:"fixed", inset:0, zIndex:1000, background:N.l0,
           display:"flex", alignItems:"center", justifyContent:"center" }}>
           
-          <div className="bridge-wordmark" style={{ opacity: 0 }}>
+          <CinematicVoid />
+
+          <div className="bridge-wordmark" style={{ opacity: 0, position: "relative", zIndex: 10 }}>
             <KathaWordmark className="text-[#ECE7DB]" style={{ height: 64, width: 'auto' }} />
           </div>
 
