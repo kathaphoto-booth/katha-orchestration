@@ -8,11 +8,12 @@
 You are building the launch version of the Katha Booth booking experience in ONE pass. This is a faithful execution task, not a redesign — every design decision is already made and documented. Do not invent brand, colors, fonts, or copy.
 
 READ FIRST, IN THIS ORDER (they are your complete, authoritative spec):
-1. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/KATHA_BOOKING_PRD.md   ← the full build spec. Obey it.
-2. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/content.json            ← source of truth for tiers/pricing/add-ons/palettes/tokens/copy.
-3. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/1_booking_intake.html  ← current intake page (design authority #1).
-4. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/2_template_customizer.html
-5. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/3_confirmation_ticket.html
+1. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/KATHA_BOOKING_PRD.md      ← the full build spec. Obey it.
+2. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/content.json              ← source of truth for tiers/pricing/add-ons/palettes/tokens/copy.
+3. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/design.html              ← THE VISUAL CEILING. The rendered design specimen — tokens, type, motion law, every component state, the real catalog, do/don't. Match this aesthetic and quality exactly; it is deployed at katha-booking-html.vercel.app for reference.
+4. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/1_booking_intake.html  ← implementation reference (exact GSAP, markup, interactions).
+5. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/2_template_customizer.html
+6. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/3_confirmation_ticket.html
 
 IGNORE /Users/jedg./Desktop/kat_ha_pb/DESIGN.md — it is a STALE light-theme spec that does NOT describe this product. The canonical design is the dark "Roasted Archive" system in the PRD §4 and the three prototype files.
 

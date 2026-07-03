@@ -17,10 +17,9 @@ There are two readers.
 
 **If you are Fable 5:** This is your complete build spec. Everything you need is inline — tokens, copy, pricing, motion timings, acceptance criteria. **Do not improvise brand decisions.** Where a value is given, use it exactly. Where §13 marks something "PLACEHOLDER — confirm," keep the given default and wire it so it is trivially swappable (one constant, one comment). Build to the **Definition of Done** in §12; you are expected to self-verify against it before declaring done.
 
-**Canonical source of truth for the *current* design** = the three prototype files, in this order of authority:
-1. `/Users/jedg./Desktop/kat_ha_pb/katha-booking-html/1_booking_intake.html`
-2. `/Users/jedg./Desktop/kat_ha_pb/katha-booking-html/2_template_customizer.html`
-3. `/Users/jedg./Desktop/kat_ha_pb/katha-booking-html/3_confirmation_ticket.html`
+**Canonical source of truth for the design:**
+1. **`katha-booking-html/design.html`** — THE VISUAL CEILING. A rendered design specimen (deployed at `katha-booking-html.vercel.app`) showing every token, face, motion law, component state, the real catalog, and the do/don't. Match its aesthetic and quality exactly.
+2. Implementation reference (exact GSAP/markup/interactions) in `katha-booking-html/_reference/`: `1_booking_intake.html`, `2_template_customizer.html`, `3_confirmation_ticket.html`.
 
 **IGNORE** `/Users/jedg./Desktop/kat_ha_pb/DESIGN.md` — it is a stale, superseded light-theme ("ATELIER / Forest + Cream") spec. It does **not** describe this product. The tokens in §4 of this PRD are canonical.
 
