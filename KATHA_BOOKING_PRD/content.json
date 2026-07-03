@@ -23,6 +23,8 @@
   "integrations": {
     "payments_and_legal": "STRICTLY HoneyBook. Invoice + contract + payment stay in HoneyBook via its native embedded Lead Form + workflows. This site does NOT process payments or contracts.",
     "honeybookLeadForm": "Recommended handoff: the booking 'Secure Dates' CTA routes the inquiry into HoneyBook's embedded Lead Form so HoneyBook fires brochure->invoice->contract->payment natively. Supabase also stores the lead for the availability admin + records.",
+    "HONEYBOOK_LEAD_FORM": "PLACEHOLDER — Jed pastes the HoneyBook Lead Form URL or embed snippet here. Jed builds the form + its brochure/invoice/contract/payment workflow INSIDE HoneyBook. Fable 5 only wires this single value into the branded 'Reserve' seam (PRD 14.1a). Prefill across the seam is NOT reliable — keep the HoneyBook form short so clients don't re-type everything.",
+    "honeybookFormMode": "url | embed",
     "makeDotCom": "NOT viable for the HoneyBook bridge — HoneyBook has NO Make.com connector (native integrations are QuickBooks, Gmail, Calendly, Facebook, Zapier only). Make free tier is fine for OPTIONAL side automations off Supabase (e.g. new lead -> Google Sheet / SMS), never in the money/legal path.",
     "zapier": "Avoid — requires a paid HoneyBook/Zapier tier. Not needed given the native Lead Form path."
   },
