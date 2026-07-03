@@ -1,0 +1,251 @@
+{
+  "_meta": {
+    "brand": "Katha Booth",
+    "system": "Roasted Archive",
+    "note": "Single source of truth for the Katha booking flow. Render UI from this; never hardcode. Tiers/add-ons/prices are REAL, scraped 2026-07-02 from client.kathabooth.com/public/inquiry-form and confirmed by Jed. Present with the Roasted Archive aesthetic but do not alter names/prices/inclusions.",
+    "serviceArea": "Los Angeles & Orange County",
+    "serviceAreaLong": "Serving Los Angeles & Orange County — from Carson and the South Bay through Orange County.",
+    "baseLocation": "Carson, CA 90745",
+    "plate": "Plate No. 2026-CF",
+    "copyright": "©2026 Katha Booth",
+    "contactEmail": "kathabooth@gmail.com",
+    "emailFrom": "onboarding@resend.dev",
+    "emailFromNote": "hello@kathabooth.com is NOT a verified Resend sender yet. Client-facing emails (brochure/invoice/contract) come from HoneyBook, not this site. This site only self-notifies Katha, which works from onboarding@resend.dev. To send client email from hello@kathabooth.com later, verify the kathabooth.com domain in Resend."
+  },
+  "seo": {
+    "note": "Emit a LocalBusiness JSON-LD script for SEO/AIO. Specific place names beat 'Southern California'.",
+    "businessName": "Katha Booth",
+    "areaServed": ["Los Angeles County", "Orange County", "Carson", "Long Beach", "South Bay", "Los Angeles", "Anaheim", "Irvine"],
+    "cityBase": "Carson, CA",
+    "postalBase": "90745",
+    "keywords": ["photo booth rental Los Angeles", "photo booth rental Orange County", "luxury photo booth Los Angeles", "wedding photo booth Orange County"]
+  },
+  "integrations": {
+    "payments_and_legal": "STRICTLY HoneyBook. Invoice + contract + payment stay in HoneyBook via its native embedded Lead Form + workflows. This site does NOT process payments or contracts.",
+    "honeybookLeadForm": "Recommended handoff: the booking 'Secure Dates' CTA routes the inquiry into HoneyBook's embedded Lead Form so HoneyBook fires brochure->invoice->contract->payment natively. Supabase also stores the lead for the availability admin + records.",
+    "makeDotCom": "NOT viable for the HoneyBook bridge — HoneyBook has NO Make.com connector (native integrations are QuickBooks, Gmail, Calendly, Facebook, Zapier only). Make free tier is fine for OPTIONAL side automations off Supabase (e.g. new lead -> Google Sheet / SMS), never in the money/legal path.",
+    "zapier": "Avoid — requires a paid HoneyBook/Zapier tier. Not needed given the native Lead Form path."
+  },
+  "supabase": {
+    "url": "https://hvvomiyskizxzhyytcfd.supabase.co",
+    "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2dm9taXlza2l6eHpoeXl0Y2ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxOTUxNTIsImV4cCI6MjA5NTc3MTE1Mn0.PLxKGlo_nM_TeM3MvJ-L6Epf4LyxS4KOaQ2l4mSV_2A",
+    "publishableKey": "sb_publishable_kDKUaI-kblRcUZgyiX-k7A_F91IqaQC",
+    "note": "anonKey/publishableKey are SAFE to ship in client JS (RLS protects data). The SERVICE_ROLE key is NEVER here — it lives only in Vercel env for the serverless /api/lead function. Client calendar + admin auth use the anon/publishable key; lead inserts go through the serverless fn."
+  },
+  "tokens": {
+    "l0": "#110F0D", "l1": "#1A1714", "l2": "#241F1B", "l3": "#2E2722",
+    "hi": "#E8E1D3", "mut": "#A39B8E", "fnt": "#857D71",
+    "loko": "#9A3D2A", "lokoHover": "#a9432f",
+    "line": "rgba(232,225,211,0.08)", "ok": "#10B981",
+    "paperBone": "#F7F5F1", "paperWarm": "#F5EFE6", "inkCharcoal": "#2C2523"
+  },
+  "fonts": {
+    "display": "'FH Ronaldson Display', 'Fraunces', serif",
+    "serif": "'Fraunces', serif",
+    "body": "'Outfit', sans-serif",
+    "mono": "'Courier Prime', monospace"
+  },
+  "motionLaw": {
+    "maxTiltDeg": 6,
+    "minSettleDurationSec": 1.2,
+    "settleReturnEases": ["power3.out", "power4.out"],
+    "symmetricTransitionEasesPreserve": ["power4.inOut (shutter close/open)", "power3.inOut (format morph)"],
+    "forbiddenEases": ["back", "elastic", "bounce", "spring"],
+    "reducedMotion": "wrap timelines in gsap.matchMedia('(prefers-reduced-motion: no-preference)') AND add a reduce-branch that force-reveals ticket folds (opacity:1,rotateX:0), parts/hides shutter blades, and reveals the wordmark"
+  },
+  "texture": {
+    "grain": "feTurbulence fractalNoise baseFrequency=0.85 numOctaves=3 stitchTiles=stitch, rect opacity~0.03 (all steps, aria-hidden)",
+    "wabiSabiWordmarkFilter": "feTurbulence fractalNoise baseFrequency='0.03 0.06' numOctaves=3 -> feDisplacementMap scale=4 xChannel=R yChannel=G (WORDMARK ONLY)"
+  },
+  "tiers": [
+    {
+      "key": "editorial",
+      "name": "Editorial Installation",
+      "badge": "With Prints",
+      "price": 949,
+      "hours": 3,
+      "extraHourRate": 149,
+      "available": true,
+      "blurb": "Oak wood DSLR installation with professional-grade photography and metallic pearl proprietary prints.",
+      "includes": [
+        "Up to 3 hours print service ($149 per additional hour)",
+        "Oak wood DSLR installation",
+        "Professional grade photos",
+        "Choice of 2×6 or 4×6 prints",
+        "Metallic Pearl proprietary prints",
+        "Unlimited sessions",
+        "Instant media sharing",
+        "3 complimentary beauty effects",
+        "Dynamic GIFs",
+        "Premium 8×8' backdrop",
+        "Custom overlay & template",
+        "Custom welcome screen"
+      ],
+      "optional": ["Premium prop signs & table", "Photo booth attendant"]
+    },
+    {
+      "key": "glam_editorial",
+      "name": "Glam Editorial Installation",
+      "badge": "With Prints · Flagship",
+      "price": 1149,
+      "hours": 3,
+      "extraHourRate": 149,
+      "available": true,
+      "default": true,
+      "blurb": "The full Editorial installation with professional monochrome, skin-soothing photography.",
+      "includes": [
+        "Up to 3 hours print service ($149 per additional hour)",
+        "Oak wood DSLR installation",
+        "Professional monochrome skin-soothing photos",
+        "Choice of 2×6 or 4×6 prints",
+        "Metallic Pearl proprietary prints",
+        "Unlimited sessions",
+        "Instant media sharing",
+        "3 complimentary beauty effects",
+        "Dynamic GIFs",
+        "Premium 8×8' backdrop",
+        "Custom overlay & template",
+        "Custom welcome screen"
+      ],
+      "optional": ["Premium prop signs & table", "Photo booth attendant"]
+    },
+    {
+      "key": "architectural",
+      "name": "Architectural Installation",
+      "badge": "With Prints",
+      "price": 749,
+      "hours": 3,
+      "extraHourRate": 149,
+      "available": false,
+      "unavailableLabel": "Currently Unavailable",
+      "blurb": "Architectural booth configuration with prints. Temporarily unavailable.",
+      "includes": [
+        "Up to 3 hours print service ($149 per additional hour)",
+        "Choice of 2×6 or 4×6 prints",
+        "Unlimited sessions",
+        "Instant media sharing",
+        "3 complimentary beauty effects",
+        "Dynamic GIFs",
+        "Premium 8×8' backdrop",
+        "Custom overlay & template",
+        "Custom welcome screen"
+      ],
+      "optional": ["Premium prop signs & table", "Photo booth attendant"]
+    },
+    {
+      "key": "katha_booth",
+      "name": "Katha Booth Installation",
+      "badge": "With Prints · Essential",
+      "price": 549,
+      "hours": 4,
+      "extraHourRate": 149,
+      "available": true,
+      "blurb": "The essential Katha booth — four hours of unlimited high-grade photos, GIFs, and instant sharing.",
+      "includes": [
+        "Up to 4 hours print service ($149 per additional hour)",
+        "2×6 prints",
+        "Unlimited high-grade photos and dynamic GIFs",
+        "Instant media sharing via text, AirDrop, QR code",
+        "Complimentary beauty filters",
+        "Choice of standard backdrop",
+        "Choice of standard overlay & template",
+        "Choice of standard welcome screen",
+        "Online gallery for viewing and downloading"
+      ],
+      "optional": ["Premium prop signs & table"]
+    }
+  ],
+  "addons": [
+    { "key": "bespoke_backdrop", "name": "Bespoke Backdrop", "price": 499, "type": "toggle", "note": "A stylish, high-quality backdrop to match your event's theme. Flower wall not included." },
+    { "key": "white_flower_backdrop", "name": "White Flower Backdrop", "price": 499, "type": "toggle", "note": "A gorgeous white flower backdrop to elevate your event's ambiance. Perfect for weddings and social gatherings." },
+    { "key": "additional_hours", "name": "Additional Hour(s)", "price": 149, "type": "quantity", "min": 0, "max": 2, "unit": "hour", "note": "$149/hour · up to 2 hours maximum." }
+  ],
+  "intakeFields": {
+    "note": "Match the real HoneyBook inquiry form. Core columns (client_name/email/phone/venue/event_date) map to leads; the rest fold into leads.notes as JSON and/or selections.",
+    "required": ["fullName", "email", "phone", "venueAddress", "eventType", "indoorsOutdoors", "startDate", "startTime"],
+    "optional": ["guestCount", "howHeard", "specialNotes"],
+    "eventTypeOptions": ["Wedding", "Engagement", "Birthday", "Corporate / Brand", "Anniversary", "Debut / Quinceañera", "Graduation", "Other"],
+    "indoorsOutdoors": ["Indoors", "Outdoors"],
+    "howHeardOptions": ["Instagram", "Google", "Referral / Word of Mouth", "TikTok", "Wedding Planner / Venue", "Other"]
+  },
+  "palettes": [
+    { "key": "pina", "name": "Heirloom Piña", "bg": "#F5EFE6", "text": "#2C2523", "sub": "#2C2523", "slot": "#E8E1D3", "stroke": "#2C2523", "default": true },
+    { "key": "void", "name": "The Void", "bg": "#110F0D", "text": "#E8E1D3", "sub": "#A39B8E", "slot": "#241F1B", "stroke": "#E8E1D3" },
+    { "key": "achuete", "name": "Achuete Red", "bg": "#9A3D2A", "text": "#F5EFE6", "sub": "#E8E1D3", "slot": "#7A2E1F", "stroke": "#F5EFE6" },
+    { "key": "moss", "name": "Moss Patina", "bg": "#4E5B48", "text": "#F5EFE6", "sub": "#DCCBB5", "slot": "#3A4437", "stroke": "#F5EFE6" },
+    { "key": "champagne", "name": "Satin Champagne", "bg": "#DCCBB5", "text": "#2C2523", "sub": "#5C554C", "slot": "#C2B19D", "stroke": "#2C2523" }
+  ],
+  "formats": [
+    { "key": "postcard", "name": "Postcard (4×6)", "cardW": 320, "cardH": 480, "slots": 3, "slotAspect": "4/3", "default": true },
+    { "key": "strip", "name": "Filmstrip (2×6)", "cardW": 180, "cardH": 520, "slots": 4, "slotAspect": "1/1" }
+  ],
+  "copy": {
+    "step1": {
+      "eyebrow": "// Inquiry & Availability",
+      "headline": "Check availability. Reserve the night.",
+      "sub": "Oak-wood DSLR and modern installations that frame quiet, high-contrast portrait captures. Select your installation below.",
+      "cta": "Secure Dates & Begin Design"
+    },
+    "step2": {
+      "eyebrow": "// Studio Customizer",
+      "headline": "Design Your Commemorative Card.",
+      "sub": "Compose the text layers and pick a physical paper hue. Live proof updates instantly.",
+      "cta": "Finalize Custom Design",
+      "titlePlaceholder": "e.g., LORENZO & CORAZON",
+      "subtitlePlaceholder": "e.g., OCTOBER 15, 2026 • LOS ANGELES"
+    },
+    "step3": {
+      "eyebrow": "✓ Inquiry Received",
+      "headline": "Inquiry Registered & Secured.",
+      "sub": "Your requested date is logged. We'll review availability and reply from hello@kathabooth.com with a detailed proposal.",
+      "printCta": "Print Physical Ticket Stock",
+      "emailCta": "Email Copy to Inbox",
+      "restartCta": "Start New Inquiry"
+    },
+    "privacyLine": "We use your details to respond to your inquiry and, if you opt in, to share occasional Katha offers. Unsubscribe anytime.",
+    "marketingConsentLabel": "Keep me posted on Katha offers & availability (optional).",
+    "marketingConsentDefault": false
+  },
+  "leadsColumns": {
+    "note": "Insert ONLY these columns into Supabase `leads`. Verified 2026-07-02 (39 rows, all columns present). Design data goes to the `selections` table (FK selections.lead -> leads.lead_hash), not leads.",
+    "leads": {
+      "client_name": "contact.fullName (NOT NULL)",
+      "client_email": "contact.email (NOT NULL)",
+      "client_phone": "contact.phone",
+      "event_date": "STATE.date as ISO 'YYYY-MM-DD' string (column is TEXT, NOT NULL)",
+      "lead_hash": "crypto.randomUUID() (NOT NULL, unique)",
+      "venue_name": "contact.venueAddress",
+      "tier_selected": "tier name",
+      "addons": "JSON.stringify(selected add-ons incl. additional_hours qty)",
+      "notes": "JSON.stringify({eventType, indoorsOutdoors, startTime, guestCount, howHeard, specialNotes, priceQuoted})",
+      "status": "'Inquired'  (matches existing default)"
+    },
+    "selections_optional": {
+      "note": "If you also persist the Step-2 design, write a row to `selections` after the design step. lead = leads.lead_hash.",
+      "template_name": "design.format", "names": "design.title", "date": "STATE.date",
+      "venue": "contact.venueAddress", "service_tier": "tier name",
+      "configuration": "JSON { subtitle, palette, format }"
+    }
+  },
+  "availability": {
+    "model": "ALLOW-LIST (admin portal). The studio marks dates OPEN in the admin portal; the public calendar shows only OPEN, future, non-booked dates as selectable.",
+    "table": "public.available_dates (date PK, status 'open'|'booked', note)",
+    "publicRead": "GET {url}/rest/v1/available_dates?select=date,status  with apikey + Authorization Bearer = anonKey. RLS allows public SELECT.",
+    "adminWrite": "admin.html: Supabase Auth magic link -> RLS (is_admin()) permits insert/update/delete. Admins seeded in public.admins.",
+    "seededSampleRows": 20,
+    "adminsSeeded": ["kathabooth@gmail.com"]
+  },
+  "openDecisions": {
+    "pricingConfirmed": true,
+    "submitTransport": "serverless + supabase (WIRED). Add SUPABASE service-role/secret + RESEND_API_KEY to the katha-booking-html Vercel project env.",
+    "emailFrom": "onboarding@resend.dev (self-notify works). Client emails via HoneyBook. Verify kathabooth.com in Resend only if you later want client email from hello@kathabooth.com.",
+    "migrationsApplied": true,
+    "availabilitySource": "available_dates allow-list via admin portal (WIRED)",
+    "minNoticeDays": 7,
+    "admins": "kathabooth@gmail.com (shared business inbox — covers Jed + brother; no second admin needed)",
+    "customDomain": "book.kathabooth.com (CONFIRMED)",
+    "analytics": "Vercel Web Analytics (free on Hobby) — add the one-line script",
+    "serviceArea": "Los Angeles & Orange County",
+    "paymentsAndLegal": "HoneyBook only (native Lead Form + workflows). No Zapier, no Make in the money/legal path."
+  }
+}
