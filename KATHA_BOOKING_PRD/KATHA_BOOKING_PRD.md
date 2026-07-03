@@ -232,9 +232,15 @@ See §4.1 table (5 palettes, `pina` default).
 - Filmstrip: card ~180×520, 4 square slots stacked. Postcard: card ~320×480, 3 landscape (4:3) slots. Keep; make slot geometry palette-aware and clean (no grey dummy stand-ins).
 
 ### 6.5 Standing brand copy
-- Nav wordmark: **Katha**; logomark = the existing leaf-feather SVG. Tagline meta: `// Southern California`.
-- Footer: `Plate No. 2026-CF` · `©2026 Katha Atelier Studio`.
+- Nav wordmark: **Katha**; logomark = the existing leaf-feather SVG. Tagline meta: `// Los Angeles & Orange County`.
+- Footer: `Plate No. 2026-CF` · `©2026 Katha Booth`.
 - Studio voice: quiet, editorial, tactile. Mono "system" meta uses `//` prefixes and UPPERCASE tracking. Keep this exact tone; do not make it chatty.
+
+### 6.6 Photography — REAL work is required (not optional)
+A luxury photo-booth site with no real photography reads as unfinished and kills trust — this was a genuine gap. **Real Katha booth stock is now bundled at `katha-booking-html/assets/portfolio/`** (8 curated shots: `velour-floral`, `wildflower-wedding`, `crimson`, `glam-portrait`, `peachy`, `red`, `western-rich`, `lumiere`; sourced from Jed's Drive, professionally shot). `content.json.portfolio` is the manifest.
+- **Where real photos go:** a **portfolio / "The Work" gallery**, the **hero** (as atmosphere, kept subordinate to the type), and optionally **tier cards**. Treat them with the Roasted Archive frame — restrained, grain-compatible, no garish filters.
+- **Where they must NOT go:** the **Step-2 customizer preview slots stay empty** (they represent where the *client's* booth photos will print — filling them with stock is a lie). Reference-photo upload is the client's own images.
+- Lazy-load below-the-fold images; provide descriptive `alt`; keep the gallery keyboard-navigable. More/higher-res assets live in the Drive folder if Jed wants to expand the set.
 
 ---
 
@@ -271,11 +277,21 @@ Keep the split layout (packages/availability left, form/summary right). Requirem
 - **On valid submit — with idempotency:** if `STATE.leadId` is already set (user came Back and re-clicked), **do NOT insert again** — just advance to Step 2. Otherwise run §7.4 `submitLead` → on success set `STATE.leadId`/`submittedAt`, then `goToStep(2)`. On failure, stay on Step 1, show the error toast (§7.6), do not advance.
 - **Submit timing note:** the lead is captured here (Step 1→2). Step-2 design choices happen *after*, so they are **display-only on the ticket** this pass and folded into the `notes` blob only if a later update is added (§7.4). Do not block on persisting design data.
 
-### 7.3 Step 2 — Design customizer (from `2_template_customizer.html`)
-- Controls bound to `STATE.design`. **Title default** = `STATE.contact.name` verbatim, uppercased (do **not** synthesize a two-name "couple line" from the single Full Name field). **Subtitle default** = empty, showing the ghost placeholder `content.copy.step2.subtitlePlaceholder`. **Never** hardcode "LORENZO & CORAZON" / "OCTOBER 15…" as real data — those are `placeholder` attributes only.
-- Palette swatches animate the live card (GSAP, `power3.out`, per motion law); format buttons morph the card geometry.
-- 3D tilt: keep, clamp ≤6°, return `≥1.2s` `power3.out`, and **disable under reduced-motion**.
-- "Finalize Custom Design" → shutter → Step 3. "Back" control → shutter → Step 1 (state intact).
+### 7.3 Step 2 — Design customizer — MATCH THE PRIOR book.kathabooth.com MODEL (do not flatten)
+**This is the aspect the prior `book.kathabooth.com` build (the `photobooth-template-studio` app) did right — replicate its live-customizer architecture, not the simplified prototype.** Authoritative source files (Fable 5 must read them):
+- `photobooth-template-studio/lib/layouts.js` — the **LAYOUT REGISTRY**: exact photo-slot + text-zone rectangles per arrangement (strip-2/3/4, pv-1/2/3/L/invL, pc-1/2-split/2-sq/3-v/3-sq/L/invL/4-grid) in a 300-DPI viewBox. **The single source of slot math.** (`Zenith/lib/layouts.js` is identical.)
+- `photobooth-template-studio/lib/templates.ts` — the **PRESET catalog** (48 "Katha Signature — …" presets: id, `type`, `layoutId`, background/text/slot/border colors, `fontFamily`, decorative SVG).
+- `photobooth-template-studio/app/portal/[id]/template-design/TemplateDesignClient.tsx` — the **reference implementation** of the live preview.
+
+**The model (vibe-first, no raw design knobs):**
+1. **Browse a gallery of real design presets** (text-free thumbnails), filterable by **format** (strip / postcard-vertical / postcard) and **tier** (Signature / Classic). Each thumbnail is a faithful render of the preset.
+2. **Pick a style** → it becomes `STATE.design.presetId` (carries its own colors, layout, decorative SVG — the "palette" is a property of the preset, not a separate free knob).
+3. **Personalize** only `names` / `date` / `venue` (+ optional font choice, text-position top/bottom). Defaults: `names` = `STATE.contact.name` uppercased (never a synthesized couple line, never hardcoded "LORENZO & CORAZON"); `date` = formatted `STATE.date`; `venue` = `STATE.contact.venueAddress`.
+4. **Live faithful preview** — render slots + text-zone **absolutely-positioned as percentages of the layout's viewBox** (exactly as `TemplateCanvas`): `left = slot.x / viewBox.w * 100`, `top = slot.y / viewBox.h * 100`, etc. Slots stay **empty colored rectangles** (that is where the client's booth photos will print — do NOT fill them with stock). `getModifiedLayout` flips the text zone for top/bottom. This is the "zero placeholders / dynamic slot from metadata" law — no hardcoded generic boxes.
+5. **Reference-photo upload** (optional): client uploads inspiration → Supabase **Storage** (`refs/<uuid>.<ext>`), path stored on the `selections` row (`reference_photos[]`). Fallback to base64 in payload if the presigned upload fails.
+- 3D tilt on the preview: keep, ≤6°, return ≥1.2s `power3.out`, disabled under reduced-motion.
+- Persist the design to the **`selections`** table (§7.4): `template_id/template_name` = preset, `layout`, `names/date/venue`, `font_family`, `reference_photos`, `configuration` JSON, `service_tier`, `lead` = `leads.lead_hash`.
+- "Finalize Custom Design" → shutter → Step 3. "Back" → shutter → Step 1 (state intact).
 
 ### 7.4 Submission (the critical "make it real" requirement) — VERIFIED SCHEMA
 

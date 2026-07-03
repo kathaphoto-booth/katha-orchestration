@@ -177,10 +177,32 @@
     { "key": "moss", "name": "Moss Patina", "bg": "#4E5B48", "text": "#F5EFE6", "sub": "#DCCBB5", "slot": "#3A4437", "stroke": "#F5EFE6" },
     { "key": "champagne", "name": "Satin Champagne", "bg": "#DCCBB5", "text": "#2C2523", "sub": "#5C554C", "slot": "#C2B19D", "stroke": "#2C2523" }
   ],
-  "formats": [
-    { "key": "postcard", "name": "Postcard (4×6)", "cardW": 320, "cardH": 480, "slots": 3, "slotAspect": "4/3", "default": true },
-    { "key": "strip", "name": "Filmstrip (2×6)", "cardW": 180, "cardH": 520, "slots": 4, "slotAspect": "1/1" }
-  ],
+  "customizer": {
+    "note": "MATCH the prior book.kathabooth.com model (photobooth-template-studio). Do NOT use the flattened 2-format placeholder. Live preview slots + text zone are positioned as PERCENTAGES of the layout viewBox.",
+    "authorityFiles": [
+      "photobooth-template-studio/lib/layouts.js (LAYOUT REGISTRY — slot + textZone rectangles per arrangement, 300-DPI viewBox; single source of slot math)",
+      "photobooth-template-studio/lib/templates.ts (48 'Katha Signature —' PRESETS: id, type, layoutId, colors, fontFamily, decorative SVG)",
+      "photobooth-template-studio/app/portal/[id]/template-design/TemplateDesignClient.tsx (reference live-preview implementation)"
+    ],
+    "model": "gallery of real presets -> pick a style -> personalize names/date/venue (+font, text-position) -> faithful live preview from layout geometry -> optional reference-photo upload to Supabase Storage",
+    "formats": ["strip (600x1800)", "postcard-vertical (1200x1800)", "postcard (1800x1200)"],
+    "slotRender": "left = slot.x/viewBox.w*100, top = slot.y/viewBox.h*100, w = slot.w/viewBox.w*100, h = slot.h/viewBox.h*100. Slots stay EMPTY (client's booth photos print there).",
+    "referenceUpload": "Supabase Storage refs/<uuid>.<ext>; path stored on selections.reference_photos[]; base64 fallback",
+    "persistTo": "selections table (template_id/template_name/layout/names/date/venue/font_family/reference_photos/configuration/service_tier/lead=leads.lead_hash)"
+  },
+  "portfolio": {
+    "note": "Real Katha booth stock (from kathabooth@gmail.com Drive). Use in a gallery + hero atmosphere + optionally tier cards. NEVER inside customizer preview slots. Path: assets/portfolio/",
+    "images": [
+      { "src": "assets/portfolio/velour-floral.jpg",      "alt": "Katha booth — Velour Floral installation" },
+      { "src": "assets/portfolio/wildflower-wedding.jpg",  "alt": "Katha booth — Wildflower wedding" },
+      { "src": "assets/portfolio/crimson.jpg",             "alt": "Katha booth — Crimson set" },
+      { "src": "assets/portfolio/glam-portrait.jpg",       "alt": "Katha booth — Glam portrait" },
+      { "src": "assets/portfolio/peachy.jpg",              "alt": "Katha booth — Peachy set" },
+      { "src": "assets/portfolio/red.jpg",                 "alt": "Katha booth — RED set" },
+      { "src": "assets/portfolio/western-rich.jpg",        "alt": "Katha booth — Western Rich installation" },
+      { "src": "assets/portfolio/lumiere.jpg",             "alt": "Katha booth — Lumière installation" }
+    ]
+  },
   "copy": {
     "step1": {
       "eyebrow": "// Inquiry & Availability",

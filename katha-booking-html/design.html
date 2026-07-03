@@ -236,6 +236,17 @@
   footer{padding:60px var(--gutter); border-top:1px solid var(--ln); display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px;
     font-family:var(--f-mono); font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--fnt);}
 
+  /* ============ GALLERY (The Work) ============ */
+  .gallery{columns:3; column-gap:14px;}
+  .gallery figure{break-inside:avoid; margin:0 0 14px; position:relative; border:1px solid var(--ln); border-radius:2px; overflow:hidden; background:var(--l1);}
+  .gallery img{width:100%; display:block; filter:saturate(.92) contrast(1.02); transition:transform .9s cubic-bezier(.16,1,.3,1), filter .6s;}
+  .gallery figure:hover img{transform:scale(1.03); filter:saturate(1) contrast(1.03);}
+  .gallery figure::after{content:''; position:absolute; inset:0; box-shadow:inset 0 -60px 60px -40px rgba(17,15,13,.6); pointer-events:none;}
+  .gallery figcaption{position:absolute; left:12px; bottom:10px; z-index:2; font-family:var(--f-mono); font-size:7px; letter-spacing:.16em; text-transform:uppercase; color:var(--hi); opacity:.85;}
+  .gallery-note{font-family:var(--f-mono); font-size:8px; letter-spacing:.14em; text-transform:uppercase; color:var(--fnt); margin-top:22px;}
+  @media(max-width:820px){ .gallery{columns:2;} }
+  @media(max-width:520px){ .gallery{columns:1;} }
+
   /* ============ RESPONSIVE ============ */
   @media(max-width:820px){
     .grid-2,.comp-grid,.dd{grid-template-columns:1fr;}
@@ -442,18 +453,35 @@
             <div class="psub2">October 15, 2026 · Los Angeles</div>
           </div>
         </div>
-        <div class="state-note" style="text-align:center;margin-top:16px">Ghost text only — the ticket renders the client's real inputs.</div>
+        <div class="state-note" style="text-align:center;margin-top:16px">Slots + text zone render from the layout registry (lib/layouts.js), positioned as % of the viewBox. Slots stay empty — the client's booth photos print there.</div>
       </div>
     </div>
   </section>
 
-  <!-- ============ PLATE 05 — THE FLOW ============ -->
+  <!-- ============ PLATE 05 — THE WORK ============ -->
+  <section class="plate" id="work">
+    <div class="plate-head"><span class="plate-no">Plate 05</span><h2 class="plate-title">The Work — Real, Always</h2></div>
+    <p class="plate-lead">A luxury booth sells on evidence, not adjectives. These are real Katha installations, shot professionally. Photography lives in the gallery, the hero atmosphere, and the tier cards — never inside the customizer's print slots, where the client's own captures belong.</p>
+    <div class="gallery">
+      <figure><img loading="lazy" src="assets/portfolio/velour-floral.jpg" alt="Katha booth — Velour Floral installation" /><figcaption>Velour Floral</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/glam-portrait.jpg" alt="Katha booth — Glam portrait" /><figcaption>Glam Portrait</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/wildflower-wedding.jpg" alt="Katha booth — Wildflower wedding" /><figcaption>Wildflower Wedding</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/crimson.jpg" alt="Katha booth — Crimson set" /><figcaption>Crimson</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/lumiere.jpg" alt="Katha booth — Lumière installation" /><figcaption>Lumière</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/peachy.jpg" alt="Katha booth — Peachy set" /><figcaption>Peachy</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/western-rich.jpg" alt="Katha booth — Western Rich installation" /><figcaption>Western Rich</figcaption></figure>
+      <figure><img loading="lazy" src="assets/portfolio/red.jpg" alt="Katha booth — RED set" /><figcaption>RED</figcaption></figure>
+    </div>
+    <div class="gallery-note">// Bundled at assets/portfolio/ · more in the Katha Drive · never inside customizer slots</div>
+  </section>
+
+  <!-- ============ PLATE 06 — THE FLOW ============ -->
   <section class="plate" id="flow">
-    <div class="plate-head"><span class="plate-no">Plate 05</span><h2 class="plate-title">The Flow — One Seamless Sequence</h2></div>
+    <div class="plate-head"><span class="plate-no">Plate 06</span><h2 class="plate-title">The Flow — One Seamless Sequence</h2></div>
     <p class="plate-lead">Three steps under one roof, joined by the shutter, carrying one shared state — then a branded seam that hands the transaction to HoneyBook. The numbering is real: this is a sequence a client walks in order.</p>
     <div class="flow">
       <div class="flow-step"><div class="fn">01</div><div class="ft">Intake</div><div class="fd">Tiers, add-ons, availability, contact. The lead is captured here.</div><div class="fx">→ Supabase leads</div></div>
-      <div class="flow-step"><div class="fn">02</div><div class="ft">Design</div><div class="fd">Format, title, subtitle, paper palette. Live proof, 3D tilt within the law.</div><div class="fx">shared state carries</div></div>
+      <div class="flow-step"><div class="fn">02</div><div class="ft">Design</div><div class="fd">Browse real presets, pick a style, personalize names/date/venue, upload references. Faithful proof from the layout registry.</div><div class="fx">→ Supabase selections</div></div>
       <div class="flow-step"><div class="fn">03</div><div class="ft">Ticket</div><div class="fd">A bone voucher rendered from real selections. Print + confirm.</div><div class="fx">real data only</div></div>
       <div class="flow-step seam"><div class="fn">04</div><div class="ft">Reserve →</div><div class="fd">A branded seam that hands off to HoneyBook's lead form for invoice, contract &amp; payment.</div><div class="fx">HoneyBook owns money/legal</div></div>
     </div>
@@ -461,7 +489,7 @@
 
   <!-- ============ PLATE 06 — DO / DON'T ============ -->
   <section class="plate" id="rules">
-    <div class="plate-head"><span class="plate-no">Plate 06</span><h2 class="plate-title">The Ceiling — Do &amp; Don't</h2></div>
+    <div class="plate-head"><span class="plate-no">Plate 07</span><h2 class="plate-title">The Ceiling — Do &amp; Don't</h2></div>
     <p class="plate-lead">The line between a faithful build and a misinterpretation. Read it as law.</p>
     <div class="dd">
       <div class="dd-col do">
@@ -471,6 +499,8 @@
           <li>Carry one shared state through all steps; the ticket shows the client's real name, date, venue, palette.</li>
           <li>Capture the lead through the serverless function into Supabase; surface every failure.</li>
           <li>Keep money &amp; legal 100% in HoneyBook via a branded, framed seam.</li>
+          <li>Build the customizer from the real preset gallery + layout registry (lib/layouts.js) — dynamic %-positioned slots, reference-photo upload.</li>
+          <li>Show real Katha photography in the gallery, hero atmosphere, and tier cards.</li>
           <li>Honor reduced-motion, keyboard, and the corrected contrast pairs.</li>
         </ul>
       </div>
@@ -481,6 +511,7 @@
           <li>Ship hardcoded demo data (LORENZO / $949 / #8D49F03B) as if real.</li>
           <li>Fake a submission, a HoneyBook form, or an invoice/contract UI.</li>
           <li>Render Achuete as small readable text, or as the focus ring.</li>
+          <li>Flatten the customizer to a generic 2-format placeholder, or fill its preview slots with stock (they stay empty for the client's photos).</li>
           <li>Drop a raw, un-framed HoneyBook iframe that breaks the aesthetic.</li>
         </ul>
       </div>
