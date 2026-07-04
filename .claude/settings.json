@@ -9,8 +9,22 @@
       "Bash(bash .agents/skills/antigravity/scripts/council.sh*)",
       "Bash(bash .agents/skills/antigravity/scripts/self_eval.sh*)",
       "Bash(bash scripts/agy-tier-run.sh*)",
-      "Bash(bash bin/compile-ham.sh*)",
+      "Bash(bash bin/compile-memory.sh*)",
       "mcp__ccd_session__mark_chapter"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/daily-wiki-audit.sh",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

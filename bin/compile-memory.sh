@@ -8,34 +8,34 @@ if [[ ! -d "$VAULT" ]]; then
   exit 1
 fi
 
-OUT="$VAULT/COMPILED_HAM.md"
+OUT="$VAULT/COMPILED_MEMORY.md"
 # self-lock so a kickoff-compile (agy-tier-run) and a sync-compile cannot
-# interleave. Nestable via COMPILE_HAM_NESTED: sync.sh already holds this
+# interleave. Nestable via COMPILE_MEMORY_NESTED: sync.sh already holds this
 # same lock for its own duration and calls us as its last step — we must
 # not try to re-acquire our own caller's lock.
 LOCK="$VAULT/.sync.lock"
-if [[ "${COMPILE_HAM_NESTED:-}" != "1" ]]; then
+if [[ "${COMPILE_MEMORY_NESTED:-}" != "1" ]]; then
   if ! (set -C; echo $$ > "$LOCK") 2>/dev/null; then
-    echo "compile-ham: lock held ($LOCK); another compile/sync in progress" >&2
+    echo "compile-memory: lock held ($LOCK); another compile/sync in progress" >&2
     exit 3
   fi
   trap 'rm -f "$LOCK"' EXIT
 fi
-TMP=$(mktemp "$VAULT/.COMPILED_HAM.md.XXXXXX")
+TMP=$(mktemp "$VAULT/.COMPILED_MEMORY.md.XXXXXX")
 
 # --- preflight: every core node must exist and be non-empty before we compile.
 #     A missing/truncated node now fails LOUDLY here instead of producing a
-#     silently-incomplete COMPILED_HAM.md that a booting agent then trusts. ---
+#     silently-incomplete COMPILED_MEMORY.md that a booting agent then trusts. ---
 CORE_NODES=(SESSION_HANDOFF.json decisions.md patterns.md inbox.md memory.md instructions.md)
 for node in "${CORE_NODES[@]}"; do
   if [[ ! -s "$VAULT/$node" ]]; then
-    echo "FATAL: core HAM node missing or empty: $VAULT/$node" >&2
-    echo "Refusing to compile a partial COMPILED_HAM.md." >&2
+    echo "FATAL: core memory node missing or empty: $VAULT/$node" >&2
+    echo "Refusing to compile a partial COMPILED_MEMORY.md." >&2
     exit 1
   fi
 done
 
-echo "# HIERARCHICAL AGENT MEMORY (HAM) VAULT" > "$TMP"
+echo "# KATHA AGENT MEMORY — COMPILED" > "$TMP"
 
 echo "## 1. SESSION_HANDOFF.json" >> "$TMP"
 cat "$VAULT/SESSION_HANDOFF.json" >> "$TMP"
@@ -70,6 +70,6 @@ shopt -u nullglob
 # --- completion sentinel: lets any consumer confirm the compile finished rather
 #     than catching a half-written file. grep for this marker to validate. ---
 LINES=$(wc -l < "$TMP" | tr -d ' ')
-printf '\n# END OF COMPILED_HAM — %s lines, 6 core nodes + handoff/\n' "$LINES" >> "$TMP"
+printf '\n# END OF COMPILED_MEMORY — %s lines, 6 core nodes + handoff/\n' "$LINES" >> "$TMP"
 
 mv "$TMP" "$OUT"   # atomic publish — readers see all-or-nothing

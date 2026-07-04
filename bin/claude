@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pre-flight HAM Compiler
+# Pre-flight memory compiler
 VAULT="/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory"
 
 if [[ ! -d "$VAULT" ]]; then
@@ -8,8 +8,8 @@ if [[ ! -d "$VAULT" ]]; then
   exit 1
 fi
 
-# Pre-flight HAM Compiler
-/Users/jedg./Desktop/kat_ha_pb/bin/compile-ham.sh
+# Pre-flight memory compiler
+/Users/jedg./Desktop/kat_ha_pb/bin/compile-memory.sh
 
 # Run the global claude binary
-exec /usr/local/bin/claude "SYSTEM ARCHITECTURE INJECTION: Please read the following memory vault and then ask the user what to do next. \n\n $(cat "$VAULT/COMPILED_HAM.md" 2>/dev/null || echo "Vault memory unavailable")" "$@"
+exec /usr/local/bin/claude "SYSTEM ARCHITECTURE INJECTION: Please read the following memory vault and then ask the user what to do next. \n\n $(cat "$VAULT/COMPILED_MEMORY.md" 2>/dev/null || echo "Vault memory unavailable")" "$@"
