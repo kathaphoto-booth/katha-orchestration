@@ -9,17 +9,19 @@ You are building the launch version of the Katha Booth booking experience in ONE
 
 READ FIRST, IN THIS ORDER (they are your complete, authoritative spec):
 1. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/KATHA_BOOKING_PRD.md      ← the full build spec. Obey it.
-2. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/content.json              ← source of truth for tiers/pricing/add-ons/palettes/tokens/copy.
-3. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/design.html              ← THE VISUAL CEILING. The rendered design specimen — tokens, type, motion law, every component state, the real catalog, do/don't. Match this aesthetic and quality exactly; it is deployed at katha-booking-html.vercel.app for reference.
-4. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/1_booking_intake.html  ← implementation reference (exact GSAP, markup, interactions).
-5. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/2_template_customizer.html
-6. /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/_reference/3_confirmation_ticket.html
+1.5 /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/DESIGN_HANDOFF.md        ← DESIGN AUTHORITY + conflict resolutions + missing-state specs. If it and any older doc disagree, IT WINS.
+1.6 /Users/jedg./Desktop/kat_ha_pb/pb-v3/lib/data.ts                          ← THE CURATED 10-preset catalog (5 Signature + 5 Classic, Jed 2026-07-03). This is the Step-2 gallery; the 48-preset browse is OUT.
+2. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/content.json              ← source of truth for tiers/pricing/add-ons/palettes/tokens/copy. (Tier catalog here WINS over pb-v3 data.ts TIERS.)
+3. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/design.html              ← THE VISUAL CEILING. The rendered design specimen — tokens, type, motion law, every component state, the real catalog, do/don't. Match this aesthetic and quality exactly; it is deployed at katha-booking-html.vercel.app for reference.
+4. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/_reference/1_booking_intake.html  ← implementation reference (exact GSAP, markup, interactions).
+5. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/_reference/2_template_customizer.html
+6. /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/_reference/3_confirmation_ticket.html
 
 IGNORE /Users/jedg./Desktop/kat_ha_pb/DESIGN.md — it is a STALE light-theme spec that does NOT describe this product. The canonical design is the dark "Roasted Archive" system in the PRD §4 and the three prototype files.
 
 WHAT TO BUILD (two files):
-1) OVERWRITE the redirect stub at /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/index.html with the unified 3-step booking flow (Intake → Design → Ticket) — one seamless experience, single shared STATE (PRD §7.1). The confirmation ticket MUST render the client's REAL selections from STATE (name/title, human-formatted date from STATE.date, venue, tier, price, ONLY chosen add-ons, real leadId) — never the hardcoded "LORENZO & CORAZON / $949 / #8D49F03B / three fake add-ons".
-2) NEW /Users/jedg./Desktop/kat_ha_pb/katha-booking-html/admin.html — the availability admin portal (PRD §7.7): Supabase magic-link auth, RLS-gated writes to the `available_dates` table (toggle a day open/closed, mark booked), same Roasted Archive styling. Backend + RLS already exist; kathabooth@gmail.com is seeded as admin.
+1) OVERWRITE the redirect stub at /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/index.html with the unified 3-step booking flow (Intake → Design → Ticket) — one seamless experience, single shared STATE (PRD §7.1). The confirmation ticket MUST render the client's REAL selections from STATE (name/title, human-formatted date from STATE.date, venue, tier, price, ONLY chosen add-ons, real leadId) — never the hardcoded "LORENZO & CORAZON / $949 / #8D49F03B / three fake add-ons".
+2) NEW /Users/jedg./Desktop/kat_ha_pb/KATHA_BOOKING_PRD/katha-booking-html/admin.html — the availability admin portal (PRD §7.7): Supabase magic-link auth, RLS-gated writes to the `available_dates` table (toggle a day open/closed, mark booked), same Roasted Archive styling. Backend + RLS already exist; kathabooth@gmail.com is seeded as admin.
 
 REAL DATA IS PINNED — do NOT invent tiers/prices. Render tiers/add-ons/copy from content.json (real catalog, scraped from the live form): Editorial $949, Glam Editorial $1,149 (default), Architectural $749 (render DISABLED/"Currently Unavailable"), Katha Booth $549; add-ons Bespoke Backdrop $499, White Flower Backdrop $499, Additional Hour(s) $149/hr as a 0–2 stepper. Also add the real intake fields (event type, indoors/outdoors, start time, guest count, how-heard) and the privacy line — fold the extras into leads.notes as JSON (§7.4).
 

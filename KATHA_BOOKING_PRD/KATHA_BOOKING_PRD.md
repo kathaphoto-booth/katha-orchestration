@@ -18,8 +18,8 @@ There are two readers.
 **If you are Fable 5:** This is your complete build spec. Everything you need is inline — tokens, copy, pricing, motion timings, acceptance criteria. **Do not improvise brand decisions.** Where a value is given, use it exactly. Where §13 marks something "PLACEHOLDER — confirm," keep the given default and wire it so it is trivially swappable (one constant, one comment). Build to the **Definition of Done** in §12; you are expected to self-verify against it before declaring done.
 
 **Canonical source of truth for the design:**
-1. **`katha-booking-html/design.html`** — THE VISUAL CEILING. A rendered design specimen (deployed at `katha-booking-html.vercel.app`) showing every token, face, motion law, component state, the real catalog, and the do/don't. Match its aesthetic and quality exactly.
-2. Implementation reference (exact GSAP/markup/interactions) in `katha-booking-html/_reference/`: `1_booking_intake.html`, `2_template_customizer.html`, `3_confirmation_ticket.html`.
+1. **`KATHA_BOOKING_PRD/katha-booking-html/design.html`** — THE VISUAL CEILING. A rendered design specimen (deployed at `katha-booking-html.vercel.app`) showing every token, face, motion law, component state, the real catalog, and the do/don't. Match its aesthetic and quality exactly.
+2. Implementation reference (exact GSAP/markup/interactions) in `KATHA_BOOKING_PRD/katha-booking-html/_reference/`: `1_booking_intake.html`, `2_template_customizer.html`, `3_confirmation_ticket.html`.
 
 **IGNORE** `/Users/jedg./Desktop/kat_ha_pb/DESIGN.md` — it is a stale, superseded light-theme ("ATELIER / Forest + Cream") spec. It does **not** describe this product. The tokens in §4 of this PRD are canonical.
 
@@ -53,7 +53,7 @@ Katha Booth (a Southern-California / Manila luxury photo-booth atelier) has a **
 - **N3 — No auth / client accounts / login.**
 - **N4 — No general admin dashboard / CMS.** The **one** admin surface in scope is the lightweight **availability admin portal** (`admin.html`, §7.7) for Jed & his brother to set open dates. Pricing/tier content is managed in `content.json`, not a UI.
 - **N5 — No new brand invention.** Use only the tokens, type, motion, and copy defined here and in the prototype. No new colors, no new fonts, no AI-slop gradients/shadows.
-- **N6 — No reference-photo upload, no per-template style notes** (those are Zenith Phase 2, tracked separately).
+- ~~**N6 — No reference-photo upload**~~ **SUPERSEDED by §7.3.5** — optional reference-photo upload to Supabase Storage IS in scope (graceful-degrade, not a launch blocker).
 
 ---
 
@@ -81,7 +81,7 @@ A **single self-contained page** — `index.html` — that presents a **3-step b
 ### 3.2 Why single-file (not 3 files + storage), and why static (not React now)
 - **Single-file** eliminates the cross-page state problem at the root: state is just a JS object, no `sessionStorage` serialization, no page-reload flashes, no font re-fetch between steps. It also makes the shutter a *true* transition rather than a navigation. This is the **lowest-risk path to a reliable one-shot** and the most seamless UX.
 - **Static (this pass)** keeps Fable 5's one-shot inside a domain it can nail: no build config, no SSR/RLS/type mismatches. The React/Supabase port is real and wanted — it is fully spec'd in **Appendix A** for a follow-up session, so nothing is lost.
-- The old `1_/2_/3_` files are **archived, not deleted** (move to `katha-booking-html/_archive/`) so the deployed URLs and history survive.
+- The old `1_/2_/3_` files are **archived, not deleted** (move to `KATHA_BOOKING_PRD/katha-booking-html/_archive/`) so the deployed URLs and history survive.
 
 ### 3.3 Tech constraints
 
@@ -237,7 +237,7 @@ See §4.1 table (5 palettes, `pina` default).
 - Studio voice: quiet, editorial, tactile. Mono "system" meta uses `//` prefixes and UPPERCASE tracking. Keep this exact tone; do not make it chatty.
 
 ### 6.6 Photography — REAL work is required (not optional)
-A luxury photo-booth site with no real photography reads as unfinished and kills trust — this was a genuine gap. **Real Katha booth stock is now bundled at `katha-booking-html/assets/portfolio/`** (8 curated shots: `velour-floral`, `wildflower-wedding`, `crimson`, `glam-portrait`, `peachy`, `red`, `western-rich`, `lumiere`; sourced from Jed's Drive, professionally shot). `content.json.portfolio` is the manifest.
+A luxury photo-booth site with no real photography reads as unfinished and kills trust — this was a genuine gap. **Real Katha booth stock is now bundled at `KATHA_BOOKING_PRD/katha-booking-html/assets/portfolio/`** (8 curated shots: `velour-floral`, `wildflower-wedding`, `crimson`, `glam-portrait`, `peachy`, `red`, `western-rich`, `lumiere`; sourced from Jed's Drive, professionally shot). `content.json.portfolio` is the manifest.
 - **Where real photos go:** a **portfolio / "The Work" gallery**, the **hero** (as atmosphere, kept subordinate to the type), and optionally **tier cards**. Treat them with the Roasted Archive frame — restrained, grain-compatible, no garish filters.
 - **Where they must NOT go:** the **Step-2 customizer preview slots stay empty** (they represent where the *client's* booth photos will print — filling them with stock is a lie). Reference-photo upload is the client's own images.
 - Lazy-load below-the-fold images; provide descriptive `alt`; keep the gallery keyboard-navigable. More/higher-res assets live in the Drive folder if Jed wants to expand the set.
@@ -250,7 +250,7 @@ A luxury photo-booth site with no real photography reads as unfinished and kills
 ```js
 const STATE = {
   step: 1,                         // 1 | 2 | 3
-  tier: 'signature',               // key from content.tiers
+  tier: 'glam_editorial',          // key from content.tiers (real catalog default — Flagship)
   addons: {},                      // { guestbook:true, ... }
   date: null,                      // ISO 'YYYY-MM-DD' (selected event date)
   contact: { name:'', email:'', phone:'', venue:'', notes:'' },
@@ -316,8 +316,8 @@ The lead must be captured. The client-side call site is a **single async `submit
 
 **Design data has a real home — the `selections` table** (FK `selections.lead → leads.lead_hash`). After the Step-2 design, optionally write a `selections` row: `template_name=format`, `names=title`, `date=STATE.date`, `venue=venueAddress`, `service_tier=tier name`, `configuration=JSON({subtitle,palette,format})`. There is **no** `price/title/palette` column on `leads` — never send them there. (All required migrations are already applied — verified.)
 
-**Transport — WIRED (Vercel Serverless Function `katha-booking-html/api/lead.js`):**
-1. Receives `submitLead` payload. 2. Builds the **whitelisted** `leads` row above (+ optional `selections` row). 3. Inserts via Supabase **service-role** client (server-only). 4. Sends the Resend notification to `kathabooth@gmail.com` **from `hello@kathabooth.com`**, referencing `payload.client_name`. 5. Returns `{ success, leadId }`.
+**Transport — SPEC'D; the executor CREATES `KATHA_BOOKING_PRD/katha-booking-html/api/lead.js` (it does not exist yet — the backend tables/RLS are what's wired):**
+1. Receives `submitLead` payload. 2. Builds the **whitelisted** `leads` row above (+ optional `selections` row). 3. Inserts via Supabase **service-role** client (server-only). 4. Sends the Resend notification to `kathabooth@gmail.com` **from `onboarding@resend.dev`** (the only verified sender at launch — swap to `hello@kathabooth.com` in ONE constant after the domain is verified in Resend, §14.2), referencing `payload.client_name`. 5. Returns `{ success, leadId }`.
 - **Project (live):** `SUPABASE_URL = https://hvvomiyskizxzhyytcfd.supabase.co`. Service-role key + `RESEND_API_KEY` go in **Vercel env vars** (never in the repo). The **anon key is in `content.json.supabase`** (safe client-side, for the calendar read + admin auth only).
 - **Fallback (if the fn isn't deployed yet):** Formspree/Basin (real HTTP success/fail). **Never `mailto:`** on a live site (can't confirm send → fake "Secured", violates §10).
 
@@ -337,7 +337,7 @@ The studio marks the dates it's **open**; the public calendar shows **only** tho
 - **Fetch failure must be VISIBLE, not silently faked:** on failure show "availability temporarily unavailable — contact us," not an empty calendar (a client must never request a date you're not open for). No hardcoded fallback list on the live path.
 - Selecting writes ISO `YYYY-MM-DD` to `STATE.date` (parse local, not UTC — §7.5 note).
 
-### 7.7 Admin Portal — `katha-booking-html/admin.html` (NEW deliverable)
+### 7.7 Admin Portal — `KATHA_BOOKING_PRD/katha-booking-html/admin.html` (NEW deliverable)
 A private page for Jed & his brother to manage `available_dates`. **Keep it separate from the client flow** (its own file), simple and robust.
 - **Auth:** Supabase Auth **magic link** via `supabase-js` (anon key). `admin.html` shows an email field → `signInWithOtp({ email })` → they click the link → authenticated session. **RLS enforces** that only emails in `public.admins` can write (helper `public.is_admin()`); a non-admin who signs in sees the calendar read-only and writes are rejected. `kathabooth@gmail.com` is **already seeded**; the brother's email is a one-row add (§13-C).
 - **UI (same Roasted Archive tokens/fonts):** a month calendar where the admin **clicks a day to toggle it open/closed**, and can mark an open day as **booked**. Show current open/booked/closed states. All writes go straight to Supabase (`insert`/`update`/`delete` on `available_dates`) under the authed session — no serverless fn needed for admin (RLS is the gate).
@@ -533,7 +533,7 @@ When ready to move from the static build to the production React app (`Zenith/`)
 
 ---
 
-## APPENDIX B — ASSET & FILE MANIFEST (what ships in `katha-booking-html/`)
+## APPENDIX B — ASSET & FILE MANIFEST (what ships in `KATHA_BOOKING_PRD/katha-booking-html/`)
 
 ```
 katha-booking-html/

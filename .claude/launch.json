@@ -4,7 +4,13 @@
     {
       "name": "katha-booking-static",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4321", "--directory", "katha-booking-html"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4321",
+        "--directory",
+        "KATHA_BOOKING_PRD/katha-booking-html"
+      ],
       "port": 4321
     }
   ]

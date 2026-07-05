@@ -56,3 +56,23 @@ We want to integrate the `obsidian` CLI into our workspace to achieve:
   2. `npm run test`
   3. `npm run lint`
   4. `npm run build`
+
+---
+
+## 4. Security & Stability Mitigations (Adversary-Backed)
+
+These architectural guidelines address security and reliability issues identified during the GitHub Copilot CLI adversarial review:
+
+### 4.1 Path Resolution & Sandbox Validation (Pointer Skills)
+- All pointer skills and path-sensitive scripts must resolve paths using `fs.realpathSync` to canonicalize the destination.
+- Enforce a strict boundary validation check asserting that the resolved path begins with `/Volumes/samsung 970 pro - Data/KATHA_VAULT/` to prevent directory traversal or exfiltration attacks.
+
+### 4.2 File Contention & GFM Format Safety (Daily Notes)
+- **Advisory Locking**: Scripts performing read-modify-write operations on Obsidian daily notes must obtain an advisory lock (using a lightweight lockfile or standard library file checking) to prevent concurrent write collisions and lost updates.
+- **Atomic Replacements**: To prevent data corruption during a crash or collision, write the updated note to a temporary file (`.tmp`) first, then execute a non-blocking rename/replace operation (`fs.renameSync`).
+- **Markdown Integrity**: Automatically sanitize injected user text by escaping potential Markdown triggers (like leading `-`, `#`, or backticks) and pad all injected sections with preceding and succeeding blank lines to preserve clean GitHub Flavored Markdown (GFM) rendering.
+
+### 4.3 Robust Offline Parsing (HTML Scraper)
+- **Structure-Preserving Parser**: Scraping tools must reject fragile regex-based HTML stripping. Use a reliable DOM parsing approach (such as `cheerio` or `jsdom`) or an offline HTML-to-markdown library to preserve nested elements, table rows, base URLs, and complex hierarchies.
+- **Sanitization & Escaping**: Strictly sanitize external HTML before writing, resolve all links relative to the original page's base URL, and reject non-safe protocols (e.g. `javascript:` or `data:` URIs).
+

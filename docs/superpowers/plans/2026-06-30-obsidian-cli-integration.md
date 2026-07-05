@@ -219,3 +219,84 @@
   git add knowledge/.memory/scripts/obsidian-diagnostics.js knowledge/.memory/scripts/obsidian-diagnostics.test.js
   git commit -m "feat(cli): add screenshot and dataview diagnostic utilities"
   ```
+
+---
+
+### Task 4: Security and Stability Hardening (Adversary-Backed)
+
+**Files:**
+- Create: `knowledge/.memory/scripts/sandbox-validator.js`
+- Create: `knowledge/.memory/scripts/sandbox-validator.test.js`
+- Modify: `knowledge/.memory/scripts/obsidian-daily.js` (or creation if new)
+- Modify: `knowledge/.memory/scripts/obsidian-format.js` (or creation if new)
+
+**Interfaces:**
+- Consumes: Canonical path strings, Daily note write locks, HTML scraping buffers.
+- Produces: Sanitized paths, locking mechanisms, robust Markdown structures.
+
+- [ ] **Step 1: Write Sandbox Validator failing tests**
+  Create `knowledge/.memory/scripts/sandbox-validator.test.js` to assert that directory path resolution rejects traversals outside of `/Volumes/samsung 970 pro - Data/KATHA_VAULT/`.
+  ```javascript
+  const test = require('node:test');
+  const assert = require('node:assert');
+  const { validateVaultPath } = require('./sandbox-validator.js');
+
+  test('validateVaultPath resolves path and allows valid paths', () => {
+    const valid = validateVaultPath('/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/wiki/entities/llm.md');
+    assert.strictEqual(valid, true);
+  });
+
+  test('validateVaultPath rejects directory traversal attempts', () => {
+    assert.throws(() => {
+      validateVaultPath('/Volumes/samsung 970 pro - Data/KATHA_VAULT/../../etc/passwd');
+    }, /Traversal attack detected/);
+  });
+  ```
+
+- [ ] **Step 2: Run test to verify it fails**
+  Run: `node --test knowledge/.memory/scripts/sandbox-validator.test.js`
+  Expected: FAIL (sandbox-validator.js module not found)
+
+- [ ] **Step 3: Implement sandbox-validator.js**
+  Write validation logic using standard Node.js libraries:
+  ```javascript
+  const fs = require('fs');
+  const path = require('path');
+
+  const VAULT_ROOT = '/Volumes/samsung 970 pro - Data/KATHA_VAULT/';
+
+  function validateVaultPath(targetPath) {
+    const resolved = path.resolve(targetPath);
+    if (!resolved.startsWith(VAULT_ROOT)) {
+      throw new Error(`Traversal attack detected: Path "${resolved}" is outside of vault root.`);
+    }
+    return true;
+  }
+
+  module.exports = { validateVaultPath };
+  ```
+
+- [ ] **Step 4: Run test to verify it passes**
+  Run: `node --test knowledge/.memory/scripts/sandbox-validator.test.js`
+  Expected: PASS
+
+- [ ] **Step 5: Implement Daily Note File Locking and GFM Sanity**
+  In `knowledge/.memory/scripts/obsidian-daily.js`, implement locking check and GFM sanitization:
+  - Create a lock file `obsidian-daily.lock` before beginning write.
+  - If the lock file exists, retry or wait up to 1000ms.
+  - Escape user markdown triggers in input lines.
+  - Wrap sections with blank lines `\n\n` to guarantee flawless GFM rendering.
+  - Implement atomic write sequence: write to `.tmp` file, then `fs.renameSync` over daily note.
+
+- [ ] **Step 6: Implement Robust Offline HTML Parser**
+  In `knowledge/.memory/scripts/obsidian-format.js`:
+  - Enforce `cheerio` or `jsdom` parser usage for any HTML-to-Markdown conversions.
+  - Restrict all outputs to the designated target directory using `validateVaultPath`.
+
+- [ ] **Step 7: Commit changes**
+  Run:
+  ```bash
+  git add knowledge/.memory/scripts/sandbox-validator.js knowledge/.memory/scripts/sandbox-validator.test.js
+  git commit -m "security: implement realpath sandbox-validator and daily-note locking plans"
+  ```
+

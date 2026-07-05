@@ -95,6 +95,12 @@ export const LAYOUTS = {
   },
 
   // ═══════════ 4×6 VERTICAL POSTCARD (1200×1800) ═══════════
+  "pv-1": {
+    id: "pv-1", label: "1 Pose Portrait", format: "postcard-vertical", slotCount: 1, singleLine: false,
+    note: "One grand portrait, centered text band",
+    slots: [R(60, 150, 1080, 1200)],
+    textZone: R(60, 1410, 1080, 330),
+  },
   "pv-2": {
     id: "pv-2", label: "2 Stacked", format: "postcard-vertical", slotCount: 2, singleLine: false,
     note: "Two stacked photos, generous text band",
@@ -121,6 +127,12 @@ export const LAYOUTS = {
   },
 
   // ═══════════ 6×4 LANDSCAPE POSTCARD (1800×1200) ═══════════ MUSEUM MATTING
+  "pc-1": {
+    id: "pc-1", label: "1 Pose Landscape", format: "postcard", slotCount: 1, singleLine: false,
+    note: "One grand landscape, bottom pedestal",
+    slots: [R(100, 100, 1600, 750)],
+    textZone: R(100, 920, 1600, 180),
+  },
   // pc-2-split (2 Large Vertical Portraits side-by-side)
   "pc-2-split": {
     id: "pc-2-split", label: "2 Portrait Columns", format: "postcard", slotCount: 2, singleLine: false,
@@ -170,6 +182,17 @@ export const LAYOUTS = {
       R(950, 650, 750, 450),
     ],
     textZone: R(100, 650, 750, 450),
+  },
+  "pc-4-grid": {
+    id: "pc-4-grid", label: "4 Pose Grid", format: "postcard", slotCount: 4, singleLine: false,
+    note: "One heavy focal photo + three smaller baseline strips",
+    slots: [
+      R(100, 100, 1040, 500),
+      R(100, 640, 480, 340),
+      R(620, 640, 480, 340),
+      R(1140, 640, 560, 340)
+    ],
+    textZone: R(1180, 100, 520, 500),
   },
 
 };

@@ -23,3 +23,15 @@ scratch/
 # submodule of this one — never tracked here, ignored to stop the confusing
 # "modified: photobooth-template-studio (untracked content)" git-status noise
 photobooth-template-studio/
+
+# build sandboxes + session logs (2026-07-04)
+pb-v1/
+pb-v2/
+pb-v3/
+pb-v*.log
+remix_-photobooth-template-studio/
+Anthropic/
+infrastructure/
+test_ai_studio.py
+start_previews.sh
+Image 7-3-26 at 3.31*.png

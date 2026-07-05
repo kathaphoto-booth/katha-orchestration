@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Katha Booth — Check Availability &amp; Reserve · Los Angeles &amp; Orange County</title>
+<meta name="description" content="Katha Booth — heritage photo-booth installations. Oak-wood DSLR capture, archival prints, quiet high-contrast portraits. Check availability and reserve your night — Los Angeles & Orange County." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23110F0D'/><text x='7' y='24' font-family='serif' font-size='22' fill='%23E8E1D3'>K</text></svg>" />
+
+<!-- Fonts: FH Ronaldson self-hosted (display face); Google for editorial/UI/mono + template faces -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Outfit:wght@200;300;400;500;600&family=Newsreader:opsz,wght@6..72,300;6..72,400&family=Cormorant+Garamond:wght@300;400&family=Cinzel:wght@400&family=Playfair+Display:wght@400&family=EB+Garamond:wght@400&display=swap" rel="stylesheet" />
+<link rel="preload" href="./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Light.otf" as="font" type="font/otf" crossorigin />
+<link rel="preload" href="./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Regular.otf" as="font" type="font/otf" crossorigin />
+
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="./templates.js"></script>
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"Katha Booth",
+"description":"Heritage photo-booth installations — oak-wood DSLR capture and archival prints.",
+"email":"kathabooth@gmail.com","areaServed":["Los Angeles County","Orange County","Carson","Long Beach","South Bay","Los Angeles","Anaheim","Irvine"],
+"address":{"@type":"PostalAddress","addressLocality":"Carson","addressRegion":"CA","addressCountry":"US"},
+"url":"https://book.kathabooth.com"}
+</script>
+
+<style>
+/* ═══ KATHA · THE ROASTED ARCHIVE — unified booking flow ═══ */
+@font-face{font-family:'FH Ronaldson Display';src:url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Light.otf') format('opentype');font-weight:300;font-display:swap;}
+@font-face{font-family:'FH Ronaldson Display';src:url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Regular.otf') format('opentype');font-weight:400;font-display:swap;}
+@font-face{font-family:'FH Ronaldson Display';src:url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Medium.otf') format('opentype');font-weight:500;font-display:swap;}
+
+:root{
+  --l0:#110F0D; --l1:#1A1714; --l2:#241F1B; --l3:#2E2722;
+  --hi:#E8E1D3; --mut:#A39B8E; --fnt:#857D71;
+  --loko:#9A3D2A; --loko-hover:#a9432f;
+  --ln:rgba(232,225,211,.08); --ln-strong:rgba(232,225,211,.16);
+  --ok:#10B981; --paper:#F7F5F1; --ink:#2C2523;
+  --f-display:'FH Ronaldson Display','Fraunces',serif;
+  --f-serif:'Fraunces',serif; --f-body:'Outfit',sans-serif; --f-mono:'Courier Prime',monospace;
+  --gutter:clamp(20px,5vw,80px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--l0);color:var(--hi);font-family:var(--f-body);font-weight:300;font-size:16px;line-height:1.6;overflow-x:hidden;}
+::selection{background:var(--loko);color:#fff;}
+
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--hi);color:var(--l0);padding:10px 18px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;z-index:400;}
+.skip-link:focus{left:12px;top:12px;}
+
+/* grain — the paper of the whole site */
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.9;}
+
+/* ── focus law: Piña Ecru only, never Achuete ── */
+:focus-visible{outline:2px solid var(--hi);outline-offset:3px;}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;}
+input[type="radio"]:focus-visible + label, input[type="checkbox"]:focus-visible + label{outline:2px solid var(--hi);outline-offset:3px;}
+
+/* ── nav ── */
+nav{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;align-items:center;
+  padding:15px var(--gutter);background:rgba(17,15,13,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--ln);}
+.nav-mark{display:flex;align-items:center;gap:12px;}
+.nav-mark .k-mark{width:27px;height:auto;color:var(--hi);}
+.nav-mark span{font-family:var(--f-display);font-size:19px;letter-spacing:.06em;font-weight:400;}
+.nav-meta{font-family:var(--f-mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.18em;color:var(--fnt);display:flex;gap:12px;align-items:center;}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px rgba(16,185,129,.5);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{50%{opacity:.35;}}
+@media(max-width:520px){.nav-meta .nav-loc{display:none;}}
+
+/* ── step frame ── */
+main{position:relative;z-index:2;}
+.step{min-height:100dvh;padding:clamp(36px,6vh,72px) var(--gutter) 120px;}
+.eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--loko);margin-bottom:18px;}
+.eyebrow.ok{color:var(--ok);}
+h1,h2{font-family:var(--f-display);font-weight:300;letter-spacing:-0.02em;line-height:1.05;color:var(--hi);}
+h1{font-size:clamp(30px,5.4vw,64px);max-width:16ch;}
+h2{font-size:clamp(26px,4.2vw,52px);max-width:18ch;}
+h1:focus,h2:focus{outline:none;}
+.sub{font-family:var(--f-serif);font-style:italic;font-weight:300;font-size:clamp(15px,1.6vw,19px);line-height:1.55;color:var(--mut);max-width:52ch;margin-top:16px;}
+.sec-label{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--fnt);margin:34px 0 14px;display:flex;align-items:baseline;gap:10px;}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--ln);}
+
+.grid-2{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,3vw,44px);align-items:start;margin-top:28px;}
+@media(max-width:960px){.grid-2{grid-template-columns:minmax(0,1fr);}}
+@media(max-width:480px){.tier{flex-direction:column;}.tier .tprice{text-align:left;}
+  .cal-dow,.cal-grid{gap:4px;}.cal-day{min-height:36px;min-width:0;font-size:11px;}}
+
+/* ── tiers ── */
+fieldset{border:none;}
+.tiers{display:flex;flex-direction:column;gap:10px;}
+.tier-input{position:absolute;opacity:0;pointer-events:none;}
+.tier{display:flex;justify-content:space-between;gap:16px;background:var(--l1);border:1px solid var(--ln);border-radius:2px;padding:20px 22px;cursor:pointer;transition:border-color .35s,background .35s;}
+.tier:hover{border-color:var(--ln-strong);background:var(--l2);}
+.tier-input:checked + .tier{border-color:var(--loko);background:var(--l2);}
+.tier.off{opacity:.42;filter:grayscale(.4);cursor:not-allowed;}
+.tname{font-family:var(--f-serif);font-size:19px;font-weight:400;color:var(--hi);}
+.badge{display:inline-block;vertical-align:middle;margin-left:8px;font-family:var(--f-mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 7px;border-radius:1px;}
+.badge.flag{background:var(--loko);color:#fff;}
+.badge.line{border:1px solid var(--mut);color:var(--mut);}
+.badge.gone{border:1px solid var(--fnt);color:var(--fnt);}
+.tblurb{display:block;font-family:var(--f-serif);font-style:italic;font-size:12.5px;line-height:1.5;color:var(--mut);max-width:44ch;margin-top:6px;}
+.tinc{display:block;font-family:var(--f-mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--fnt);margin-top:9px;line-height:1.8;}
+.tprice{font-family:var(--f-display);font-size:24px;font-weight:400;white-space:nowrap;color:var(--hi);text-align:right;}
+.tprice small{display:block;font-family:var(--f-mono);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);margin-top:4px;}
+
+/* ── add-ons ── */
+.addons{display:flex;flex-direction:column;gap:10px;}
+.addon-input{position:absolute;opacity:0;pointer-events:none;}
+.addon{display:flex;align-items:flex-start;gap:12px;background:var(--l1);border:1px solid var(--ln);border-radius:2px;padding:14px 16px;cursor:pointer;transition:border-color .35s;}
+.addon:hover{border-color:var(--ln-strong);}
+.addon-input:checked + .addon{border-color:var(--loko);}
+.cbox{flex:0 0 18px;width:18px;height:18px;border:1px solid var(--ln-strong);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:background .3s,border-color .3s;}
+.addon-input:checked + .addon .cbox,.consent input:checked + .cbox{background:var(--loko);border-color:var(--loko);}
+.cbox svg{width:11px;height:11px;opacity:0;transition:opacity .25s;}
+.addon-input:checked + .addon .cbox svg,.consent input:checked + .cbox svg{opacity:1;}
+.an{font-family:var(--f-serif);font-size:14.5px;color:var(--hi);}
+.am{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-top:3px;line-height:1.6;}
+.aprice{margin-left:auto;font-family:var(--f-mono);font-size:11px;color:var(--mut);white-space:nowrap;}
+.stepper{display:flex;align-items:center;margin-left:auto;}
+.stepper button{width:36px;height:36px;background:var(--l2);border:1px solid var(--ln-strong);color:var(--hi);font-family:var(--f-mono);font-size:14px;cursor:pointer;transition:background .3s;border-radius:2px;}
+.stepper button:hover:not(:disabled){background:var(--l3);}
+.stepper button:disabled{opacity:.35;cursor:not-allowed;}
+.stepper .qty{width:40px;text-align:center;font-family:var(--f-mono);font-size:13px;color:var(--hi);}
+
+/* ── calendar ── */
+.cal-wrap{background:var(--l1);border:1px solid var(--ln);border-radius:2px;padding:20px;}
+.cal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cal-title{font-family:var(--f-display);font-size:18px;letter-spacing:.02em;}
+.cal-nav{display:flex;gap:8px;}
+.cal-nav button{background:none;border:1px solid var(--ln-strong);color:var(--mut);width:36px;height:36px;border-radius:2px;cursor:pointer;font-size:14px;transition:color .3s,border-color .3s;}
+.cal-nav button:hover:not(:disabled){color:var(--hi);border-color:var(--hi);}
+.cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
+.cal-dow,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-dow span{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);text-align:center;padding:6px 0;}
+.cal-day{position:relative;aspect-ratio:1;min-height:44px;display:flex;align-items:center;justify-content:center;background:var(--l2);border:none;border-radius:2px;color:var(--hi);font-family:var(--f-mono);font-size:12px;cursor:pointer;transition:background .3s,box-shadow .3s;}
+.cal-day:hover{background:var(--l3);}
+.cal-day.pad{background:transparent;pointer-events:none;}
+.cal-day.blocked{color:rgba(232,225,211,.16);text-decoration:line-through;cursor:not-allowed;background:transparent;border:1px solid var(--ln);}
+.cal-day.today{outline:1px solid var(--fnt);outline-offset:-1px;}
+.cal-day.sel{background:var(--loko);color:#fff;box-shadow:0 4px 12px rgba(154,61,42,.3);}
+.cal-note{font-family:var(--f-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--fnt);margin-top:12px;}
+.cal-empty,.cal-error{text-align:center;padding:34px 12px;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);line-height:2;}
+.cal-error{border-left:2px solid var(--loko);text-align:left;padding:16px;color:var(--hi);}
+
+/* ── form / summary ── */
+.summary{position:sticky;top:84px;background:var(--l1);border:1px solid var(--ln);border-radius:2px;padding:26px;}
+.field{position:relative;margin-top:24px;}
+.field input,.field select,.field textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--fnt);color:var(--hi);padding:8px 0;font-family:var(--f-body);font-weight:300;font-size:15.5px;border-radius:0;color-scheme:dark;}
+.field select{appearance:none;-webkit-appearance:none;cursor:pointer;}
+.field select option{background:var(--l2);color:var(--hi);}
+.field textarea{resize:vertical;min-height:52px;}
+.field input:focus,.field select:focus,.field textarea:focus{border-bottom-color:var(--loko);}
+.field label{position:absolute;top:8px;left:0;pointer-events:none;color:var(--fnt);font-size:14px;transition:all .3s cubic-bezier(.16,1,.3,1);}
+.field.filled label,
+.field input:focus ~ label,.field select:focus ~ label,.field textarea:focus ~ label,
+.field input:not(:placeholder-shown) ~ label,.field textarea:not(:placeholder-shown) ~ label{top:-12px;font-size:10px;font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--mut);}
+.field .req{color:var(--loko);}
+.field.err input,.field.err select,.field.err textarea{border-bottom-color:var(--loko);}
+.field .msg{display:none;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.06em;color:var(--hi);border-left:2px solid var(--loko);padding-left:8px;margin-top:7px;}
+.field.err .msg{display:block;}
+.mini-label{font-family:var(--f-mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);}
+.radio-row{display:flex;gap:10px;margin-top:8px;}
+.radio-row .r-input{position:absolute;opacity:0;pointer-events:none;}
+.radio-row label{flex:1;text-align:center;padding:12px 6px;border:1px solid var(--ln-strong);border-radius:2px;font-family:var(--f-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);cursor:pointer;transition:all .3s;}
+.radio-row .r-input:checked + label{border-color:var(--loko);color:var(--hi);background:var(--l2);}
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:22px;cursor:pointer;position:relative;}
+.consent input{position:absolute;opacity:0;pointer-events:none;}
+.consent p{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.05em;color:var(--mut);line-height:1.7;}
+.privacy{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.04em;color:var(--fnt);line-height:1.8;margin-top:14px;}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--ln);margin-top:22px;padding-top:16px;}
+.total-row .tl{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);}
+.total-row .tv{font-family:var(--f-display);font-size:30px;color:var(--hi);}
+.total-note{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.06em;color:var(--fnt);margin-top:4px;text-align:right;min-height:1em;}
+
+/* ── buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:none;border-radius:3px;cursor:pointer;text-transform:uppercase;transition:background .3s,transform .15s,opacity .3s,border-color .3s,color .3s;}
+.btn:active:not(:disabled){transform:scale(.98);}
+.btn:disabled{opacity:.42;filter:grayscale(.4);cursor:not-allowed;}
+.btn-primary{width:100%;height:54px;background:var(--loko);color:#fff;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;margin-top:22px;}
+.btn-primary:hover:not(:disabled){background:var(--loko-hover);}
+.btn-secondary{height:48px;padding:0 22px;background:transparent;color:var(--hi);border:1px solid var(--ln-strong);font-family:var(--f-body);font-size:10px;letter-spacing:.12em;}
+.btn-secondary:hover:not(:disabled){border-color:var(--hi);background:rgba(255,255,255,.02);}
+.btn-ghost{padding:11px 18px;background:none;color:var(--mut);border:1px solid var(--ln-strong);border-radius:2px;font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;}
+.btn-ghost:hover:not(:disabled){color:var(--hi);border-color:var(--hi);}
+.spinner{width:14px;height:14px;border-radius:50%;border:1.5px solid transparent;border-top-color:#fff;animation:spin .9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── customizer gallery ── */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 6px;}
+.chip{padding:10px 16px;border:1px solid var(--ln-strong);border-radius:2px;background:none;color:var(--mut);font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.chip:hover{color:var(--hi);border-color:var(--hi);}
+.chip.on{background:var(--hi);color:var(--l0);border-color:var(--hi);}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px;margin-top:16px;}
+.gcard{background:var(--l1);border:1px solid var(--ln);border-radius:2px;padding:16px 12px 14px;cursor:pointer;text-align:center;transition:border-color .35s,transform .6s cubic-bezier(.16,1,.3,1);}
+.gcard:hover{transform:translateY(-6px);border-color:var(--ln-strong);}
+.gcard.sel{border-color:var(--loko);}
+.gcard .gsvg{display:block;margin:0 auto;box-shadow:0 14px 30px rgba(0,0,0,.5);}
+.gcard .gsvg svg{display:block;width:100%;height:auto;}
+.gcard h3{font-family:var(--f-display);font-size:15px;font-weight:400;margin-top:12px;color:var(--hi);}
+.gcard p{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--fnt);margin-top:4px;}
+.gfoot{grid-column:1/-1;font-family:var(--f-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--fnt);padding:10px 4px;border-top:1px solid var(--ln);line-height:2;}
+.preview-side{position:sticky;top:84px;}
+.preview-stage{perspective:1200px;display:flex;justify-content:center;padding:14px 0 22px;}
+.preview-card{box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 40px rgba(154,61,42,.06);will-change:transform;}
+.preview-card svg{display:block;width:100%;height:auto;}
+.preview-meta{text-align:center;font-family:var(--f-mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);}
+.preview-desc{font-family:var(--f-serif);font-style:italic;font-size:12.5px;color:var(--mut);text-align:center;max-width:38ch;margin:10px auto 0;line-height:1.55;}
+
+/* ── ticket ── */
+.ticket-wrap{display:flex;justify-content:center;margin-top:30px;perspective:1400px;}
+.ticket{width:min(360px,88vw);}
+.fold{background:var(--paper);color:var(--ink);padding:24px 26px;transform-origin:center top;}
+.fold:first-child{border-radius:3px 3px 0 0;transform-origin:center bottom;}
+.fold:last-child{border-radius:0 0 3px 3px;}
+.ticket .perf{height:1px;background:linear-gradient(to right,rgba(44,37,35,.25) 50%,transparent 50%);background-size:8px 1px;}
+.t-eyebrow{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(44,37,35,.55);}
+.t-name{font-family:var(--f-display);font-weight:400;font-size:clamp(18px,6vw,27px);letter-spacing:.04em;margin-top:10px;line-height:1.2;overflow-wrap:anywhere;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.t-k{font-family:var(--f-mono);font-size:6.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(44,37,35,.5);}
+.t-v{font-family:var(--f-body);font-weight:400;font-size:12px;margin-top:3px;overflow-wrap:anywhere;}
+.t-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;}
+.t-tier{font-family:var(--f-serif);font-size:16px;}
+.t-price{font-family:var(--f-display);font-size:20px;}
+.t-add{display:flex;justify-content:space-between;font-family:var(--f-body);font-size:11.5px;padding:5px 0;border-bottom:1px dashed rgba(44,37,35,.12);}
+.t-none{font-family:var(--f-serif);font-style:italic;font-size:12.5px;color:rgba(44,37,35,.6);}
+.t-id{font-family:var(--f-mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;text-align:center;margin-top:10px;}
+.t-brand{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-family:var(--f-mono);font-size:6.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(44,37,35,.5);}
+.barcode{display:block;margin:14px auto 0;}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px;}
+.seam{max-width:520px;margin:44px auto 0;border:1px dashed var(--loko);border-radius:2px;padding:26px;text-align:center;}
+.seam h3{font-family:var(--f-display);font-weight:300;font-size:22px;margin-top:8px;}
+.seam p{font-family:var(--f-serif);font-style:italic;font-size:13px;color:var(--mut);margin-top:8px;line-height:1.6;}
+.seam .btn-secondary{margin-top:18px;text-decoration:none;display:inline-flex;}
+
+/* ── shutter / loader ── */
+.blades{position:fixed;inset:0;z-index:200;display:none;pointer-events:none;}
+.blade{position:absolute;top:0;width:50.5vw;height:100lvh;background:var(--l0);border-right:1px solid rgba(154,61,42,.5);}
+.blade.l{left:0;transform:translateX(-101%);}
+.blade.r{right:0;border-right:none;border-left:1px solid rgba(154,61,42,.5);transform:translateX(101%);}
+.blade-mark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0;display:flex;flex-direction:column;align-items:center;gap:14px;color:var(--hi);}
+.blade-mark .k-mark{width:72px;height:auto;}
+.blade-mark span{font-family:var(--f-mono);font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--fnt);}
+#loader{position:fixed;inset:0;z-index:300;background:var(--l0);display:flex;align-items:center;justify-content:center;}
+#loader .wm{width:min(300px,62vw);color:var(--hi);}
+#loader .load-meta{position:absolute;bottom:8vh;font-family:var(--f-mono);font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--fnt);}
+
+/* ── toasts ── */
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:320;background:var(--l1);border:1px solid var(--ln-strong);border-left:2px solid var(--loko);border-radius:2px;padding:14px 44px 14px 16px;max-width:min(440px,90vw);font-size:13px;color:var(--hi);opacity:0;pointer-events:none;transition:opacity .5s,transform .6s cubic-bezier(.16,1,.3,1);}
+.toast.ok{border-left-color:var(--ok);}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto;}
+.toast button{position:absolute;right:8px;top:8px;background:none;border:none;color:var(--mut);cursor:pointer;font-size:13px;padding:4px;}
+@media(max-width:640px){.toast{bottom:calc(88px + env(safe-area-inset-bottom));}}
+
+/* ── mobile CTA bar ── */
+.mobile-cta{display:none;}
+@media(max-width:640px){
+  .step{padding-bottom:160px;}
+  .summary{position:static;}
+  .preview-side{position:static;}
+  .mobile-cta{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(17,15,13,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--ln);padding:12px var(--gutter) calc(12px + env(safe-area-inset-bottom));justify-content:space-between;align-items:center;gap:14px;}
+  .mobile-cta .mv{font-family:var(--f-display);font-size:22px;}
+  .mobile-cta .ml{font-family:var(--f-mono);font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fnt);}
+}
+
+footer{position:relative;z-index:2;border-top:1px solid var(--ln);padding:34px var(--gutter);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-family:var(--f-mono);font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--fnt);}
+[hidden]{display:none !important;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+@media print{
+  nav,footer,.actions,.seam,.mobile-cta,.grain,#loader,.blades,.toast{display:none !important;}
+  body{background:#fff;}
+  .step{padding:0;min-height:0;}
+  #step-3 .eyebrow,#step-3 h2,#step-3 .sub{display:none;}
+  .ticket{width:340px;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
+  #loader{display:none !important;}
+  .blades{display:none !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<svg class="grain" aria-hidden="true"><filter id="nz"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#nz)" opacity="0.03"/></svg>
+
+<!-- Katha logomark — the brush-drawn botanical K (two marks total: this + the wordmark) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="k-mark" viewBox="0 0 190 230">
+  <path d="M62 158 C 48 128, 40 96, 44 64 C 47 40, 54 18, 66 4 C 74 22, 72 44, 70 66 C 68 94, 72 122, 82 146 C 75 152, 67 156, 62 158 Z"/>
+  <path d="M76 96 C 84 68, 98 40, 118 16 C 124 10, 130 6, 136 4 C 130 22, 122 40, 112 56 C 103 72, 92 88, 82 100 C 79 99, 77 97, 76 96 Z"/>
+  <path d="M84 108 C 104 92, 128 78, 154 70 C 160 68, 166 68, 170 70 C 158 80, 144 90, 129 99 C 115 107, 100 113, 88 116 C 86 113, 85 110, 84 108 Z"/>
+  <path d="M66 122 C 88 130, 112 148, 134 170 C 152 188, 168 208, 180 230 C 158 216, 136 199, 115 180 C 96 162, 78 145, 62 130 C 63 127, 64 124, 66 122 Z"/>
+  <path d="M54 160 C 44 166, 34 174, 26 184 C 21 190, 17 196, 15 202 C 24 196, 33 189, 42 180 C 48 174, 53 168, 57 162 C 56 161, 55 160, 54 160 Z"/>
+</symbol>
+<filter id="wabi"><feTurbulence type="fractalNoise" baseFrequency="0.03 0.06" numOctaves="3" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="4" xChannelSelector="R" yChannelSelector="G"/></filter>
+</defs></svg>
+
+<!-- intro loader: wordmark trace, once, decoupled from the step shutter -->
+<div id="loader" aria-hidden="true">
+  <svg class="wm" viewBox="0 0 520 150" fill="none">
+    <text id="wm-text" x="50%" y="104" text-anchor="middle" font-family="'FH Ronaldson Display','Fraunces',serif" font-size="104" font-weight="300" letter-spacing="6"
+      fill="transparent" stroke="#E8E1D3" stroke-width="1" style="filter:url(#wabi)">Katha</text>
+  </svg>
+  <span class="load-meta">// The Roasted Archive · Est. 2024</span>
+</div>
+
+<nav aria-label="Katha">
+  <div class="nav-mark">
+    <svg class="k-mark" viewBox="0 0 190 230" fill="currentColor" role="img" aria-label="Katha logomark"><use href="#k-mark"/></svg>
+    <span>Katha</span>
+  </div>
+  <div class="nav-meta">
+    <span class="nav-loc">// Los Angeles &amp; Orange County</span>
+    <span id="nav-step">Step 01 · Inquiry</span>
+    <span class="pulse" aria-hidden="true"></span>
+  </div>
+</nav>
+
+<main id="main">
+<!-- ═══════════ STEP 1 · INTAKE ═══════════ -->
+<section class="step" id="step-1" aria-labelledby="s1-h">
+  <p class="eyebrow">// Inquiry &amp; Availability</p>
+  <h1 id="s1-h" tabindex="-1">Check availability. Reserve the night.</h1>
+  <p class="sub">Oak-wood DSLR and modern installations that frame quiet, high-contrast portrait captures. Select your installation below.</p>
+
+  <div class="grid-2">
+    <div>
+      <p class="sec-label">01 · The Installation</p>
+      <fieldset role="radiogroup" aria-label="Choose your installation tier">
+        <div class="tiers" id="tiers"></div>
+      </fieldset>
+
+      <p class="sec-label">02 · Additions</p>
+      <div class="addons" id="addons"></div>
+
+      <p class="sec-label">03 · The Date</p>
+      <div class="cal-wrap">
+        <div class="cal-head">
+          <span class="cal-title" id="cal-title">—</span>
+          <span class="cal-nav">
+            <button type="button" id="cal-prev" aria-label="Previous month">←</button>
+            <button type="button" id="cal-next" aria-label="Next month">→</button>
+          </span>
+        </div>
+        <div class="cal-dow" aria-hidden="true"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+        <div class="cal-grid" id="cal-grid" role="grid" aria-label="Available dates"></div>
+        <p class="cal-note">Open dates only · 7-day minimum notice · set by the studio</p>
+      </div>
+    </div>
+
+    <aside class="summary" aria-label="Your inquiry">
+      <p class="sec-label" style="margin-top:0">Your Inquiry</p>
+      <div class="field"><input id="f-name" type="text" placeholder=" " autocomplete="name" /><label for="f-name">Full Name <span class="req">*</span></label><p class="msg" id="f-name-msg">Your name is required.</p></div>
+      <div class="field"><input id="f-email" type="email" placeholder=" " autocomplete="email" /><label for="f-email">Email <span class="req">*</span></label><p class="msg" id="f-email-msg">A valid email is required.</p></div>
+      <div class="field"><input id="f-phone" type="tel" placeholder=" " autocomplete="tel" /><label for="f-phone">Phone <span class="req">*</span></label><p class="msg" id="f-phone-msg">A phone number is required.</p></div>
+      <div class="field"><input id="f-venue" type="text" placeholder=" " /><label for="f-venue">Venue Address <span class="req">*</span></label><p class="msg" id="f-venue-msg">The venue address is required.</p></div>
+      <div class="field filled"><select id="f-etype"></select><label for="f-etype">Event Type <span class="req">*</span></label><p class="msg" id="f-etype-msg">Select the event type.</p></div>
+      <div class="field filled" style="margin-top:20px">
+        <span class="mini-label">Setting <span class="req">*</span></span>
+        <div class="radio-row" role="radiogroup" aria-label="Indoors or outdoors">
+          <input class="r-input" type="radio" name="io" id="io-in" value="Indoors" /><label for="io-in">Indoors</label>
+          <input class="r-input" type="radio" name="io" id="io-out" value="Outdoors" /><label for="io-out">Outdoors</label>
+        </div>
+        <p class="msg" id="f-io-msg">Choose indoors or outdoors.</p>
+      </div>
+      <div class="field filled"><input id="f-time" type="time" /><label for="f-time">Start Time <span class="req">*</span></label><p class="msg" id="f-time-msg">A start time is required.</p></div>
+      <div class="field"><input id="f-guests" type="number" min="1" placeholder=" " /><label for="f-guests">Estimated Guests</label></div>
+      <div class="field filled"><select id="f-heard"></select><label for="f-heard">How did you hear about us?</label></div>
+      <div class="field"><textarea id="f-notes" rows="2" placeholder=" "></textarea><label for="f-notes">Special Notes</label></div>
+
+      <label class="consent"><input type="checkbox" id="f-consent" /><span class="cbox" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.8 9 10 3.5" stroke="#fff" stroke-width="1.6"/></svg></span><p>Keep me posted on Katha offers &amp; availability (optional).</p></label>
+
+      <div class="total-row"><span class="tl">Estimate</span><span class="tv" id="total">$0</span></div>
+      <p class="total-note" id="total-note"></p>
+      <button class="btn btn-primary" id="cta-1" type="button">Secure Dates &amp; Begin Design</button>
+      <p class="privacy">We use your details to respond to your inquiry and, if you opt in, to share occasional Katha offers. Unsubscribe anytime.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════ STEP 2 · DESIGN ═══════════ -->
+<section class="step" id="step-2" aria-labelledby="s2-h" hidden>
+  <p class="eyebrow">// Studio Customizer</p>
+  <h2 id="s2-h" tabindex="-1">Design Your Commemorative Card.</h2>
+  <p class="sub">Choose a plate from the curated registry, then compose the text layers. Live proof updates instantly. Apertures stay open — your night prints there.</p>
+
+  <div class="grid-2">
+    <div>
+      <div class="filters" id="filters" role="group" aria-label="Filter by print format"></div>
+      <div class="gallery" id="gallery"></div>
+    </div>
+    <aside class="preview-side" aria-label="Live proof">
+      <p class="sec-label" style="margin-top:0">Live Proof</p>
+      <div class="preview-stage"><div class="preview-card" id="preview-card"></div></div>
+      <p class="preview-meta" id="preview-meta"></p>
+      <p class="preview-desc" id="preview-desc"></p>
+      <div class="field"><input id="d-title" type="text" placeholder=" " maxlength="42" /><label for="d-title">Title Inscription</label></div>
+      <div class="field"><input id="d-sub" type="text" placeholder=" " maxlength="54" /><label for="d-sub">Subtitle Line</label></div>
+      <button class="btn btn-primary" id="cta-2" type="button">Finalize Custom Design</button>
+      <button class="btn btn-ghost" id="back-2" type="button" style="width:100%;margin-top:10px">← Back to Inquiry</button>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════ STEP 3 · TICKET ═══════════ -->
+<section class="step" id="step-3" aria-labelledby="s3-h" hidden>
+  <p class="eyebrow ok">✓ Inquiry Received</p>
+  <h2 id="s3-h" tabindex="-1">Inquiry Registered &amp; Secured.</h2>
+  <p class="sub">Your requested date is logged. We'll review availability and reply from hello@kathabooth.com with a detailed proposal.</p>
+
+  <div class="ticket-wrap"><div class="ticket" id="ticket">
+    <div class="fold" id="fold-1">
+      <p class="t-eyebrow">Katha Commemorative // Secured Voucher</p>
+      <p class="t-name" id="t-name">—</p>
+      <div class="t-grid">
+        <div><p class="t-k">Registry Date</p><p class="t-v" id="t-date">—</p></div>
+        <div><p class="t-k">Venue</p><p class="t-v" id="t-venue">—</p></div>
+      </div>
+    </div>
+    <div class="perf" aria-hidden="true"></div>
+    <div class="fold" id="fold-2">
+      <p class="t-eyebrow">Commission Detail</p>
+      <div class="t-row"><span class="t-tier" id="t-tier">—</span><span class="t-price" id="t-price">—</span></div>
+      <div id="t-addons" style="margin-top:10px"></div>
+      <div class="t-grid"><div><p class="t-k">Plate</p><p class="t-v" id="t-plate">—</p></div><div><p class="t-k">Format</p><p class="t-v" id="t-paper">—</p></div></div>
+    </div>
+    <div class="perf" aria-hidden="true"></div>
+    <div class="fold" id="fold-3">
+      <svg class="barcode" id="t-barcode" width="180" height="40" aria-hidden="true"></svg>
+      <p class="t-id" id="t-id">—</p>
+      <div class="t-brand">
+        <span>Plate No. 2026-CF</span>
+        <svg width="16" height="19" viewBox="0 0 190 230" fill="#2C2523" aria-hidden="true"><use href="#k-mark"/></svg>
+        <span>©2026 Katha Booth</span>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="t-print" type="button">Print Physical Ticket Stock</button>
+    <button class="btn btn-secondary" id="t-email" type="button">Email Copy to Inbox</button>
+    <button class="btn btn-ghost" id="t-restart" type="button">Start New Inquiry</button>
+  </div>
+
+  <div class="seam" id="seam">
+    <p class="t-eyebrow" style="color:var(--loko)">// The Reservation Desk</p>
+    <h3>Reserve your date.</h3>
+    <p id="seam-copy">Your proposal, contract, and payment are handled personally through our studio desk. We'll send your private reservation link with the proposal — typically within one business day.</p>
+    <a class="btn btn-secondary" id="seam-link" hidden target="_blank" rel="noopener">Open the Reservation Desk →</a>
+  </div>
+</section>
+</main>
+
+<div class="mobile-cta" id="mobile-cta">
+  <span><span class="mv" id="m-total">$0</span><br/><span class="ml" id="m-label">Estimate</span></span>
+  <button class="btn btn-primary" id="m-cta" type="button" style="width:auto;padding:0 22px;margin:0;height:48px">Secure Dates</button>
+</div>
+
+<!-- step shutter — one pair, app root -->
+<div class="blades" id="blades" aria-hidden="true">
+  <div class="blade l" id="blade-l"></div>
+  <div class="blade r" id="blade-r"></div>
+  <div class="blade-mark" id="blade-mark">
+    <svg class="k-mark" viewBox="0 0 190 230" fill="currentColor"><use href="#k-mark"/></svg>
+    <span>Katha · The Archive</span>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert"><span id="toast-msg"></span><button type="button" id="toast-x" aria-label="Dismiss">✕</button></div>
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<footer>
+  <span>Katha Booth · Los Angeles &amp; Orange County</span>
+  <span>kathabooth@gmail.com</span>
+  <span>Plate No. 2026-CF · ©2026 Katha Booth</span>
+</footer>
+
+<script>
+'use strict';
+/* ═══ KATHA BOOKING — single STATE, three steps, one shutter ═══ */
+const SUPABASE_URL = 'https://hvvomiyskizxzhyytcfd.supabase.co';
+/* LIVE-VERIFIED 2026-07-04: legacy JWT anon key is REJECTED (PGRST301) — publishable key only. */
+const SUPABASE_KEY = 'sb_publishable_kDKUaI-kblRcUZgyiX-k7A_F91IqaQC';
+const MIN_NOTICE_DAYS = 7;
+const HONEYBOOK_LEAD_FORM = ''; // Jed pastes the HoneyBook Lead Form URL here — seam link auto-activates.
+
+const STATE = {
+  step: 1,
+  tier: 'glam_editorial',
+  addons: {},
+  date: null,
+  contact: { fullName:'', email:'', phone:'', venueAddress:'', eventType:'', indoorsOutdoors:'', startTime:'', guestCount:'', howHeard:'', notes:'' },
+  design: { presetId:'bituin', title:'', subtitle:'' },
+  marketingConsent: false,
+  leadId: null, submittedAt: null,
+};
+let CONTENT = null;
+const $ = (id) => document.getElementById(id);
+const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const money = (n) => '$' + Number(n).toLocaleString('en-US');
+const esc = (v) => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ── toast + live region ── */
+let toastTimer = null;
+function toast(msg, ok = false, sticky = false) {
+  const t = $('toast'); $('toast-msg').textContent = msg;
+  t.classList.toggle('ok', ok); t.classList.add('show');
+  clearTimeout(toastTimer);
+  if (!sticky) toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+  $('live').textContent = msg;
+}
+
+/* ── content boot ── */
+async function boot() {
+  $('toast-x').addEventListener('click', () => $('toast').classList.remove('show'));
+  try {
+    const r = await fetch('./content.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('content ' + r.status);
+    CONTENT = await r.json();
+  } catch (e) {
+    document.body.insertAdjacentHTML('afterbegin',
+      '<p style="position:fixed;inset:0;z-index:500;background:#110F0D;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;font-family:Courier,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#E8E1D3;line-height:2.2">The registry is momentarily unavailable.<br/>Email kathabooth@gmail.com and we\'ll reply personally.</p>');
+    $('loader').style.display = 'none';
+    return;
+  }
+  renderTiers(); renderAddons(); renderIntakeSelects(); calInit(); wireStep1(); wireStep2(); wireStep3(); introPlay();
+}
+
+/* ── tiers ── */
+function renderTiers() {
+  $('tiers').innerHTML = CONTENT.tiers.map(t => {
+    const off = !t.available;
+    const badge = (t.badge || '').includes('Flagship') ? '<span class="badge flag">Flagship</span>'
+      : off ? '<span class="badge gone">Currently Unavailable</span>'
+      : '<span class="badge line">' + esc(t.badge || '') + '</span>';
+    const inc = (t.includes || []).slice(1, 4).join(' · ');
+    return '<input class="tier-input" type="radio" name="tier" id="tier-' + t.key + '" value="' + t.key + '"' +
+      (STATE.tier === t.key ? ' checked' : '') + (off ? ' disabled' : '') + ' />' +
+      '<label class="tier' + (off ? ' off' : '') + '" for="tier-' + t.key + '"' + (off ? ' aria-disabled="true"' : '') + '>' +
+      '<span><span class="tname">' + esc(t.name) + '</span>' + badge +
+      '<span class="tblurb">' + esc(t.blurb) + '</span>' +
+      '<span class="tinc">' + esc(inc) + '</span></span>' +
+      '<span class="tprice">' + money(t.price) + '<small>Up to ' + t.hours + ' hours</small></span></label>';
+  }).join('');
+  $('tiers').addEventListener('change', (e) => {
+    if (e.target.name === 'tier') { STATE.tier = e.target.value; recalc(); }
+  });
+}
+
+/* ── add-ons ── */
+function renderAddons() {
+  $('addons').innerHTML = CONTENT.addons.map(a => {
+    if (a.type === 'quantity') {
+      return '<div class="addon" style="cursor:default"><span style="flex:1"><span class="an">' + esc(a.name) + '</span>' +
+        '<span class="am" style="display:block">' + esc(a.note) + '</span></span>' +
+        '<span class="stepper" data-key="' + a.key + '"><button type="button" data-d="-1" aria-label="Fewer hours" disabled>−</button>' +
+        '<span class="qty" id="qty-' + a.key + '" aria-live="polite">0</span>' +
+        '<button type="button" data-d="1" aria-label="More hours">+</button></span></div>';
+    }
+    return '<input class="addon-input" type="checkbox" id="add-' + a.key + '" data-key="' + a.key + '" />' +
+      '<label class="addon" for="add-' + a.key + '"><span class="cbox" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.8 9 10 3.5" stroke="#fff" stroke-width="1.6"/></svg></span>' +
+      '<span><span class="an">' + esc(a.name) + '</span><span class="am" style="display:block">' + esc(a.note) + '</span></span>' +
+      '<span class="aprice">+' + money(a.price) + '</span></label>';
+  }).join('');
+  $('addons').addEventListener('change', (e) => {
+    const k = e.target.dataset.key; if (!k) return;
+    STATE.addons[k] = e.target.checked; recalc();
+  });
+  $('addons').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-d]'); if (!b) return;
+    const wrap = b.closest('.stepper'); const key = wrap.dataset.key;
+    const a = CONTENT.addons.find(x => x.key === key);
+    const cur = Number(STATE.addons[key] || 0);
+    const next = Math.min(a.max, Math.max(a.min, cur + Number(b.dataset.d)));
+    STATE.addons[key] = next; $('qty-' + key).textContent = next;
+    wrap.querySelector('[data-d="-1"]').disabled = next <= a.min;
+    wrap.querySelector('[data-d="1"]').disabled = next >= a.max;
+    recalc();
+  });
+}
+
+function currentTotal() {
+  const tier = CONTENT.tiers.find(t => t.key === STATE.tier);
+  let total = tier ? tier.price : 0;
+  for (const a of CONTENT.addons) {
+    const v = STATE.addons[a.key];
+    if (a.type === 'quantity') total += a.price * Number(v || 0);
+    else if (v) total += a.price;
+  }
+  return total;
+}
+function recalc() {
+  const t = money(currentTotal());
+  $('total').textContent = t; $('m-total').textContent = t;
+  const sel = CONTENT.addons.filter(a => STATE.addons[a.key]).length;
+  $('total-note').textContent = sel ? 'Installation + ' + sel + ' addition' + (sel > 1 ? 's' : '') : '';
+}
+
+/* ── intake selects ── */
+function renderIntakeSelects() {
+  const f = CONTENT.intakeFields;
+  $('f-etype').innerHTML = '<option value="" disabled selected>Select…</option>' + f.eventTypeOptions.map(o => '<option>' + esc(o) + '</option>').join('');
+  $('f-heard').innerHTML = '<option value="" selected></option>' + f.howHeardOptions.map(o => '<option>' + esc(o) + '</option>').join('');
+}
+
+/* ── calendar (allow-list, role=grid, roving tabindex) ── */
+const CAL = { months: [], idx: 0, open: new Set(), failed: false };
+function isoLocal(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+async function calInit() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  for (let i = 0; i < 3; i++) CAL.months.push(new Date(today.getFullYear(), today.getMonth() + i, 1));
+  try {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/available_dates?select=date,status', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY } });
+    if (!r.ok) throw new Error('avail ' + r.status);
+    const rows = await r.json();
+    const min = new Date(today); min.setDate(min.getDate() + MIN_NOTICE_DAYS);
+    for (const row of rows) {
+      const [y, m, d] = row.date.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      if (row.status === 'open' && dt >= min) CAL.open.add(row.date);
+    }
+    const firstOpen = [...CAL.open].sort()[0];
+    if (firstOpen) {
+      const [fy, fm] = firstOpen.split('-').map(Number);
+      const idx = CAL.months.findIndex(mo => mo.getFullYear() === fy && mo.getMonth() === fm - 1);
+      if (idx > 0) CAL.idx = idx;
+    }
+  } catch (e) { CAL.failed = true; }
+  $('cal-prev').addEventListener('click', () => { if (CAL.idx > 0) { CAL.idx--; calRender(); } });
+  $('cal-next').addEventListener('click', () => { if (CAL.idx < CAL.months.length - 1) { CAL.idx++; calRender(); } });
+  calRender();
+}
+function calRender() {
+  const grid = $('cal-grid');
+  const mo = CAL.months[CAL.idx];
+  $('cal-title').textContent = mo.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  $('cal-prev').disabled = CAL.idx === 0; $('cal-next').disabled = CAL.idx === CAL.months.length - 1;
+  if (CAL.failed) {
+    grid.innerHTML = '<div class="cal-error" style="grid-column:1/-1" role="alert">Availability temporarily unavailable — email kathabooth@gmail.com and we\'ll hold your date personally.</div>';
+    return;
+  }
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const first = new Date(mo.getFullYear(), mo.getMonth(), 1);
+  const days = new Date(mo.getFullYear(), mo.getMonth() + 1, 0).getDate();
+  let html = '';
+  for (let i = 0; i < first.getDay(); i++) html += '<span class="cal-day pad" role="presentation"></span>';
+  let anyOpen = false, firstOpenIso = null;
+  for (let d = 1; d <= days; d++) {
+    const dt = new Date(mo.getFullYear(), mo.getMonth(), d);
+    const iso = isoLocal(dt);
+    const open = CAL.open.has(iso);
+    if (open && !firstOpenIso) firstOpenIso = iso;
+    if (open) anyOpen = true;
+    const isToday = dt.getTime() === today.getTime();
+    const sel = STATE.date === iso;
+    html += '<button type="button" role="gridcell" class="cal-day' + (open ? '' : ' blocked') + (isToday ? ' today' : '') + (sel ? ' sel' : '') + '"' +
+      ' data-iso="' + iso + '"' + (open ? '' : ' aria-disabled="true" tabindex="-1"') +
+      ' aria-label="' + dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + (open ? ', open' : ', unavailable') + '"' +
+      (sel ? ' aria-selected="true"' : '') + '>' + d + '</button>';
+  }
+  grid.innerHTML = html;
+  if (!anyOpen) grid.innerHTML += '<div class="cal-empty" style="grid-column:1/-1">No open dates this month — try the next.</div>';
+  const cells = [...grid.querySelectorAll('.cal-day:not(.pad):not(.blocked)')];
+  const target = grid.querySelector('.cal-day.sel:not(.blocked)') || (firstOpenIso && grid.querySelector('[data-iso="' + firstOpenIso + '"]')) || cells[0];
+  cells.forEach(c => c.tabIndex = -1); if (target) target.tabIndex = 0;
+  grid.onclick = (e) => { const b = e.target.closest('.cal-day:not(.blocked):not(.pad)'); if (b) pickDate(b.dataset.iso); };
+  grid.onkeydown = (e) => {
+    const cur = document.activeElement;
+    if (!cur.classList || !cur.classList.contains('cal-day')) return;
+    const all = [...grid.querySelectorAll('.cal-day:not(.pad)')];
+    const i = all.indexOf(cur);
+    let n = null;
+    if (e.key === 'ArrowRight') n = all[i + 1]; else if (e.key === 'ArrowLeft') n = all[i - 1];
+    else if (e.key === 'ArrowDown') n = all[i + 7]; else if (e.key === 'ArrowUp') n = all[i - 7];
+    else if (e.key === 'Home') n = all[Math.floor(i / 7) * 7];
+    else if (e.key === 'End') n = all[Math.min(all.length - 1, Math.floor(i / 7) * 7 + 6)];
+    else if ((e.key === 'Enter' || e.key === ' ') && !cur.classList.contains('blocked')) { e.preventDefault(); pickDate(cur.dataset.iso); return; }
+    if (n) { e.preventDefault(); all.forEach(c => c.tabIndex = -1); n.tabIndex = 0; n.focus(); }
+  };
+}
+function pickDate(iso) {
+  STATE.date = iso; calRender();
+  const [y, m, d] = iso.split('-').map(Number);
+  $('live').textContent = 'Selected ' + new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+/* ── step 1 validation + submit ── */
+function bindContact() {
+  STATE.contact.fullName = $('f-name').value.trim();
+  STATE.contact.email = $('f-email').value.trim();
+  STATE.contact.phone = $('f-phone').value.trim();
+  STATE.contact.venueAddress = $('f-venue').value.trim();
+  STATE.contact.eventType = $('f-etype').value;
+  STATE.contact.indoorsOutdoors = ($('io-in').checked && 'Indoors') || ($('io-out').checked && 'Outdoors') || '';
+  STATE.contact.startTime = $('f-time').value;
+  STATE.contact.guestCount = $('f-guests').value;
+  STATE.contact.howHeard = $('f-heard').value;
+  STATE.contact.notes = $('f-notes').value.trim();
+  STATE.marketingConsent = $('f-consent').checked;
+}
+function validate1() {
+  bindContact();
+  const errs = [];
+  const mark = (id, bad) => {
+    const f = $(id).closest('.field'); f.classList.toggle('err', bad);
+    const m = f.querySelector('.msg');
+    $(id).setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (m && bad) $(id).setAttribute('aria-describedby', m.id); else $(id).removeAttribute('aria-describedby');
+    if (bad) errs.push(id);
+  };
+  mark('f-name', !STATE.contact.fullName);
+  mark('f-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(STATE.contact.email));
+  mark('f-phone', !STATE.contact.phone);
+  mark('f-venue', !STATE.contact.venueAddress);
+  mark('f-etype', !STATE.contact.eventType);
+  mark('f-time', !STATE.contact.startTime);
+  const ioBad = !STATE.contact.indoorsOutdoors;
+  $('f-io-msg').style.display = ioBad ? 'block' : 'none'; if (ioBad) errs.push('io-in');
+  if (!STATE.date) { toast('Pick an open date on the calendar to continue.'); if (!errs.length) { document.querySelector('.cal-wrap').scrollIntoView({ behavior: reduce() ? 'auto' : 'smooth', block: 'center' }); } errs.push('__date'); }
+  if (errs.length && errs[0] !== '__date') { const el = $(errs[0]); if (el && el.focus) el.focus(); }
+  return errs.length === 0;
+}
+function setLoading(btn, on, label) {
+  btn.disabled = on;
+  if (on) { btn.dataset.label = btn.textContent; btn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Securing…'; $('live').textContent = 'Submitting inquiry'; }
+  else btn.textContent = label || btn.dataset.label || btn.textContent;
+}
+async function submitLead() {
+  if (STATE.leadId) return true; /* idempotent — Back + re-submit never double-inserts */
+  /* council fix (oneshot-finale #3): one hash per inquiry, held across retries —
+     a timeout-after-insert followed by retry reuses the SAME lead_hash, so the
+     server's duplicate guard catches it instead of minting a second lead. */
+  if (!STATE.pendingHash) STATE.pendingHash = crypto.randomUUID();
+  const leadHash = STATE.pendingHash;
+  const payload = {
+    action: 'lead',
+    client_name: STATE.contact.fullName,
+    client_email: STATE.contact.email,
+    client_phone: STATE.contact.phone,
+    event_date: STATE.date,
+    lead_hash: leadHash,
+    venue_name: STATE.contact.venueAddress,
+    tier_selected: (CONTENT.tiers.find(t => t.key === STATE.tier) || {}).name || STATE.tier,
+    addons: JSON.stringify(STATE.addons),
+    notes: JSON.stringify({
+      eventType: STATE.contact.eventType, indoorsOutdoors: STATE.contact.indoorsOutdoors,
+      startTime: STATE.contact.startTime, guestCount: STATE.contact.guestCount,
+      howHeard: STATE.contact.howHeard, specialNotes: STATE.contact.notes,
+      priceQuoted: currentTotal(), marketingConsent: STATE.marketingConsent,
+    }),
+    status: 'Inquired',
+  };
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const r = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ctl.signal });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.success) throw new Error(j.error || ('lead ' + r.status));
+    STATE.leadId = j.leadId || leadHash; STATE.submittedAt = new Date().toISOString();
+    return true;
+  } catch (e) {
+    return false;
+  } finally { clearTimeout(to); }
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+function wireStep1() {
+  const go = async () => {
+    if (!validate1()) return;
+    const b1 = $('cta-1'), bm = $('m-cta');
+    setLoading(b1, true); bm.disabled = true;
+    const ok = await submitLead();
+    setLoading(b1, false, 'Secure Dates & Begin Design'); bm.disabled = false;
+    if (!ok) { toast("We couldn't log your inquiry. Check your connection and try again — your details are safe on this page.", false, true); return; }
+    if (!STATE.design.title) STATE.design.title = STATE.contact.fullName.toUpperCase();
+    if (!STATE.design.subtitle) STATE.design.subtitle = (fmtDate(STATE.date) + ' • ' + STATE.contact.venueAddress).toUpperCase().slice(0, 54);
+    goToStep(2);
+  };
+  $('cta-1').addEventListener('click', go);
+  $('m-cta').addEventListener('click', () => { if (STATE.step === 1) go(); else if (STATE.step === 2) $('cta-2').click(); });
+  recalc();
+}
+
+/* ── step 2 · curated registry ── */
+let FILTER = 'All';
+function wireStep2() {
+  $('filters').innerHTML = KATHA_FORMAT_FILTERS.map(f =>
+    '<button type="button" class="chip' + (f.id === FILTER ? ' on' : '') + '" data-f="' + f.id + '" aria-pressed="' + (f.id === FILTER) + '">' + f.label + '</button>').join('');
+  $('filters').addEventListener('click', (e) => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    FILTER = c.dataset.f;
+    [...$('filters').children].forEach(x => { x.classList.toggle('on', x === c); x.setAttribute('aria-pressed', String(x === c)); });
+    renderGallery();
+  });
+  $('d-title').addEventListener('input', () => { STATE.design.title = $('d-title').value; renderProofSVG(); });
+  $('d-sub').addEventListener('input', () => { STATE.design.subtitle = $('d-sub').value; renderProofSVG(); });
+  $('back-2').addEventListener('click', () => goToStep(1));
+  $('cta-2').addEventListener('click', async () => {
+    const b = $('cta-2'); setLoading(b, true);
+    postSelection(); /* best-effort; design data never blocks the flow */
+    await new Promise(r => setTimeout(r, 350));
+    setLoading(b, false, 'Finalize Custom Design');
+    goToStep(3);
+  });
+  renderGallery(); wireTilt();
+}
+function renderGallery() {
+  const list = KATHA_TEMPLATES.filter(t => FILTER === 'All' || t.formatLabel === FILTER);
+  $('gallery').innerHTML = list.map(t =>
+    '<button type="button" class="gcard' + (t.id === STATE.design.presetId ? ' sel' : '') + '" data-id="' + t.id + '" aria-pressed="' + (t.id === STATE.design.presetId) + '">' +
+    '<span class="gsvg" style="width:' + (t.ratio === '3 / 2' ? '100%' : t.ratio === '1 / 3' ? '46%' : '78%') + '">' + renderKathaTemplate(t) + '</span>' +
+    '<h3>' + t.name + '</h3><p>Plate ' + t.plate + ' · ' + t.formatLabel + ' · ' + t.style + '</p></button>').join('') +
+    '<p class="gfoot">Calado Piña — openwork drawn from Barong Tagalog embroidery, 17th c. · The Classic Standard — 1px hairlines; the portrait carries the weight.</p>';
+  $('gallery').onclick = (e) => {
+    const c = e.target.closest('.gcard'); if (!c) return;
+    STATE.design.presetId = c.dataset.id;
+    [...$('gallery').querySelectorAll('.gcard')].forEach(x => { x.classList.toggle('sel', x === c); x.setAttribute('aria-pressed', String(x === c)); });
+    renderProof();
+  };
+  renderProof();
+}
+function preset() { return KATHA_TEMPLATES.find(t => t.id === STATE.design.presetId) || KATHA_TEMPLATES[1]; }
+function renderProofSVG() {
+  const t = preset();
+  $('preview-card').innerHTML = renderKathaTemplate(t, { title: STATE.design.title, subtitle: STATE.design.subtitle });
+}
+function renderProof() {
+  const t = preset();
+  renderProofSVG();
+  $('preview-card').style.width = t.ratio === '3 / 2' ? 'min(380px,84vw)' : t.ratio === '1 / 3' ? 'min(150px,40vw)' : 'min(300px,74vw)';
+  $('preview-meta').textContent = t.name + ' · Plate ' + t.plate + ' · ' + t.formatLabel + ' · ' + t.booth + ' Booth';
+  $('preview-desc').textContent = t.desc;
+  $('d-title').value = STATE.design.title; $('d-sub').value = STATE.design.subtitle;
+}
+/* tactile tilt — ≤6°, weighted return ≥1.2s, hover-only, reduced-motion silent */
+function wireTilt() {
+  const el = $('preview-card');
+  if (!window.matchMedia('(hover:hover)').matches) return;
+  el.addEventListener('mousemove', (e) => {
+    if (reduce() || !window.gsap) return;
+    const r = el.getBoundingClientRect();
+    const xc = (e.clientX - r.left) / r.width - 0.5, yc = 0.5 - (e.clientY - r.top) / r.height;
+    gsap.to(el, { rotationY: xc * 6, rotationX: yc * 6, transformPerspective: 1200, duration: 0.4, ease: 'power3.out' });
+  });
+  el.addEventListener('mouseleave', () => {
+    if (reduce() || !window.gsap) return;
+    gsap.to(el, { rotationY: 0, rotationX: 0, duration: 1.3, ease: 'power3.out' });
+  });
+}
+function postSelection() {
+  const t = preset();
+  fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'selection', lead: STATE.leadId,
+      template_id: t.id, template_name: t.name, layout: t.layout,
+      names: STATE.design.title, date: STATE.date, venue: STATE.contact.venueAddress,
+      font_family: t.font,
+      configuration: JSON.stringify({ subtitle: STATE.design.subtitle, paper: t.paper, format: t.formatLabel }),
+      service_tier: (CONTENT.tiers.find(x => x.key === STATE.tier) || {}).name || STATE.tier }) }).catch((e) => { console.warn('selection save failed (non-blocking):', e); });
+}
+
+/* ── step 3 · the voucher ── */
+function hydrateTicket() {
+  const t = preset(); const tier = CONTENT.tiers.find(x => x.key === STATE.tier) || {};
+  $('t-name').textContent = STATE.design.title || STATE.contact.fullName.toUpperCase() || '—';
+  $('t-date').textContent = (fmtDate(STATE.date) || '—').toUpperCase();
+  $('t-venue').textContent = STATE.contact.venueAddress || '—';
+  $('t-tier').textContent = tier.name || '—';
+  $('t-price').textContent = money(currentTotal());
+  const rows = CONTENT.addons.filter(a => STATE.addons[a.key]).map(a => {
+    const q = a.type === 'quantity' ? Number(STATE.addons[a.key] || 0) : 1;
+    if (!q) return '';
+    const label = esc(a.type === 'quantity' ? a.name + ' × ' + q : a.name);
+    return '<div class="t-add"><span>✓ ' + label + '</span><span>+' + money(a.price * q) + '</span></div>';
+  }).join('');
+  $('t-addons').innerHTML = rows || '<p class="t-none">No additions — the installation stands alone.</p>';
+  $('t-plate').textContent = t.name + ' · Plate ' + t.plate;
+  $('t-paper').textContent = t.formatLabel;
+  $('t-id').textContent = 'KATHA-' + String(STATE.leadId || '').slice(0, 8).toUpperCase();
+  barcode($('t-barcode'), STATE.leadId || 'katha');
+  ticketUnfold();
+}
+function barcode(svg, seed) {
+  let h = 0; for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+  let x = 4, out = '';
+  while (x < 172) { const w = 1 + Math.floor(rnd() * 3.4); if (rnd() > 0.44) out += '<rect x="' + x + '" y="0" width="' + w + '" height="40" fill="#2C2523"/>'; x += w + 1; }
+  svg.innerHTML = out;
+}
+function ticketUnfold() {
+  if (reduce() || !window.gsap) {
+    gsap && gsap.set('#fold-1,#fold-2,#fold-3', { clearProps: 'all' });
+    return;
+  }
+  gsap.fromTo('#fold-1', { rotateX: -75, opacity: 0, y: -50 }, { rotateX: 0, opacity: 1, y: 0, duration: 1.4, ease: 'power4.out' });
+  gsap.fromTo('#fold-2', { rotateX: 45, opacity: 0, y: -10 }, { rotateX: 0, opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.35 });
+  gsap.fromTo('#fold-3', { rotateX: -45, opacity: 0, y: 10 }, { rotateX: 0, opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.5 });
+}
+function wireStep3() {
+  $('t-print').addEventListener('click', () => window.print());
+  $('t-email').addEventListener('click', async (e) => {
+    const b = e.currentTarget; b.disabled = true;
+    try {
+      const r = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'email', name: STATE.contact.fullName, email: STATE.contact.email,
+          venue: STATE.contact.venueAddress, date: fmtDate(STATE.date),
+          tier: (CONTENT.tiers.find(x => x.key === STATE.tier) || {}).name || '' }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.success) toast('Your copy is on its way to ' + STATE.contact.email + '.', true);
+      else toast("We'll email your copy shortly — it's queued with your inquiry.", true);
+    } catch { toast("We'll email your copy shortly — it's queued with your inquiry.", true); }
+    b.disabled = false;
+  });
+  $('t-restart').addEventListener('click', () => {
+    Object.assign(STATE, { step: STATE.step, tier: 'glam_editorial', addons: {}, date: null,
+      contact: { fullName:'', email:'', phone:'', venueAddress:'', eventType:'', indoorsOutdoors:'', startTime:'', guestCount:'', howHeard:'', notes:'' },
+      design: { presetId:'bituin', title:'', subtitle:'' }, marketingConsent: false, leadId: null, submittedAt: null, pendingHash: null });
+    document.querySelectorAll('#step-1 input, #step-1 textarea').forEach(i => { if (i.type === 'checkbox' || i.type === 'radio') i.checked = false; else i.value = ''; });
+    document.querySelectorAll('#step-1 select').forEach(s => { s.selectedIndex = 0; });
+    document.querySelectorAll('#step-1 .field.err').forEach(f => f.classList.remove('err'));
+    document.querySelectorAll('.stepper .qty').forEach(q => { q.textContent = '0'; });
+    document.querySelectorAll('.stepper [data-d="-1"]').forEach(b => b.disabled = true);
+    document.querySelectorAll('.stepper [data-d="1"]').forEach(b => b.disabled = false);
+    const def = document.getElementById('tier-glam_editorial'); if (def) def.checked = true;
+    recalc(); calRender(); goToStep(1);
+  });
+  if (HONEYBOOK_LEAD_FORM) {
+    $('seam-link').href = HONEYBOOK_LEAD_FORM; $('seam-link').hidden = false;
+    $('seam-copy').textContent = 'Proposal, contract, and payment run through our reservation desk. Open it to secure your date formally.';
+  }
+}
+
+/* ── the shutter machine — single owner, locked, reduced-motion honest ── */
+let isTransitioning = false;
+const STEP_LABEL = { 1: 'Step 01 · Inquiry', 2: 'Step 02 · Design', 3: 'Step 03 · Secured' };
+function swapTo(n) {
+  [1, 2, 3].forEach(i => { $('step-' + i).hidden = i !== n; });
+  STATE.step = n; window.scrollTo(0, 0);
+  $('nav-step').textContent = STEP_LABEL[n];
+  $('mobile-cta').style.display = n === 3 ? 'none' : '';
+  $('m-label').textContent = n === 2 ? 'Finalize' : 'Estimate';
+  $('m-cta').textContent = n === 2 ? 'Finalize Design' : 'Secure Dates';
+  if (n === 2) renderProof();
+  if (n === 3) hydrateTicket();
+  const h = $('step-' + n).querySelector('h1,h2'); if (h) h.focus({ preventScroll: true });
+}
+function goToStep(n) {
+  if (isTransitioning || n === STATE.step) return;
+  if (reduce() || !window.gsap) { swapTo(n); return; }
+  isTransitioning = true;
+  const blades = $('blades'); blades.style.display = 'block'; blades.style.pointerEvents = 'all';
+  const tl = gsap.timeline({ onComplete() {
+    const tl2 = gsap.timeline({ onComplete() {
+      blades.style.display = 'none'; blades.style.pointerEvents = 'none'; isTransitioning = false; } });
+    tl2.to('#blade-mark', { opacity: 0, scale: 0.86, duration: 0.35, ease: 'power2.out' })
+       .to('#blade-l', { xPercent: -101, duration: 1.05, ease: 'power4.out' }, '-=0.1')
+       .to('#blade-r', { xPercent: 101, duration: 1.05, ease: 'power4.out' }, '<');
+  } });
+  tl.fromTo('#blade-l', { xPercent: -101 }, { xPercent: 0, duration: 0.9, ease: 'power4.inOut' })
+    .fromTo('#blade-r', { xPercent: 101 }, { xPercent: 0, duration: 0.9, ease: 'power4.inOut' }, '<')
+    .fromTo('#blade-mark', { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.45, ease: 'power2.out' }, '-=0.35')
+    .add(() => swapTo(n), '+=0.05');
+}
+
+/* ── intro — wordmark trace, once ── */
+function introPlay() {
+  const loader = $('loader');
+  if (reduce() || !window.gsap) { loader.style.display = 'none'; return; }
+  const txt = $('wm-text');
+  const len = 1400;
+  txt.style.strokeDasharray = len; txt.style.strokeDashoffset = len;
+  const tl = gsap.timeline({ onComplete() { loader.style.display = 'none'; } });
+  tl.to(txt, { strokeDashoffset: 0, duration: 2.0, ease: 'power3.out' })
+    .to(txt, { fill: '#E8E1D3', duration: 1.1, ease: 'power2.out' }, '-=1.0')
+    .to(loader, { opacity: 0, duration: 0.8, ease: 'power4.out', delay: 0.15 })
+    .from('nav, #step-1 .eyebrow, #step-1 h1, #step-1 .sub, #step-1 .grid-2', {
+      opacity: 0, y: 22, duration: 1.0, ease: 'power3.out', stagger: 0.09, clearProps: 'all' }, '-=0.5');
+}
+
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
