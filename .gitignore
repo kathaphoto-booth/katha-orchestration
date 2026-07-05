@@ -35,3 +35,4 @@ infrastructure/
 test_ai_studio.py
 start_previews.sh
 Image 7-3-26 at 3.31*.png
+.worktrees/
