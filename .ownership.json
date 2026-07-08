@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "description": "Files owned by @katha/core that must only appear as thin stubs in app directories",
+  "owned_by_core": [
+    "app/api/inquiry/route.ts"
+  ],
+  "app_roots": [
+    "pb-v3",
+    "photobooth-template-studio"
+  ]
+}
