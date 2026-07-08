@@ -1,0 +1,26 @@
+{
+  "name": "@katha/core",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
+    "resend": "^6.12.4"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "^20",
+    "next": "^15.4.9"
+  }
+}
