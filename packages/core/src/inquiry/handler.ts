@@ -62,11 +62,17 @@ export async function handleInquiry(
   const leadHash = crypto.randomBytes(16).toString('hex');
   const galleryLink = opts.buildGalleryLink(leadHash, baseUrl);
 
-  const results = await Promise.all([
+  const settledResults = await Promise.allSettled([
     recordLead(supabaseAdmin, payload, leadHash),
     pingHoneyBook(payload, leadHash),
     sendEnrichmentEmail(payload, leadHash, galleryLink),
   ]);
+
+  const results = settledResults.map((r, i) => {
+    if (r.status === 'fulfilled') return r.value;
+    const target = i === 0 ? 'database' : i === 1 ? 'honeybook' : 'email';
+    return { target, ok: false, detail: `unexpected failure: ${String(r.reason)}` };
+  });
 
   const anyOk = results.some((r) => r.ok);
   return NextResponse.json({ ok: anyOk, lead_hash: leadHash, dispatch: results }, { status: anyOk ? 200 : 202 });
