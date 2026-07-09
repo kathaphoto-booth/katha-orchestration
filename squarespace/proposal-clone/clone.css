@@ -27,8 +27,8 @@
      Sacred CTA now rides a canon GREEN: Capiz Sage fill, Abel Slate deepen-on-hover. */
   --cta-green:      #B5B8A3;   /* Capiz Sage — sacred CTA fill */
   --cta-green-deep: #5A5D5A;   /* Abel Slate — CTA border + hover deepen */
-  --loko-rust:   #8C382A;      /* kept in palette; NOT used on buttons */
-  --loko-rust-deep: #6E2C20;
+  --loko-rust:   #3D2B1F;      /* RETIRED name — resolves to Kamagong; red banned 2026-07-07 */
+  --loko-rust-deep: #3D2B1F;
 
   /* Barong piña/calado texture — used ONLY behind the dark "statement" bands
      (Philosophy / Our Approach), exactly as Vince places it. */

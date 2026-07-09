@@ -1,6 +1,6 @@
 ---
 name: vibecode-production-qa-validator
-description: "End-to-end production QA, build verification, and launch-readiness checklist for fullstack Next.js apps. Covers TypeScript, linting, tests, build, SEO tags, route regression, and sitemap validation."
+description: "Use when asked 'is this ready to ship', 'run QA', 'verify production readiness', or 'check before deploy' — any time a Next.js build is about to go live or was just deployed. Returns a go/no-go verdict with exact failure output across typecheck, lint, tests, build, SEO tags, routes, and sitemap."
 ---
 # Pointer: vibecode-production-qa-validator
 

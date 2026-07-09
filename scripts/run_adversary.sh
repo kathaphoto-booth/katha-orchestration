@@ -4,7 +4,7 @@
 # ════════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-REPORT_PATH="/Users/jedg./.gemini/antigravity/brain/a4a00a69-56f3-463d-8ab6-2d9824c8ef9c/adversarial_review_report.md"
+REPORT_PATH="/Users/jedg./.gemini/antigravity/brain/5228e1c1-0388-469c-a7a2-d0353d0e5e9c/adversarial_review_report.md"
 
 echo "Initializing Adversarial Review..."
 echo "Report will be written to: $REPORT_PATH"

@@ -10,7 +10,18 @@
       "Bash(bash .agents/skills/antigravity/scripts/self_eval.sh*)",
       "Bash(bash scripts/agy-tier-run.sh*)",
       "Bash(bash bin/compile-memory.sh*)",
-      "mcp__ccd_session__mark_chapter"
+      "mcp__ccd_session__mark_chapter",
+      "mcp__Claude_Preview__preview_screenshot",
+      "mcp__Claude_Preview__preview_console_logs",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__firecrawl__firecrawl_search",
+      "mcp__firecrawl__firecrawl_scrape",
+      "mcp__codebase-memory-mcp__index_status",
+      "mcp__codebase-memory-mcp__search_graph",
+      "mcp__codebase-memory-mcp__list_projects",
+      "mcp__codebase-memory-mcp__index_repository",
+      "mcp__obsidian__list-available-vaults"
     ]
   },
   "hooks": {

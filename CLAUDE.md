@@ -20,7 +20,7 @@ One persistent, compounding LLM Wiki vault, managed via **Obsidian**, resident o
 - **Layer 3 — Operational Schema** (this file + the vault's `CLAUDE.md`/`AGENTS.md` + `.memory/instructions.md`).
 
 ### Naming Law (vault Iron Rule 8):
-Legacy system names are **BANNED in all new files, headings, frontmatter, and scripts**: `HAM`, `COMPILED_HAM`, `thors-hammer`, `HERMES`. The memory frontmatter type is `memory-node`; the compiled artifact is `COMPILED_MEMORY.md` (built by `bin/compile-memory.sh`). Historical mentions inside dated `.memory/memory.md` entries and `_archive*` folders remain as struck history.
+Legacy system names are **BANNED in all new files, headings, frontmatter, and scripts**: `HAM`, `COMPILED_HAM`, `thors-hammer`, `HERMES`. The memory frontmatter type is `memory-node`; the compiled artifact is `COMPILED_MEMORY.md` (built by `bin/compile-memory.sh`). Historical mentions inside dated `.memory/memory.md` entries and `_archive*` folders remain as struck history. **Exemption:** External proper nouns (e.g., using "Hermes" as a Karpathy skill or citing external tools) are exempt from this ban.
 
 ### Shared Skill Arsenal (Pointer Pattern):
 Local `.agents/skills/` and global `.gemini/config/plugins/` contain **Lightweight Pointers**.

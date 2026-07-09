@@ -56,8 +56,13 @@ The brand guard watches the page in real time and fixes any brand violations the
    ```
 3. Save.
 
-The guard (updated 2026-06-18 under Vince-Alignment 2.0):
-- Corrects any `#000` pure-black overlays → Obsidian Weave `#111112` (palette law)
+The guard (updated 2026-07-07 for the Reserve CTA integration):
+- Corrects any `#000` pure-black overlays → Obsidian `#0B0C10` (palette law —
+  dark grounds resolve to obsidian, never pure black, never the legacy
+  `#111112`)
+- Corrects the two retired reds (the old Loko Rust CTA fill and its
+  near-miss) → Kamagong `#3D2B1F`. Red is fully retired from the brand —
+  no red anywhere, in any state.
 - Corrects pure `#fff` → Piña Ecru + the `#F9F6F0` near-miss (palette law)
 - Replaces residual **"OAX Photo Booth"** text + `info@oaxphotobooth.com` →
   "Katha Booth" / `kathabooth@gmail.com` (legacy brand cleanup)
@@ -116,13 +121,70 @@ For each one:
 | `deckled-image.html` | A single torn-edge photo | image src + alt |
 | `quote.html` | Pull quote | quote, author, role |
 | `calado-divider.html` | The openwork divider line | nothing |
-| `commission-cta.html` | **The sacred Loko Rust CTA** — one per page | href, optional eyebrow + heading |
+| `reserve-cta.html` | **The Reserve button** — the canonical booking CTA | href `src` code, variant class, label |
+| `inquire-bridge.html` | The complete `/inquire` page section | (usually nothing) |
 | `katha-testimonial-card.html` | Testimonial block (replaces old "Oax" cards) | quote text, name, event/role |
 
 > Squarespace strips JavaScript inside Code Blocks — every snippet here is pure HTML + CSS on purpose, so they always work.
 
-### Commission CTA — the one rule
-The red "Commission" button is a **sacred CTA**. Use it exactly once per page — the single booking moment. Never use it for navigation links, hover states, or as a repeating pattern. Its rarity is what gives it weight.
+> The old red `commission-cta.html` is retired — red is off the palette
+> entirely now. It lives in `snippets/_archive/` as history. Use
+> `reserve-cta.html` everywhere you would have used it.
+
+### Where the Reserve buttons go
+
+The Reserve button is styled to sit beside your own dark block buttons —
+same shape, same voice. It comes in two looks: the default (dark button,
+for your ivory sections) and `k-reserve--on-dark` (ivory button, for your
+brown/dark bands). Every placement below uses the same snippet — the only
+things that change are the variant class and the `src` code in the link.
+
+**The one rule: one primary Reserve button per screenful. Never stack two.**
+If a visitor can see two Reserve buttons at once, remove one.
+
+1. **Header (site-wide).** Don't paste a snippet here — use Squarespace's
+   native header button instead. Edit header → add a button, label it
+   `Reserve Your Date`, and point it at
+   `https://book.kathabooth.com/gallery?src=ss-nav`. Squarespace styles it to
+   match your header automatically.
+
+2. **Home — hero.** One button under the hero headline. Paste
+   `reserve-cta.html`, set the src code to `ss-hero`. If your hero sits
+   on a photo or dark band, add the `k-reserve--on-dark` class.
+
+3. **Home — after the process section.** A second placement lower down,
+   for people who read first and decide after. Use src `ss-home-bridge`.
+   (This is fine with rule 1 — they're a full scroll apart.)
+
+4. **Installations — one per tier card.** Under each tier's Investment
+   accordion, paste the snippet with src `ss-installations` **and** the
+   tier's deep link, so the booking app opens with that installation
+   already chosen:
+   - Signature Installation / Oak → `...?src=ss-installations&tier=signature-oak`
+   - Editorial Installation / Oak → `...?src=ss-installations&tier=editorial-oak`
+   - Modernist Installation / White → `...?src=ss-installations&tier=modernist-white`
+   - Monochrome Installation / White → `...?src=ss-installations&tier=monochrome-white`
+
+5. **Founders — text link only.** No block button here; the page is
+   about you two, not booking. A plain sentence at the end with a text
+   link is right: *"When you're ready, reserve your date."* → point the
+   link at `https://book.kathabooth.com/gallery?src=ss-founders`.
+
+6. **Contact — above the form.** A short line plus the button, so people
+   who came to book don't have to fill in a form first. Use src
+   `ss-contact`.
+
+7. **Footer (site-wide).** One button in the footer band. It sits on your
+   dark brown ground, so use the `k-reserve--on-dark` class. Src
+   `ss-footer`.
+
+8. **The `/inquire` page.** Paste `inquire-bridge.html` as the whole
+   page — it's a complete section (headline, one line, button, and a
+   quiet link to Contact). The src is already set to `ss-inquire`.
+
+Why the src codes matter: they tell us which door each booking walked in
+through, so we can see what's working. Takes ten seconds per paste;
+worth it.
 
 ---
 
@@ -191,8 +253,8 @@ Alternatively, you can set up a automatic link redirect so that `kathabooth.com/
 **Do**
 - Build the way your design instincts tell you to. The 2026-06-17 directive:
   *"None of his website creations violates any laws. He is the law."*
-- Drop in a `commission-cta.html` snippet at the single booking moment per
-  page if you want a Katha-signature red CTA.
+- Drop in a `reserve-cta.html` snippet at the booking moments listed in
+  "Where the Reserve buttons go" above — one per screenful.
 - Use real event photos.
 
 **Don't**

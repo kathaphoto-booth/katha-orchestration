@@ -1,6 +1,6 @@
 ---
 name: production-audit
-description: "Audit a shipped repo for production-readiness gaps across RLS, webhooks, secrets, grants, Stripe idempotency, mobile UX, and deployment health."
+description: "Use when the user asks 'is this production-ready', 'audit the codebase', 'security check', 'RLS review', 'what did I miss before launch', 'check for secrets in code', or 'Stripe webhook idempotency' — or right after merging to main, before a public launch or demo. Covers deployed-state gaps: Supabase RLS, exposed secrets, Stripe safety, mobile UX, deployment config. Produces prioritized Critical/Important/Minor findings."
 ---
 # Pointer: production-audit
 

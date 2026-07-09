@@ -25,14 +25,14 @@ scratch/
 photobooth-template-studio/
 
 # build sandboxes + session logs (2026-07-04)
-pb-v1/
-pb-v2/
 pb-v3/
 pb-v*.log
-remix_-photobooth-template-studio/
+# Zenith moved to ~/Desktop/Zenith (own repo) on 2026-07-08
+Zenith/
 Anthropic/
 infrastructure/
 test_ai_studio.py
 start_previews.sh
 Image 7-3-26 at 3.31*.png
 .worktrees/
+.env.local

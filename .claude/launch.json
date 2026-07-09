@@ -2,6 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "pb-v3",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "pb-v3"],
+      "autoPort": true
+    },
+    {
       "name": "katha-booking-static",
       "runtimeExecutable": "python3",
       "runtimeArgs": [

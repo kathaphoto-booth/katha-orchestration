@@ -40,9 +40,13 @@
   // ── Forbidden hex → nearest canon token ──────────────────────────
   // Map lowercase #rrggbb → replacement.
   const HEX_CORRECTIONS = {
-    '#000000': '#111112',  // → Obsidian Weave
+    '#000000': '#0B0C10',  // → Obsidian (dark grounds resolve here; legacy #111112 target retired 2026-07-07)
     '#ffffff': '#EAE2D5',  // → Piña Ecru
     '#f9f6f0': '#EAE2D5',  // → Piña Ecru (near-miss, still forbidden)
+    // Retired reds (2026-07-07 CTA integration) — corrects FROM the old
+    // Loko Rust sacred-CTA fill #8C382A and its near-miss #9A3D2A.
+    '#8c382a': '#3D2B1F',  // → Kamagong
+    '#9a3d2a': '#3D2B1F',  // → Kamagong
     // OAX legacy palette
     '#0a0806': '#1A1816',  // → Knalum Ink
     '#bf9d2c': '#C4B59D',  // → Champagne Heirloom

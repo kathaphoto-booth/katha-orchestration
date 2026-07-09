@@ -1,6 +1,6 @@
 ---
 name: grill-me
-description: "Pre-brainstorm adversarial interview. Run this BEFORE superpowers:brainstorming on any feature, design, spec, or refactor. Forces resolution of the decision tree before any design work begins. Rigid — do not skip steps."
+description: "Use when a feature, redesign, spec, or refactor is about to start and its requirements have not been pressure-tested — the request is ambiguous, scope is unstated, success criteria are missing, or the user wants alignment before any code. Runs BEFORE superpowers:brainstorming. Skip for single-file fixes, copy tweaks, and other trivially reversible changes."
 ---
 # Pointer: grill-me
 

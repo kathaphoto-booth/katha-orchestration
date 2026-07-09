@@ -1,6 +1,6 @@
 ---
 name: brass-ring-enforcer
-description: Source-tree enforcement of DESIGN.md §6 Do's and Don'ts + vault patterns.md Forbidden list. Greps the working tree for forbidden hex, forbidden vocab, forbidden font families, and Loko Rust outside <KCta variant="sacred">. Returns a JSON report. Designed for pre-commit hook + CI.
+description: Source-tree enforcement of DESIGN.md §6 Do's and Don'ts + vault patterns.md Forbidden list. Greps the working tree for forbidden hex, forbidden vocab, forbidden font families, and Loko Rust anywhere (fully banned 2026-07-07 — no sacred-CTA exemption). Returns a JSON report. Designed for pre-commit hook + CI.
 tools: Bash, Grep, Glob, Read
 model: haiku
 ---
@@ -16,8 +16,9 @@ D. Forbidden vocab in user-facing strings (extract string literals from .tsx/.md
    luxury, premium, stunning, amazing, unforgettable, journey, vibe, curated, authentic,
    Instagrammable, once-in-a-lifetime, Antigravity, agentic, "Alpha-Transparent",
    "automation pipeline", "verification algorithm"
-E. Loko Rust outside sacred CTA: ripgrep for "#8C382A" or "bg-katha-loko-rust" and confirm each match is inside a `<KCta variant="sacred">` block (read 10 lines of context). Anything else = violation.
-F. Sequin-on-Ecru: ripgrep for "text-katha-hammered-sequin" on the same element as "bg-katha-pina-ecru".
+E. Banned Color (Loko Rust): ripgrep for "#8C382A", "bg-katha-loko-rust", or "text-katha-loko-rust". This color is completely BANNED (Brand Law: No red anywhere). All matches are violations.
+F. Gilded Archive Canon Audit: ripgrep to ensure presence of proper Gilded Archive colors (Satin Champagne/Gilded Warmth) where metallic accents are needed.
+G. Sequin-on-Ecru: ripgrep for "text-katha-hammered-sequin" on the same element as "bg-katha-pina-ecru".
 
 Output JSON to stdout:
 { "violations": [ {"rule":"A|B|C|D|E|F", "file":"...", "line":N, "match":"..."} ], "summary": {"A":0,"B":0,...} }

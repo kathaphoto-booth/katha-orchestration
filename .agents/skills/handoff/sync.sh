@@ -126,3 +126,19 @@ mv "$TMP" "$HANDOFF"
 echo ""
 echo "Checkpoint refreshed: .session, .latest_memory_entry, .latest_inbox_entry_date, .inbox_pending_count"
 COMPILE_MEMORY_NESTED=1 /Users/jedg./Desktop/kat_ha_pb/bin/compile-memory.sh
+
+echo "Syncing documentation with OpenWiki..."
+if command -v openwiki >/dev/null 2>&1; then
+  openwiki --update || echo "openwiki --update failed."
+else
+  npx --yes openwiki --update || echo "npx openwiki --update failed."
+fi
+
+echo "Opening vault in Obsidian..."
+if command -v obsidian >/dev/null 2>&1; then
+  # The vault root is /Volumes/samsung 970 pro - Data/KATHA_VAULT
+  # Obsidian hides dot-folders like .memory, so we open a known visible file to focus the vault
+  obsidian open vault="knowledge" file="AGENTS.md" || true
+else
+  echo "obsidian CLI not found in PATH."
+fi

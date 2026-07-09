@@ -25,7 +25,7 @@
 /* ── Brand Tokens — 10 palette + 2 ecru-safe text ────────────── */
 :root {
   /* Core UI */
-  --katha-obsidian-weave:    #111112;
+  --katha-obsidian-weave:    #0B0C10;
   --katha-pina-ecru:         #EAE2D5;
   --katha-hammered-sequin:   #9C958A;   /* dark grounds only — never text on ecru */
   --katha-champagne-heirloom:#C4B59D;
@@ -33,7 +33,7 @@
 
   /* Narrative (T'nalak discipline) */
   --katha-knalum-ink:        #1A1816;
-  --katha-loko-rust:         #8C382A;   /* SACRED — one CTA per screen, nothing else */
+  --katha-loko-rust:         #3D2B1F;   /* RETIRED name — resolves to Kamagong; Loko Rust red banned 2026-07-07 */
   --katha-terracotta-earth:  #A35C44;
   --katha-abel-slate:        #5A5D5A;
   --katha-capiz-sage:        #B5B8A3;

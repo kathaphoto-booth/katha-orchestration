@@ -92,7 +92,7 @@ codex_status="ABSENT"
 # list` + a live generate call 2026-06-27) over the larger general-purpose
 # gpt-oss:20b also present locally — "lowest yet impactful" per Jed.
 CODEX_USE_OSS="${CODEX_USE_OSS:-1}"
-CODEX_OSS_MODEL="${CODEX_OSS_MODEL:-qwen2.5-coder:7b}"
+CODEX_OSS_MODEL="${CODEX_OSS_MODEL:-qwen3-coder}"
 set +e
 if [[ "$CODEX_USE_OSS" == "1" ]]; then
   run_with_timeout "$TIMEOUT" "$CODEX_BIN" exec --oss -m "$CODEX_OSS_MODEL" -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
@@ -142,7 +142,7 @@ if [[ "$COUNCIL_INCLUDE_AGY" == "1" ]]; then
   # to fit inside whatever quota is left. Must stay a real value from
   # `agy models` — never an Anthropic/Claude name (see
   # test_council_agy_model_pinned_correctly).
-  AGY_MODEL="${AGY_MODEL:-Gemini 3.5 Flash (Low)}"
+  AGY_MODEL="${AGY_MODEL:-GLM-5}"
   set +e
   run_with_timeout "$TIMEOUT" "$AGY_BIN" --print --print-timeout "${TIMEOUT}s" --model "$AGY_MODEL" "$PROMPT" \
     < /dev/null > "$OUT/.agy.raw" 2> "$OUT/.agy.raw.err"
@@ -197,58 +197,22 @@ COUNCIL_INCLUDE_COPILOT="${COUNCIL_INCLUDE_COPILOT:-1}"
 # client). If the proxy isn't up, the reachability pre-flight below marks
 # this voice ABSENT with an actionable message instead of hanging on -p.
 COPILOT_BIN="${COPILOT_BIN:-copilot}"
-COPILOT_PROVIDER_BASE_URL="${COPILOT_PROVIDER_BASE_URL:-http://127.0.0.1:8788/v1}"
-COPILOT_PROVIDER_TYPE="${COPILOT_PROVIDER_TYPE:-openai}"
-COPILOT_MODEL="${COPILOT_MODEL:-zai-org/glm-5-maas}"
 if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   copilot_status="ABSENT"
-  # Pre-flight 1: `copilot --version` is fast/safe and fails when the binary
-  # is genuinely absent. Bounded by run_with_timeout (council review finding
-  # 1 from the old design, still applies): an UNBOUNDED probe that hung would
-  # abort the whole script under set -e BEFORE the codex/agy quorum check
-  # below — breaking the "copilot can't regress the 2-voice baseline"
-  # invariant even with the quorum line itself untouched.
   if run_with_timeout 15 "$COPILOT_BIN" --version < /dev/null >/dev/null 2>&1; then
-    # Pre-flight 2: the GLM-5 proxy is a separate local process this script
-    # depends on but doesn't own. A plain GET is a valid liveness probe (the
-    # proxy answers any non-POST with 200 "vertex-proxy up" — see
-    # vertex-proxy.mjs). Bounded the same way as pre-flight 1, and for the
-    # same reason: avoid a blind -p call that would otherwise hang trying to
-    # reach a dead localhost port.
-    if run_with_timeout 5 curl -sf -o /dev/null "$COPILOT_PROVIDER_BASE_URL" < /dev/null; then
-      set +e
-      # --allow-all-tools is required for non-interactive mode (the standalone
-      # CLI is a full coding agent — without it, a permission-confirmation
-      # prompt with no TTY to answer hangs forever). --deny-tool denials take
-      # precedence over --allow-all-tools (per the CLI's own documented
-      # permission model), so write/shell stay blocked — preserving the same
-      # "no write surface" contract codex (-s read-only) and agy (no
-      # --sandbox/--add-dir) already have; this voice is a critic, not an
-      # executor. < /dev/null guards the same stdin-hang class found in
-      # codex's invocation (2026-06-26). The COPILOT_PROVIDER_* / COPILOT_MODEL
-      # exports above activate BYOK for this process only (not exported
-      # globally), routing through the GLM-5 proxy instead of GitHub's model
-      # routing.
-      run_with_timeout "$TIMEOUT" env \
-        COPILOT_PROVIDER_BASE_URL="$COPILOT_PROVIDER_BASE_URL" \
-        COPILOT_PROVIDER_TYPE="$COPILOT_PROVIDER_TYPE" \
-        COPILOT_MODEL="$COPILOT_MODEL" \
-        "$COPILOT_BIN" -p "$PROMPT" \
-        --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
-        < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
-      copilot_rc=$?
-      set -e
-      redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"
-      rm -f "$OUT/.copilot.raw" "$OUT/.copilot.raw.err"
-      if [[ "$copilot_rc" -eq 0 && -s "$OUT/copilot.out" ]]; then copilot_status="OK"; else
-        echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
-      fi
-    else
-      copilot_rc=$?
-      echo "ABSENT: GLM-5 proxy unreachable at $COPILOT_PROVIDER_BASE_URL — run 'bash scratch/copilot-glm5/start-proxy.sh' first" >> "$OUT/copilot.out"
+    set +e
+    run_with_timeout "$TIMEOUT" "$COPILOT_BIN" -p "$PROMPT" \
+      --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
+      < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
+    copilot_rc=$?
+    set -e
+    redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"
+    rm -f "$OUT/.copilot.raw" "$OUT/.copilot.raw.err"
+    if [[ "$copilot_rc" -eq 0 && -s "$OUT/copilot.out" ]]; then copilot_status="OK"; else
+      echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
     fi
   else
-    copilot_rc=$?   # reflect the pre-flight's real failure rc, not a misleading 0 (council review finding 6)
+    copilot_rc=$?
     echo "ABSENT: copilot CLI not installed (pre-flight '--version' failed) — skipped to avoid a blind -p call" >> "$OUT/copilot.out"
   fi
 fi

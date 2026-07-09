@@ -283,8 +283,8 @@ test_council_all_voices_redirect_stdin_from_devnull() {  # source-assertion (reg
     < /dev/null' "agy invocation redirects stdin from /dev/null"
   assert_contains "$b" '"$COPILOT_BIN" --version < /dev/null' "copilot preflight redirects stdin from /dev/null"
   assert_contains "$b" '"$COPILOT_BIN" -p "$PROMPT" \
-      --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
-      < /dev/null' "copilot -p invocation redirects stdin from /dev/null"
+        --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
+        < /dev/null' "copilot -p invocation redirects stdin from /dev/null"
   assert_contains "$b" '"$CODEX_BIN" exec --oss -m "$CODEX_OSS_MODEL" -s read-only --skip-git-repo-check -C "$REPO" "$PROMPT" \
     < /dev/null' "codex --oss invocation (the default path) redirects stdin from /dev/null"
 }
