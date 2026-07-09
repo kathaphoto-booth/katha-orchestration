@@ -1,0 +1,152 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "ORBIT" [ref=e3] [cursor=pointer]:
+      - /url: ../
+      - generic [ref=e5]: ORBIT
+    - navigation [ref=e6]:
+      - link "← The configurator" [ref=e7] [cursor=pointer]:
+        - /url: ../
+      - link "Gallery" [ref=e8] [cursor=pointer]:
+        - /url: /
+  - generic [ref=e9]:
+    - banner [ref=e10]:
+      - generic [ref=e11]: Build notes · The Halcyon
+      - heading "A whole store from one photo." [level=1] [ref=e13]:
+        - text: A whole store
+        - text: from
+        - emphasis [ref=e14]: one photo.
+      - paragraph [ref=e15]: ORBIT is a real-time 3D product configurator for a chair that never existed. It began as a single generated product shot, became a textured 3D mesh, and ended as a store you can spin, re-upholster, and measure — all in the browser, no build step. Here is exactly how it was made, including the parts that didn't work.
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - heading "Brief & concept" [level=2] [ref=e18]
+        - paragraph [ref=e19]: "The assignment was site 23 of 25: \"one chair, configurable.\" A Three.js viewer with orbit controls, studio lighting, a soft shadow catcher, material swatches that morph live, an updating price, and a dimension overlay — the flex being real-time 3D that feels like a premium DTC store, the kind of page where a furniture brand sells a $3,000 lounge chair."
+        - paragraph [ref=e20]: "So the first job wasn't code — it was a fiction worth building. The chair became The Halcyon, a bent-plywood lounge in a fictional \"Edition 03.\" The copy commits to it: nine plies of steam-bent walnut, pressed over a two-tonne form, boucle woven in Kortrijk. A configurator only feels premium if the words around it believe the product is real."
+      - generic [ref=e21]:
+        - heading "Assets & provenance — the pipeline star" [level=2] [ref=e22]
+        - paragraph [ref=e23]: "There is no photographer, no 3D modeller, and no product. The entire chair came from a two-step generative pipeline:"
+        - table [ref=e24]:
+          - rowgroup [ref=e25]:
+            - row "Step Tool Output" [ref=e26]:
+              - columnheader "Step" [ref=e27]
+              - columnheader "Tool" [ref=e28]
+              - columnheader "Output" [ref=e29]
+            - row "Product photo Higgsfield nano_banana_2 (text → image) A studio shot of a mid-century walnut & boucle lounge chair — chair.webp" [ref=e30]:
+              - cell "Product photo" [ref=e31]
+              - cell "Higgsfield nano_banana_2 (text → image)" [ref=e32]:
+                - text: Higgsfield
+                - code [ref=e33]: nano_banana_2
+                - text: (text → image)
+              - cell "A studio shot of a mid-century walnut & boucle lounge chair — chair.webp" [ref=e34]:
+                - text: A studio shot of a mid-century walnut & boucle lounge chair —
+                - code [ref=e35]: chair.webp
+            - row "Photo → mesh Higgsfield image_to_3d A textured glTF 2.0 mesh, ~6 MB — chair.glb" [ref=e36]:
+              - cell "Photo → mesh" [ref=e37]
+              - cell "Higgsfield image_to_3d" [ref=e38]:
+                - text: Higgsfield
+                - code [ref=e39]: image_to_3d
+              - cell "A textured glTF 2.0 mesh, ~6 MB — chair.glb" [ref=e40]:
+                - text: A textured glTF 2.0 mesh, ~6 MB —
+                - code [ref=e41]: chair.glb
+        - paragraph [ref=e42]:
+          - text: "That's the whole story, and it's a good one: a photograph of a thing that was never photographed, lifted into a mesh that was never modelled. The generated"
+          - code [ref=e43]: .webp
+          - text: pulls double duty — it's also the loading poster and the WebGL-failure fallback, so the shot is never a void while the 6 MB GLB streams.
+        - generic [ref=e44]: "Honesty about the scan: AI photo-to-mesh is spectacular on rigid, grained surfaces — the walnut shell is genuinely beautiful — and weak on soft, high-frequency ones. The boucle cushions scanned as faceted, slightly papery geometry. That single fact drove most of the design decisions below."
+      - generic [ref=e45]:
+        - heading "Design decisions" [level=2] [ref=e46]
+        - heading "Split-screen, not scroll" [level=3] [ref=e47]
+        - paragraph [ref=e48]: A configurator is a workbench, not an article. The layout is a fixed two-pane grid — 3D stage left, controls right — so the product never leaves your eye while you change it. On mobile it stacks to a 56vh viewport over a scrollable panel. No page ever scrolls the body horizontally.
+        - heading "Material variants on a single baked texture (the honest version)" [level=3] [ref=e49]
+        - paragraph [ref=e50]:
+          - text: "Here's the constraint that shaped everything: the GLB is one mesh with one material and one baked colour texture covering the walnut"
+          - emphasis [ref=e51]: and
+          - text: the boucle together. There are no separate sub-materials to swap. Real per-part material picking is impossible on this asset — so I didn't pretend to. Instead I inject a small shader that reads each pixel's luminance and saturation to tell wood from cloth, then re-hues the wood range and multiply-tints the cushion range. It's an approximation, documented as one in the code. It reads convincingly and it updates instantly, which is the actual point of a configurator.
+        - heading "Warm gallery, not the default studio white" [level=3] [ref=e52]
+        - paragraph [ref=e53]:
+          - text: The backdrop is a warm radial paper gradient with a grounding floor vignette and a film-grain overlay — committing to a
+          - code [ref=e54]: "#e9e5dd"
+          - text: paper palette with a single amber accent, rather than the reflexive cool-grey product-shot look. Type is Space Grotesk throughout, with tight display tracking on the headline.
+      - generic [ref=e55]:
+        - heading "Signature techniques" [level=2] [ref=e56]
+        - paragraph [ref=e57]: GLB streaming with a real progress state
+        - code [ref=e59]: "loader.load('./assets/chair.glb', (gltf) => { /* recenter, sit on floor, patch material, reveal */ }, (evt) => { // total is unknown when gzipped, so fall back to the known 6.1MB const p = evt.total ? evt.loaded / evt.total : evt.loaded / 6100816; setProgress(Math.min(0.99, p)); // drives the ring + bar }, (err) => { // GLB failed: keep the generated poster as the fallback loader.classList.add('done'); });"
+        - paragraph [ref=e60]: Material variants — the shader that separates wood from boucle
+        - code [ref=e62]: "mat.onBeforeCompile = (shader) => { // One baked texture holds BOTH materials, so we can't swap meshes. // Classify each texel by luminance + saturation, then treat it. shader.fragmentShader = shader.fragmentShader.replace( '#include <color_fragment>', `#include <color_fragment> float lum = ...; float sat = ...; // boucle = light + low-saturation → MULTIPLY tint (keeps woven shading) float fabMask = smoothstep(0.44, 0.66, lum) * (1.0 - smoothstep(0.36, 0.62, sat)); diffuseColor.rgb = mix(wooded, uFabTint * soft, fabMask);` ); };"
+        - generic [ref=e63]: "Multiply-tinting instead of replacing is the whole trick for the cushions: the baked cloth's highlights and shadows survive, so a terracotta boucle reads as dyed wool, not flat paint."
+        - paragraph [ref=e64]: Damped orbit controls that never dip below the floor
+        - code [ref=e66]: const controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.dampingFactor = 0.06; controls.enablePan = false; controls.minDistance = 2.6; controls.maxDistance = 6.5; controls.maxPolarAngle = Math.PI / 2 - 0.02; // never under the seat controls.autoRotate = true; controls.autoRotateSpeed = 0.85; // auto-spin stops the instant the user grabs the model controls.addEventListener('start', () => controls.autoRotate = false);
+        - paragraph [ref=e67]: Dimension overlay drawn in 3D space
+        - code [ref=e69]: "// Dashed amber leader lines + canvas-sprite labels, built from the // chair's bounding box, toggled by the \"dimensions\" chip (or the \"d\" key). const dashMat = new THREE.LineDashedMaterial({ color: 0xa8672d, dashSize: 0.05, gapSize: 0.03 }); const line = new THREE.Line(geo, dashMat); line.computeLineDistances(); // required for dashes to show dimGroup.add(makeLabel('82 cm', new THREE.Vector3(xR + 0.18, midY, z)));"
+      - generic [ref=e70]:
+        - heading "The three iteration passes" [level=2] [ref=e71]
+        - paragraph [ref=e72]: Every site is rendered in headless Chrome, screenshotted at desktop and mobile, and the pictures are read back and critiqued — code review can't see a papery cushion, only pixels can. Each pass fixes what it finds and adds one deliberate upgrade.
+        - heading "Pass 1 — get it on screen" [level=3] [ref=e73]
+        - paragraph [ref=e74]:
+          - text: "First render threw a shader error: the injected uniforms were added to the uniform map but never"
+          - emphasis [ref=e75]: declared
+          - text: in the GLSL, so the fragment shader wouldn't compile. Fixed by prepending the
+          - code [ref=e76]: uniform
+          - text: declarations. With that resolved the chair appeared — but the cushions read as crumpled paper, because the first tint
+          - emphasis [ref=e77]: replaced
+          - text: the baked shading instead of multiplying it.
+        - heading "Pass 2 — the fork in the road" [level=3] [ref=e78]
+        - paragraph [ref=e79]:
+          - text: "I tried the tempting hybrid: keep the scanned shell, cover the bad cushions with clean procedural rounded-box boucle. It looked worse — because the cushions are baked into the"
+          - emphasis [ref=e80]: same mesh
+          - text: as the shell, they can't be removed, only darkened, and any darkened remnant peeking out reads as a defect. The two cushion systems fought each other. So I deleted the procedural cushions entirely and instead softened the scanned cushions in-shader (flatten harsh highlights, gentle even tone). The brief explicitly blessed a full-primitive fallback; the honest middle path — keep the gorgeous shell, treat the flawed cushions — beat both extremes. I also tightened the camera framing and moved the marginalia off the cluttered bottom edge.
+        - heading "Pass 3 — make the variants unmistakable, then add delight" [level=3] [ref=e81]
+        - paragraph [ref=e82]:
+          - text: "Verifying variants live (ebony shell, clay boucle) showed the colourways were too subtle, so I boosted the fabric mask and tint strength until each reads clearly. The deliberate upgrades: a tactile field-of-view \"settle\" nudge when a material changes, and an easter egg — press"
+          - code [ref=e83]: R
+          - text: to roll a random configuration,
+          - code [ref=e84]: D
+          - text: "to toggle dimensions. Final pass: zero console errors at 1440×900 and 390×844, no horizontal scroll."
+      - generic [ref=e85]:
+        - heading "Reproduce this" [level=2] [ref=e86]
+        - list [ref=e87]:
+          - listitem [ref=e88]:
+            - text: Generate a clean studio product photo of your object (
+            - code [ref=e89]: nano_banana_2
+            - text: ), then lift it to a textured GLB (
+            - code [ref=e90]: image_to_3d
+            - text: ). Keep the photo — it's your poster and fallback.
+          - listitem [ref=e91]:
+            - generic [ref=e92]: Inspect the GLB before trusting it.
+            - text: "Parse the header: how many meshes, materials, textures? A single baked texture means you can't swap sub-materials — plan variants accordingly."
+          - listitem [ref=e93]:
+            - text: Load with
+            - code [ref=e94]: GLTFLoader
+            - text: and a real progress callback; fall back to
+            - code [ref=e95]: evt.loaded / knownBytes
+            - text: when
+            - code [ref=e96]: evt.total
+            - text: is 0 under gzip.
+          - listitem [ref=e97]:
+            - text: "Set up the scene like a photographer:"
+            - code [ref=e98]: ACESFilmicToneMapping
+            - text: ", a three-point rig,"
+            - code [ref=e99]: RoomEnvironment
+            - text: for soft image-based reflections, and a
+            - code [ref=e100]: ShadowMaterial
+            - text: plane as the floor.
+          - listitem [ref=e101]:
+            - text: Damp your
+            - code [ref=e102]: OrbitControls
+            - text: ", clamp the polar angle above the floor, and stop auto-rotate on first interaction."
+          - listitem [ref=e103]:
+            - text: For variants on a baked texture, patch the material with
+            - code [ref=e104]: onBeforeCompile
+            - text: and classify texels by luminance/saturation —
+            - generic [ref=e105]: multiply
+            - text: "-tint fabric so its shading survives; be honest in comments that it's an approximation."
+          - listitem [ref=e106]:
+            - text: Render headless,
+            - generic [ref=e107]: read the screenshots yourself
+            - text: ", and iterate at least three times. Judge the flawed asset honestly — sometimes the fix is to treat it, not to hide it."
+          - listitem [ref=e108]: Ship with zero console errors and no horizontal body scroll at 1440 and 390.
+    - contentinfo [ref=e109]:
+      - link "← Back to the configurator" [ref=e110] [cursor=pointer]:
+        - /url: ../
+      - link "The gallery" [ref=e111] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e112]: Designed & built by Claude Fable 5

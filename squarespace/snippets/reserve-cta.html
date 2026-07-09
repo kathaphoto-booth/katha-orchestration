@@ -1,0 +1,107 @@
+<!--
+  KATHA SNIPPET: Reserve CTA  (supersedes commission-cta.html, retired 2026-07-07)
+  ─────────────────────────────────────────────────────────────────────
+  The canonical booking button. Reads as a sibling of Vince's native
+  dark block buttons ("Reserve Your Date", "Work With Us") — solid
+  ground, small uppercase sans label, square corners, no ornament.
+
+  INSTALL:  Squarespace → Edit page → + → Code → paste everything below.
+
+  VARIANTS (pick one by editing the class on the <a> tag):
+    k-reserve                    → for LIGHT grounds (ivory sections):
+                                   solid obsidian #0B0C10, ecru label,
+                                   hover lifts to kamagong #3D2B1F.
+    k-reserve k-reserve--on-dark → for DARK grounds (brown/obsidian bands):
+                                   solid ecru #F5ECD7, obsidian label.
+    add k-reserve--gilt          → optional 1px gilt hairline border
+                                   (accent only — use sparingly).
+
+  RULE:     ONE primary Reserve button per viewport. Never stack two.
+
+  ── href: WHERE THE BUTTON POINTS ──────────────────────────────────
+  Every button goes to the booking app. Replace REPLACE-ME in the href
+  with the placement code for where you pasted it, so we can see which
+  door people walk in through:
+
+    ss-nav            → the header button (site-wide)
+    ss-hero           → Home hero
+    ss-home-bridge    → Home, post-process bridge section
+    ss-installations  → Installations tier cards (add &tier=<slug>, below)
+    ss-founders       → Founders inline text link
+    ss-contact        → Contact, above the form
+    ss-footer         → footer band (site-wide)
+    ss-inquire        → the /inquire bridge section
+
+  ── TIER DEEP LINKS (Installations page only) ──────────────────────
+  On a tier card, append &tier=<slug> so the app opens with that
+  installation pre-selected. The four canonical slugs:
+
+    signature-oak      → Signature Installation / Oak
+    editorial-oak      → Editorial Installation / Oak
+    modernist-white    → Modernist Installation / White
+    monochrome-white   → Monochrome Installation / White
+
+  Example: https://book.kathabooth.com/gallery?src=ss-installations&tier=editorial-oak
+  ─────────────────────────────────────────────────────────────────────
+  Pure HTML + CSS (Squarespace strips JS in Code Blocks). No JS here.
+-->
+
+<style>
+  .k-reserve {
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: var(--font-ui, 'proxima-nova', 'Hanken Grotesk', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    text-align: center;
+    padding: 1rem 2.75rem;
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: #0B0C10;            /* obsidian — light-ground default */
+    color: #F5ECD7;                 /* ecru label */
+  }
+  .k-reserve:hover {
+    background: #3D2B1F;            /* kamagong lift */
+    color: #F5ECD7;
+  }
+
+  /* Dark-ground variant — for brown/obsidian bands */
+  .k-reserve--on-dark {
+    background: #F5ECD7;            /* ecru block */
+    color: #0B0C10;                 /* obsidian label */
+  }
+  .k-reserve--on-dark:hover {
+    background: #C9A57B;            /* champagne lift */
+    color: #0B0C10;
+  }
+
+  /* Optional gilt hairline — accent only, never a fill */
+  .k-reserve--gilt {
+    border-color: #D4AF37;
+  }
+
+  /* Keyboard focus — always visible, on either ground */
+  .k-reserve:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 3px;
+  }
+
+  /* Motion is opt-in — still, by default, for those who ask for still */
+  @media (prefers-reduced-motion: no-preference) {
+    .k-reserve {
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+  }
+</style>
+
+<!-- EDIT: (1) class — pick a variant per the notes above
+           (2) href — replace REPLACE-ME with the placement code
+           (3) label — defaults to "Reserve Your Date" -->
+<a class="k-reserve"
+   href="https://book.kathabooth.com/gallery?src=REPLACE-ME"
+   aria-label="Reserve your date — opens the Katha Booth booking registry">
+  Reserve Your Date
+</a>

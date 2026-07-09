@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# openwiki — deterministic operator for the KATHA_VAULT LLM Wiki.
+# Pattern: langchain-ai/openwiki (agent-owned wiki fronted by a tiny CLI),
+# adapted to the vault's three-layer Karpathy schema. Zero-token: mechanical
+# upkeep only (skeleton, index, log) — LLMs author all page content by hand.
+set -euo pipefail
+
+VAULT="${OPENWIKI_VAULT:-/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge}"
+SCRIPTS="$HOME/.claude/skills/skills/llm-wiki/scripts"
+
+DIRS=(
+  "raw" "raw/assets"
+  "wiki" "wiki/entities" "wiki/concepts" "wiki/sources"
+  "wiki/comparisons" "wiki/synthesis"
+  "council" "council/intake" "council/verdicts"
+  ".memory" ".memory/handoff"
+)
+
+die() { echo "openwiki: $*" >&2; exit 1; }
+
+require_vault() {
+  [[ -d "$VAULT" ]] || die "vault not found at '$VAULT' (is the SSD mounted? set OPENWIKI_VAULT to override)"
+}
+
+require_scripts() {
+  for s in update_index.py append_log.py; do
+    [[ -f "$SCRIPTS/$s" ]] || die "missing $SCRIPTS/$s — install the llm-wiki skill scripts first"
+  done
+}
+
+# Schema law: CLAUDE.md and AGENTS.md are identical twins except the
+# "> **Tool:**" line. Report any other divergence as drift.
+check_twins() {
+  local drift
+  drift=$(diff <(grep -v '^> \*\*Tool:\*\*' "$VAULT/CLAUDE.md") \
+               <(grep -v '^> \*\*Tool:\*\*' "$VAULT/AGENTS.md") | head -6 || true)
+  if [[ -n "$drift" ]]; then
+    echo "  TWIN DRIFT  CLAUDE.md ≠ AGENTS.md (beyond the Tool line):"
+    echo "$drift" | sed 's/^/    /'
+  else
+    echo "  twins: identical (modulo Tool line)"
+  fi
+}
+
+cmd_help() {
+  cat <<'EOF'
+openwiki — deterministic operator for the KATHA_VAULT LLM Wiki
+
+Usage:
+  openwiki             status: layer check, page counts, log tail
+  openwiki --init      verify/create the vault skeleton (idempotent —
+                       never overwrites index.md, log.md, raw/, or pages)
+  openwiki --update    rebuild wiki/index.md from page frontmatter and
+                       append an `update` entry to wiki/log.md
+  openwiki --help      this text
+
+Environment:
+  OPENWIKI_VAULT       vault root override
+                       (default: /Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge)
+
+The CLI never writes page content, never edits raw/, never deletes.
+Schema of record: <vault>/CLAUDE.md (CC) / AGENTS.md (codex, agy, copilot).
+EOF
+}
+
+cmd_init() {
+  require_vault
+  require_scripts
+  local created=0
+  echo "openwiki --init  →  $VAULT"
+  for d in "${DIRS[@]}"; do
+    if [[ -d "$VAULT/$d" ]]; then
+      printf '  OK       %s\n' "$d"
+    else
+      mkdir -p "$VAULT/$d"
+      printf '  CREATED  %s\n' "$d"
+      created=$((created + 1))
+    fi
+  done
+  for f in "wiki/index.md" "wiki/log.md"; do
+    if [[ -f "$VAULT/$f" ]]; then
+      printf '  OK       %s\n' "$f"
+    else
+      case "$f" in
+        wiki/index.md) python3 "$SCRIPTS/update_index.py" --vault "$VAULT" >/dev/null ;;
+        wiki/log.md)   printf '# Log\n\n> Append-only timeline. Format: `## [YYYY-MM-DD] <op> | <title>`\n' > "$VAULT/$f" ;;
+      esac
+      printf '  CREATED  %s\n' "$f"
+      created=$((created + 1))
+    fi
+  done
+  if (( created == 0 )); then
+    echo "skeleton complete — nothing to do."
+  else
+    echo "created $created item(s)."
+  fi
+}
+
+cmd_update() {
+  require_vault
+  require_scripts
+  echo "openwiki --update  →  $VAULT"
+  python3 "$SCRIPTS/update_index.py" --vault "$VAULT"
+  local pages
+  pages=$(find "$VAULT/wiki" -name '.*' -prune -o -name '*.md' ! -name 'index.md' ! -name 'log.md' -print | wc -l | tr -d ' ')
+  python3 "$SCRIPTS/append_log.py" --vault "$VAULT" \
+    --op update --title "openwiki --update" \
+    --detail "index rebuilt from frontmatter; $pages pages"
+  echo "─── log tail:"
+  grep '^## \[' "$VAULT/wiki/log.md" | tail -3
+}
+
+cmd_status() {
+  require_vault
+  echo "openwiki status  →  $VAULT"
+  local missing=0
+  for d in "${DIRS[@]}"; do
+    [[ -d "$VAULT/$d" ]] || { printf '  MISSING  %s\n' "$d"; missing=$((missing + 1)); }
+  done
+  (( missing == 0 )) && echo "  layers: all present"
+  check_twins
+  for cat in entities concepts sources comparisons synthesis; do
+    printf '  %-12s %s\n' "$cat" "$(find "$VAULT/wiki/$cat" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"
+  done
+  echo "─── log tail:"
+  grep '^## \[' "$VAULT/wiki/log.md" | tail -5
+}
+
+case "${1:-}" in
+  --help|-h) cmd_help ;;
+  --init)    cmd_init ;;
+  --update)  cmd_update ;;
+  "")        cmd_status ;;
+  *)         die "unknown option '$1' (try --help)" ;;
+esac

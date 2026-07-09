@@ -1,0 +1,294 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - img
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e13]:
+    - generic [ref=e14]:
+      - banner [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: katha
+          - generic [ref=e18]: Los Angeles & Orange County
+        - button "Reserve a date" [ref=e19] [cursor=pointer]
+      - generic [ref=e20]:
+        - paragraph [ref=e21]: // Inquiry registry active · heritage photo-booth installations
+        - heading "The frame your night lives in." [level=1] [ref=e22]:
+          - text: The frame
+          - text: your night
+          - text: lives in.
+        - paragraph [ref=e23]: Weathered oak and modern ivory, framing quiet, high-contrast portraits.
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: 01 · The Date Gate
+          - generic "Checking open dates" [ref=e27]
+      - region "Print plate gallery" [ref=e35]:
+        - generic [ref=e36]:
+          - button "All" [ref=e37] [cursor=pointer]: All
+          - button "Signature" [ref=e39] [cursor=pointer]
+          - button "Classic" [ref=e40] [cursor=pointer]
+        - generic [ref=e41]:
+          - button "Reserve with the Loom Oak plate" [ref=e43] [cursor=pointer]:
+            - generic [ref=e44]:
+              - generic [ref=e46]: "004"
+              - generic [ref=e47]: Oak
+              - generic [ref=e53]:
+                - paragraph [ref=e54]: AMARA & SEBASTIAN
+                - paragraph [ref=e55]: OCTOBER · LONG BEACH
+              - generic [ref=e56]:
+                - generic [ref=e57]: ◆ Signature
+                - heading "Loom Oak" [level=3] [ref=e58]
+                - paragraph [ref=e59]: 2×6 Strip
+          - button "Reserve with the Bituin plate" [ref=e61] [cursor=pointer]:
+            - generic [ref=e62]:
+              - generic [ref=e64]: "011"
+              - generic [ref=e65]: Oak
+              - generic [ref=e71]:
+                - paragraph [ref=e72]: RENZO & CAMILLE
+                - paragraph [ref=e73]: NOVEMBER · CARSON
+              - generic [ref=e74]:
+                - generic [ref=e75]: ◆ Signature
+                - heading "Bituin" [level=3] [ref=e76]
+                - paragraph [ref=e77]: 4×6 Postcard
+          - button "Reserve with the Calado Piña plate" [ref=e79] [cursor=pointer]:
+            - generic [ref=e80]:
+              - generic [ref=e82]: "019"
+              - generic [ref=e83]: Oak
+              - generic [ref=e88]:
+                - paragraph [ref=e89]: Marisol & Diego
+                - paragraph [ref=e90]: September · Pasadena
+              - generic [ref=e91]:
+                - generic [ref=e92]: ◆ Signature
+                - heading "Calado Piña" [level=3] [ref=e93]
+                - paragraph [ref=e94]: 4×6 Postcard
+          - button "Reserve with the Sombra Twin plate" [ref=e96] [cursor=pointer]:
+            - generic [ref=e97]:
+              - generic [ref=e99]: "027"
+              - generic [ref=e100]: White
+              - generic [ref=e105]:
+                - paragraph [ref=e106]: SOFIA & MARCO
+                - paragraph [ref=e107]: SEPTEMBER · LOS ANGELES
+              - generic [ref=e108]:
+                - generic [ref=e109]: ◆ Signature
+                - heading "Sombra Twin" [level=3] [ref=e110]
+                - paragraph [ref=e111]: 6×4 Square
+          - button "Reserve with the Abel & Calado plate" [ref=e113] [cursor=pointer]:
+            - generic [ref=e114]:
+              - generic [ref=e116]: "033"
+              - generic [ref=e117]: Oak
+              - generic [ref=e122]:
+                - paragraph [ref=e123]: Abel & Calado
+                - paragraph [ref=e124]: OCTOBER · MALIBU
+              - generic [ref=e125]:
+                - generic [ref=e126]: ◆ Signature
+                - heading "Abel & Calado" [level=3] [ref=e127]
+                - paragraph [ref=e128]: 4×6 Postcard
+          - paragraph [ref=e131]: “Calado Piña — openwork drawn from Barong Tagalog embroidery, 17th c.”
+          - button "Reserve with the Iron Rule plate" [ref=e133] [cursor=pointer]:
+            - generic [ref=e134]:
+              - generic [ref=e136]: "041"
+              - generic [ref=e137]: White
+              - generic [ref=e144]:
+                - paragraph [ref=e145]: NADIA + ELIAS
+                - paragraph [ref=e146]: JULY · LONG BEACH
+              - generic [ref=e147]:
+                - generic [ref=e148]: Classic
+                - heading "Iron Rule" [level=3] [ref=e149]
+                - paragraph [ref=e150]: 2×6 Strip
+          - button "Reserve with the Champagne Frame plate" [ref=e152] [cursor=pointer]:
+            - generic [ref=e153]:
+              - generic [ref=e155]: "053"
+              - generic [ref=e156]: Oak
+              - generic [ref=e161]:
+                - paragraph [ref=e162]: JAMES & ELEANOR
+                - paragraph [ref=e163]: OCTOBER · MALIBU
+              - generic [ref=e164]:
+                - generic [ref=e165]: Classic
+                - heading "Champagne Frame" [level=3] [ref=e166]
+                - paragraph [ref=e167]: 4×6 Postcard
+          - button "Reserve with the Tradition Gold plate" [ref=e169] [cursor=pointer]:
+            - generic [ref=e170]:
+              - generic [ref=e172]: "062"
+              - generic [ref=e173]: White
+              - generic [ref=e179]:
+                - paragraph [ref=e180]: LENA & THEO
+                - paragraph [ref=e181]: JULY · CARSON
+              - generic [ref=e182]:
+                - generic [ref=e183]: Classic
+                - heading "Tradition Gold" [level=3] [ref=e184]
+                - paragraph [ref=e185]: 2×6 Strip
+          - button "Reserve with the Rose Whisper plate" [ref=e187] [cursor=pointer]:
+            - generic [ref=e188]:
+              - generic [ref=e190]: "075"
+              - generic [ref=e191]: White
+              - generic [ref=e196]:
+                - paragraph [ref=e197]: Ines & Rafael
+                - paragraph [ref=e198]: June · Long Beach
+              - generic [ref=e199]:
+                - generic [ref=e200]: Classic
+                - heading "Rose Whisper" [level=3] [ref=e201]
+                - paragraph [ref=e202]: 4×6 Postcard
+          - button "Reserve with the Warm Umber plate" [ref=e204] [cursor=pointer]:
+            - generic [ref=e205]:
+              - generic [ref=e207]: "088"
+              - generic [ref=e208]: Oak
+              - generic [ref=e215]:
+                - paragraph [ref=e216]: MIRA & JONAS
+                - paragraph [ref=e217]: AUGUST · IRVINE
+              - generic [ref=e218]:
+                - generic [ref=e219]: Classic
+                - heading "Warm Umber" [level=3] [ref=e220]
+                - paragraph [ref=e221]: 2×6 Strip
+          - paragraph [ref=e224]: “The Classic Standard — 1px hairlines. The portrait carries the weight.”
+      - region "Installations and pricing" [ref=e225]:
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - paragraph [ref=e228]: 02 · The Investment
+            - heading "Three installations. One operator. Archival prints." [level=2] [ref=e230]:
+              - text: Three installations.
+              - text: One operator.
+              - text: Archival prints.
+            - paragraph [ref=e231]: Priced as line items, not mysteries — the oak booth, the trained operator, and the paper your guests keep.
+            - paragraph [ref=e232]: Contract, invoice & payment stay in HoneyBook
+          - generic [ref=e233]:
+            - button "Hold the Editorial Installation" [ref=e234] [cursor=pointer]:
+              - generic [ref=e235]:
+                - generic [ref=e236]:
+                  - text: With Prints
+                  - heading "Editorial Installation" [level=3] [ref=e237]
+                - generic [ref=e238]:
+                  - paragraph [ref=e239]: $949
+                  - paragraph [ref=e240]: up to 3 hrs
+              - paragraph [ref=e241]: Oak wood DSLR installation with professional-grade photography and metallic pearl proprietary prints.
+              - list [ref=e242]:
+                - listitem [ref=e243]:
+                  - generic [ref=e244]: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem [ref=e245]:
+                  - generic [ref=e246]: ·
+                  - text: Oak wood DSLR installation
+                - listitem [ref=e247]:
+                  - generic [ref=e248]: ·
+                  - text: Professional grade photos
+                - listitem [ref=e249]:
+                  - generic [ref=e250]: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem [ref=e251]: + 8 more in the full brief
+              - generic [ref=e252]: Hold this installation
+            - button "Hold the Glam Editorial Installation" [ref=e253] [cursor=pointer]:
+              - text: Flagship
+              - generic [ref=e254]:
+                - generic [ref=e255]:
+                  - text: With Prints · Flagship
+                  - heading "Glam Editorial Installation" [level=3] [ref=e256]
+                - generic [ref=e257]:
+                  - paragraph [ref=e258]: $1,149
+                  - paragraph [ref=e259]: up to 3 hrs
+              - paragraph [ref=e260]: The full Editorial installation with professional monochrome, skin-soothing photography.
+              - list [ref=e261]:
+                - listitem [ref=e262]:
+                  - generic [ref=e263]: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem [ref=e264]:
+                  - generic [ref=e265]: ·
+                  - text: Oak wood DSLR installation
+                - listitem [ref=e266]:
+                  - generic [ref=e267]: ·
+                  - text: Professional monochrome skin-soothing photos
+                - listitem [ref=e268]:
+                  - generic [ref=e269]: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem [ref=e270]: + 8 more in the full brief
+              - generic [ref=e271]: Hold this installation
+            - button "Architectural Installation — currently unavailable" [disabled] [ref=e272]:
+              - generic [ref=e273]:
+                - generic [ref=e274]:
+                  - text: With Prints
+                  - heading "Architectural Installation" [level=3] [ref=e275]
+                - generic [ref=e276]:
+                  - paragraph [ref=e277]: $749
+                  - paragraph [ref=e278]: up to 3 hrs
+              - paragraph [ref=e279]: Architectural booth configuration with prints. Temporarily unavailable.
+              - list [ref=e280]:
+                - listitem [ref=e281]:
+                  - generic [ref=e282]: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem [ref=e283]:
+                  - generic [ref=e284]: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem [ref=e285]:
+                  - generic [ref=e286]: ·
+                  - text: Unlimited sessions
+                - listitem [ref=e287]:
+                  - generic [ref=e288]: ·
+                  - text: Instant media sharing
+                - listitem [ref=e289]: + 5 more in the full brief
+              - generic [ref=e290]: Currently Unavailable
+            - button "Hold the Katha Booth Installation" [ref=e291] [cursor=pointer]:
+              - generic [ref=e292]:
+                - generic [ref=e293]:
+                  - text: With Prints · Essential
+                  - heading "Katha Booth Installation" [level=3] [ref=e294]
+                - generic [ref=e295]:
+                  - paragraph [ref=e296]: $549
+                  - paragraph [ref=e297]: up to 4 hrs
+              - paragraph [ref=e298]: The essential Katha booth — four hours of unlimited high-grade photos, GIFs, and instant sharing.
+              - list [ref=e299]:
+                - listitem [ref=e300]:
+                  - generic [ref=e301]: ·
+                  - text: Up to 4 hours print service ($149 per additional hour)
+                - listitem [ref=e302]:
+                  - generic [ref=e303]: ·
+                  - text: 2×6 prints
+                - listitem [ref=e304]:
+                  - generic [ref=e305]: ·
+                  - text: Unlimited high-grade photos and dynamic GIFs
+                - listitem [ref=e306]:
+                  - generic [ref=e307]: ·
+                  - text: Instant media sharing via text, AirDrop, QR code
+                - listitem [ref=e308]: + 5 more in the full brief
+              - generic [ref=e309]: Hold this installation
+    - contentinfo [ref=e311]:
+      - generic [ref=e312]:
+        - generic [ref=e313]:
+          - paragraph [ref=e314]: 03 · The Studio
+          - button "Reserve your night →" [ref=e315] [cursor=pointer]
+        - generic [ref=e317]: Katha.
+        - generic [ref=e318]:
+          - generic [ref=e319]:
+            - generic [ref=e320]:
+              - paragraph [ref=e321]: Correspondence
+              - link "kathabooth@gmail.com" [ref=e322] [cursor=pointer]:
+                - /url: mailto:kathabooth@gmail.com
+            - generic [ref=e323]:
+              - paragraph [ref=e324]: Territory
+              - paragraph [ref=e325]: Los Angeles & Orange County · based in Carson
+            - generic [ref=e326]:
+              - paragraph [ref=e327]: Registry
+              - paragraph [ref=e328]: // The Gilded Archive · est. 2024
+          - generic [ref=e329]:
+            - paragraph [ref=e330]: © 2026 Katha Booth
+            - paragraph [ref=e331]: Contract & payment via HoneyBook
+  - heading "KATHA" [level=1] [ref=e332]:
+    - generic [ref=e333]: K
+    - generic [ref=e334]: A
+    - generic [ref=e335]: T
+    - generic [ref=e336]: H
+    - generic [ref=e337]: A
+  - generic [ref=e338]:
+    - figure [ref=e339]:
+      - img [ref=e340]
+    - figure [ref=e341]:
+      - img [ref=e342]
+    - figure [ref=e343]:
+      - img [ref=e344]
+    - figure [ref=e345]:
+      - img [ref=e346]
+    - figure [ref=e347]:
+      - img [ref=e348]
+    - figure [ref=e349]:
+      - img [ref=e350]
+    - figure [ref=e351]:
+      - img [ref=e352]
+    - figure [ref=e353]:
+      - img [ref=e354]
+  - paragraph [ref=e355]: The archive is opening

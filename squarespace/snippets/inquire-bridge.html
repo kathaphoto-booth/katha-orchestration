@@ -1,0 +1,138 @@
+<!--
+  KATHA SNIPPET: Inquire Bridge  (the /inquire page section)
+  ─────────────────────────────────────────────────────────────────────
+  A complete drop-in section for the empty /inquire page — the nav's
+  booking destination. Short headline, one bridge line, the Reserve
+  button, and a quiet path to /contact for people who want to talk
+  first. Sits on the same warm ivory ground and type scale as the
+  Installations page, so it reads as native.
+
+  INSTALL:  Squarespace → /inquire → Edit → add a blank section →
+            + → Code → paste everything below.
+
+  RULE:     This section IS the page's one primary CTA. Do not add a
+            second Reserve button to /inquire.
+
+  The button's ?src=ss-inquire is already set — leave it.
+  The copy states real mechanics of the booking app: the registry
+  shows live availability, and a chosen date is held for 72 hours.
+  ─────────────────────────────────────────────────────────────────────
+  Pure HTML + CSS (Squarespace strips JS in Code Blocks). No JS here.
+-->
+
+<style>
+  .k-inquire-bridge {
+    box-sizing: border-box;
+    background: #F5ECD7;            /* ecru ground — matches the ivory pages */
+    padding: clamp(5rem, 14vh, 9rem) 1.5rem;
+    text-align: center;
+  }
+  .k-inquire-bridge .k-ib-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+  }
+  .k-inquire-bridge .k-ib-heading {
+    font-family: var(--font-display, 'ivymode', 'Playfair Display', Georgia, serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 5.5vw, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #0B0C10;
+    margin: 0;
+  }
+  .k-inquire-bridge .k-ib-rule {
+    border: none;
+    height: 1px;
+    width: 72px;
+    margin: 0;
+    background: #D4AF37;            /* gilt hairline — accent only */
+  }
+  .k-inquire-bridge .k-ib-line {
+    font-family: var(--font-ui, 'proxima-nova', 'Hanken Grotesk', system-ui, sans-serif);
+    font-size: 1rem;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    color: #3D2B1F;
+    margin: 0;
+  }
+  .k-inquire-bridge .k-ib-aside {
+    font-family: var(--font-ui, 'proxima-nova', 'Hanken Grotesk', system-ui, sans-serif);
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0;
+  }
+  .k-inquire-bridge .k-ib-aside a {
+    color: #3D2B1F;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+  .k-inquire-bridge .k-ib-aside a:hover { color: #0B0C10; }
+  .k-inquire-bridge .k-ib-aside a:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 3px;
+  }
+
+  /* ── Reserve button (light-ground variant, self-contained) ── */
+  .k-inquire-bridge .k-reserve {
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: var(--font-ui, 'proxima-nova', 'Hanken Grotesk', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    text-decoration: none;
+    text-align: center;
+    padding: 1rem 2.75rem;
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: #0B0C10;            /* obsidian on ivory */
+    color: #F5ECD7;                 /* ecru label */
+  }
+  .k-inquire-bridge .k-reserve:hover {
+    background: #3D2B1F;            /* kamagong lift */
+    color: #F5ECD7;
+  }
+  .k-inquire-bridge .k-reserve:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .k-inquire-bridge .k-reserve,
+    .k-inquire-bridge .k-ib-aside a {
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+  }
+</style>
+
+<section class="k-inquire-bridge" aria-label="Reserve your date">
+  <div class="k-ib-inner">
+    <!-- EDIT: headline (keep it short — two or three words) -->
+    <h1 class="k-ib-heading">Begin With a Date</h1>
+
+    <hr class="k-ib-rule" aria-hidden="true">
+
+    <!-- EDIT: bridge line — these are the app's true mechanics; keep it factual -->
+    <p class="k-ib-line">
+      The registry shows our open evenings as they stand. Choose yours and
+      it is held for 72 hours while the details take shape — no obligation.
+    </p>
+
+    <!-- The button. Leave the href as-is. -->
+    <a class="k-reserve"
+       href="https://book.kathabooth.com/gallery?src=ss-inquire"
+       aria-label="Reserve your date — opens the Katha Booth booking registry">
+      Reserve Your Date
+    </a>
+
+    <!-- The quiet second path -->
+    <p class="k-ib-aside">
+      <a href="/contact">Prefer to talk it through first?</a>
+    </p>
+  </div>
+</section>

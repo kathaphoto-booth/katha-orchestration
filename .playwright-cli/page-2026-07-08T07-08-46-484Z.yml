@@ -1,0 +1,92 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Orbit home" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e5]: ORBIT
+    - navigation [ref=e6]:
+      - generic [ref=e7]: The Halcyon
+      - generic [ref=e8]: ·
+      - generic [ref=e9]: Edition 03 / Bent Ply
+    - link "In cart 1" [ref=e10] [cursor=pointer]:
+      - /url: "#configure"
+      - generic [ref=e11]: In cart
+      - generic [ref=e12]: "1"
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - status [ref=e17]:
+        - generic [ref=e20]:
+          - generic [ref=e21]: 16%
+          - generic [ref=e22]: Streaming the Halcyon — 27,903 vertices
+      - generic:
+        - generic: FIG. 03 — three-quarter
+        - generic: boucle · alabaster
+        - generic: shell · walnut
+      - generic [ref=e24]:
+        - img [ref=e25]
+        - generic [ref=e28]: drag to orbit · scroll to zoom
+      - generic [ref=e29]:
+        - generic [ref=e30]: soft shadow ✓
+        - button "dimensions" [ref=e31] [cursor=pointer]
+        - button "auto-spin" [pressed] [ref=e32] [cursor=pointer]
+    - complementary [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]: Configure · The Halcyon Lounge
+        - heading "A chair that holds its orbit." [level=1] [ref=e37]:
+          - text: A chair that
+          - text: holds its
+          - emphasis [ref=e38]: orbit.
+        - paragraph [ref=e39]: Nine plies of steam-bent European walnut, pressed over a two-tonne form and left to settle for a year before it earns a cushion. You finish it. Below.
+        - generic [ref=e40]:
+          - generic [ref=e41]:
+            - generic [ref=e42]: 01 — Shell
+            - generic [ref=e43]: Walnut
+          - radiogroup "Shell wood" [ref=e44]:
+            - radio "Walnut" [checked] [ref=e45] [cursor=pointer]:
+              - generic [ref=e47]: Walnut
+            - radio "Blonde Ash" [ref=e48] [cursor=pointer]:
+              - generic [ref=e50]: Blonde Ash
+            - radio "Smoked Ebony" [ref=e51] [cursor=pointer]:
+              - generic [ref=e53]: Smoked Ebony
+        - generic [ref=e54]:
+          - generic [ref=e55]:
+            - generic [ref=e56]: 02 — Boucle
+            - generic [ref=e57]: Alabaster
+          - radiogroup "Boucle color" [ref=e58]:
+            - radio "Alabaster" [checked] [ref=e59] [cursor=pointer]:
+              - generic [ref=e61]: Alabaster
+            - radio "Toasted Oat" [ref=e62] [cursor=pointer]:
+              - generic [ref=e64]: Toasted Oat
+            - radio "Burnt Clay" [ref=e65] [cursor=pointer]:
+              - generic [ref=e67]: Burnt Clay
+            - radio "Deep Slate" [ref=e68] [cursor=pointer]:
+              - generic [ref=e70]: Deep Slate
+          - paragraph [ref=e71]: Woven in Kortrijk from long-staple wool. Ages toward its own patina.
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - generic [ref=e74]: Overall
+            - generic [ref=e75]: 74 × 78 × 82 cm
+          - generic [ref=e76]:
+            - generic [ref=e77]: Seat height
+            - generic [ref=e78]: 41 cm
+          - generic [ref=e79]:
+            - generic [ref=e80]: Weight
+            - generic [ref=e81]: 14.2 kg
+          - generic [ref=e82]:
+            - generic [ref=e83]: Lead time
+            - generic [ref=e84]: 10–12 weeks
+        - generic [ref=e85]:
+          - generic [ref=e86]:
+            - generic [ref=e87]: $
+            - generic [ref=e88]: 3,280
+            - generic [ref=e89]: walnut · alabaster
+          - button "Add configuration" [ref=e90] [cursor=pointer]:
+            - generic [ref=e91]: Add configuration
+            - generic [ref=e92]: →
+        - paragraph [ref=e93]: Free white-glove delivery over $2,500 · 30-night trial · A tree replanted per order.
+  - contentinfo [ref=e94]:
+    - generic [ref=e95]: ORBIT — Halcyon Bent-Ply Lounge, Edition 03.
+    - generic [ref=e96]:
+      - link "How this was made →" [ref=e97] [cursor=pointer]:
+        - /url: ./guide/
+      - link "Designed & built by Claude Fable 5" [ref=e98] [cursor=pointer]:
+        - /url: /

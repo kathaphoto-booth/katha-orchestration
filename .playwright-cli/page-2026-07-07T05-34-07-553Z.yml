@@ -1,0 +1,497 @@
+- generic [ref=e1]:
+  - generic:
+    - img
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - generic [ref=e13]:
+    - generic:
+      - banner:
+        - generic:
+          - generic: katha
+          - generic: Los Angeles & Orange County
+        - button "Reserve a date"
+      - generic:
+        - paragraph: // Inquiry registry active · heritage photo-booth installations
+        - heading "The frame your night lives in." [level=1]:
+          - text: The frame
+          - text: your night
+          - text: lives in.
+        - paragraph: Weathered oak and modern ivory, framing quiet, high-contrast portraits.
+        - generic:
+          - paragraph:
+            - text: 01 · The Date Gate
+            - generic: 64 open nights on the registry
+          - listbox "Open dates — select one to reserve":
+            - option "Reserve FRI JUL 17":
+              - generic: FRI
+              - generic: "17"
+              - generic: JUL
+            - option "Reserve SAT JUL 18":
+              - generic: SAT
+              - generic: "18"
+              - generic: JUL
+            - option "Reserve FRI JUL 24":
+              - generic: FRI
+              - generic: "24"
+              - generic: JUL
+            - option "Reserve SAT JUL 25":
+              - generic: SAT
+              - generic: "25"
+              - generic: JUL
+            - option "Reserve FRI JUL 31":
+              - generic: FRI
+              - generic: "31"
+              - generic: JUL
+            - option "Reserve SAT AUG 01":
+              - generic: SAT
+              - generic: "01"
+              - generic: AUG
+            - option "Reserve FRI AUG 07":
+              - generic: FRI
+              - generic: "07"
+              - generic: AUG
+            - option "Reserve SAT AUG 08":
+              - generic: SAT
+              - generic: "08"
+              - generic: AUG
+            - option "Reserve FRI AUG 14":
+              - generic: FRI
+              - generic: "14"
+              - generic: AUG
+            - option "Reserve SAT AUG 15":
+              - generic: SAT
+              - generic: "15"
+              - generic: AUG
+            - option "Reserve FRI AUG 21":
+              - generic: FRI
+              - generic: "21"
+              - generic: AUG
+            - option "Reserve SAT AUG 22":
+              - generic: SAT
+              - generic: "22"
+              - generic: AUG
+            - option "Reserve FRI AUG 28":
+              - generic: FRI
+              - generic: "28"
+              - generic: AUG
+            - option "Reserve SAT AUG 29":
+              - generic: SAT
+              - generic: "29"
+              - generic: AUG
+            - option "Reserve FRI SEP 04":
+              - generic: FRI
+              - generic: "04"
+              - generic: SEP
+            - option "Reserve SAT SEP 05":
+              - generic: SAT
+              - generic: "05"
+              - generic: SEP
+            - option "Reserve FRI SEP 11":
+              - generic: FRI
+              - generic: "11"
+              - generic: SEP
+            - option "Reserve SAT SEP 12":
+              - generic: SAT
+              - generic: "12"
+              - generic: SEP
+            - option "Reserve SUN SEP 13":
+              - generic: SUN
+              - generic: "13"
+              - generic: SEP
+            - option "Reserve FRI SEP 18":
+              - generic: FRI
+              - generic: "18"
+              - generic: SEP
+            - option "Reserve SAT SEP 19":
+              - generic: SAT
+              - generic: "19"
+              - generic: SEP
+            - option "Reserve SUN SEP 20":
+              - generic: SUN
+              - generic: "20"
+              - generic: SEP
+            - option "Reserve FRI SEP 25":
+              - generic: FRI
+              - generic: "25"
+              - generic: SEP
+            - option "Reserve SAT SEP 26":
+              - generic: SAT
+              - generic: "26"
+              - generic: SEP
+            - generic:
+              - generic: + 40 more in the drawer
+      - region "Print plate gallery":
+        - generic:
+          - button "All": All
+          - button "Signature"
+          - button "Classic"
+        - generic:
+          - generic:
+            - button "Reserve with the Loom Oak plate":
+              - generic:
+                - generic:
+                  - generic: "004"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: AMARA & SEBASTIAN
+                      - paragraph: OCTOBER · LONG BEACH
+                - generic:
+                  - generic: ◆ Signature
+                  - heading "Loom Oak" [level=3]
+                  - paragraph: 2×6 Strip
+          - generic:
+            - button "Reserve with the Bituin plate":
+              - generic:
+                - generic:
+                  - generic: "011"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: RENZO & CAMILLE
+                      - paragraph: NOVEMBER · CARSON
+                - generic:
+                  - generic: ◆ Signature
+                  - heading "Bituin" [level=3]
+                  - paragraph: 4×6 Postcard
+          - generic:
+            - button "Reserve with the Calado Piña plate":
+              - generic:
+                - generic:
+                  - generic: "019"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: Marisol & Diego
+                      - paragraph: September · Pasadena
+                - generic:
+                  - generic: ◆ Signature
+                  - heading "Calado Piña" [level=3]
+                  - paragraph: 4×6 Postcard
+          - generic:
+            - button "Reserve with the Sombra Twin plate":
+              - generic:
+                - generic:
+                  - generic: "027"
+                - generic: White
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: SOFIA & MARCO
+                      - paragraph: SEPTEMBER · LOS ANGELES
+                - generic:
+                  - generic: ◆ Signature
+                  - heading "Sombra Twin" [level=3]
+                  - paragraph: 6×4 Square
+          - generic:
+            - button "Reserve with the Abel & Calado plate":
+              - generic:
+                - generic:
+                  - generic: "033"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: Abel & Calado
+                      - paragraph: OCTOBER · MALIBU
+                - generic:
+                  - generic: ◆ Signature
+                  - heading "Abel & Calado" [level=3]
+                  - paragraph: 4×6 Postcard
+          - generic:
+            - paragraph: “Calado Piña — openwork drawn from Barong Tagalog embroidery, 17th c.”
+          - generic:
+            - button "Reserve with the Iron Rule plate":
+              - generic:
+                - generic:
+                  - generic: "041"
+                - generic: White
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: NADIA + ELIAS
+                      - paragraph: JULY · LONG BEACH
+                - generic:
+                  - generic: Classic
+                  - heading "Iron Rule" [level=3]
+                  - paragraph: 2×6 Strip
+          - generic:
+            - button "Reserve with the Champagne Frame plate":
+              - generic:
+                - generic:
+                  - generic: "053"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: JAMES & ELEANOR
+                      - paragraph: OCTOBER · MALIBU
+                - generic:
+                  - generic: Classic
+                  - heading "Champagne Frame" [level=3]
+                  - paragraph: 4×6 Postcard
+          - generic:
+            - button "Reserve with the Tradition Gold plate":
+              - generic:
+                - generic:
+                  - generic: "062"
+                - generic: White
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: LENA & THEO
+                      - paragraph: JULY · CARSON
+                - generic:
+                  - generic: Classic
+                  - heading "Tradition Gold" [level=3]
+                  - paragraph: 2×6 Strip
+          - generic:
+            - button "Reserve with the Rose Whisper plate":
+              - generic:
+                - generic:
+                  - generic: "075"
+                - generic: White
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: Ines & Rafael
+                      - paragraph: June · Long Beach
+                - generic:
+                  - generic: Classic
+                  - heading "Rose Whisper" [level=3]
+                  - paragraph: 4×6 Postcard
+          - generic:
+            - button "Reserve with the Warm Umber plate":
+              - generic:
+                - generic:
+                  - generic: "088"
+                - generic: Oak
+                - generic:
+                  - generic:
+                    - generic:
+                      - paragraph: MIRA & JONAS
+                      - paragraph: AUGUST · IRVINE
+                - generic:
+                  - generic: Classic
+                  - heading "Warm Umber" [level=3]
+                  - paragraph: 2×6 Strip
+          - generic:
+            - paragraph: “The Classic Standard — 1px hairlines. The portrait carries the weight.”
+      - region "Installations and pricing":
+        - generic:
+          - generic:
+            - paragraph: 02 · The Investment
+            - heading "Three installations. One operator. Archival prints." [level=2]:
+              - text: Three installations.
+              - text: One operator.
+              - text: Archival prints.
+            - paragraph: Priced as line items, not mysteries — the oak booth, the trained operator, and the paper your guests keep.
+            - paragraph: Contract, invoice & payment stay in HoneyBook
+          - generic:
+            - button "Hold the Editorial Installation":
+              - generic:
+                - generic:
+                  - text: With Prints
+                  - heading "Editorial Installation" [level=3]
+                - generic:
+                  - paragraph: $949
+                  - paragraph: up to 3 hrs
+              - paragraph: Oak wood DSLR installation with professional-grade photography and metallic pearl proprietary prints.
+              - list:
+                - listitem:
+                  - generic: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem:
+                  - generic: ·
+                  - text: Oak wood DSLR installation
+                - listitem:
+                  - generic: ·
+                  - text: Professional grade photos
+                - listitem:
+                  - generic: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem: + 8 more in the full brief
+              - generic: Hold this installation
+            - button "Hold the Glam Editorial Installation":
+              - text: Flagship
+              - generic:
+                - generic:
+                  - text: With Prints · Flagship
+                  - heading "Glam Editorial Installation" [level=3]
+                - generic:
+                  - paragraph: $1,149
+                  - paragraph: up to 3 hrs
+              - paragraph: The full Editorial installation with professional monochrome, skin-soothing photography.
+              - list:
+                - listitem:
+                  - generic: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem:
+                  - generic: ·
+                  - text: Oak wood DSLR installation
+                - listitem:
+                  - generic: ·
+                  - text: Professional monochrome skin-soothing photos
+                - listitem:
+                  - generic: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem: + 8 more in the full brief
+              - generic: Hold this installation
+            - button "Architectural Installation — currently unavailable" [disabled]:
+              - generic:
+                - generic:
+                  - text: With Prints
+                  - heading "Architectural Installation" [level=3]
+                - generic:
+                  - paragraph: $749
+                  - paragraph: up to 3 hrs
+              - paragraph: Architectural booth configuration with prints. Temporarily unavailable.
+              - list:
+                - listitem:
+                  - generic: ·
+                  - text: Up to 3 hours print service ($149 per additional hour)
+                - listitem:
+                  - generic: ·
+                  - text: Choice of 2×6 or 4×6 prints
+                - listitem:
+                  - generic: ·
+                  - text: Unlimited sessions
+                - listitem:
+                  - generic: ·
+                  - text: Instant media sharing
+                - listitem: + 5 more in the full brief
+              - generic: Currently Unavailable
+            - button "Hold the Katha Booth Installation":
+              - generic:
+                - generic:
+                  - text: With Prints · Essential
+                  - heading "Katha Booth Installation" [level=3]
+                - generic:
+                  - paragraph: $549
+                  - paragraph: up to 4 hrs
+              - paragraph: The essential Katha booth — four hours of unlimited high-grade photos, GIFs, and instant sharing.
+              - list:
+                - listitem:
+                  - generic: ·
+                  - text: Up to 4 hours print service ($149 per additional hour)
+                - listitem:
+                  - generic: ·
+                  - text: 2×6 prints
+                - listitem:
+                  - generic: ·
+                  - text: Unlimited high-grade photos and dynamic GIFs
+                - listitem:
+                  - generic: ·
+                  - text: Instant media sharing via text, AirDrop, QR code
+                - listitem: + 5 more in the full brief
+              - generic: Hold this installation
+    - contentinfo [ref=e311]:
+      - generic [ref=e312]:
+        - generic [ref=e313]:
+          - paragraph [ref=e314]: 03 · The Studio
+          - button "Reserve your night →" [ref=e315] [cursor=pointer]
+        - generic [ref=e317]: Katha.
+        - generic [ref=e318]:
+          - generic [ref=e319]:
+            - generic [ref=e320]:
+              - paragraph [ref=e321]: Correspondence
+              - link "kathabooth@gmail.com" [ref=e322] [cursor=pointer]:
+                - /url: mailto:kathabooth@gmail.com
+            - generic [ref=e323]:
+              - paragraph [ref=e324]: Territory
+              - paragraph [ref=e325]: Los Angeles & Orange County · based in Carson
+            - generic [ref=e326]:
+              - paragraph [ref=e327]: Registry
+              - paragraph [ref=e328]: // The Gilded Archive · est. 2024
+          - generic [ref=e329]:
+            - paragraph [ref=e330]: © 2026 Katha Booth
+            - paragraph [ref=e331]: Contract & payment via HoneyBook
+    - button "Close the reservation drawer" [ref=e480]
+    - dialog "Reserve your date" [ref=e481]:
+      - generic [ref=e482]:
+        - generic [ref=e483]:
+          - paragraph [ref=e484]: // Inquiry Registry Active
+          - heading "Secure your date." [level=2] [ref=e485]
+        - generic [ref=e486]:
+          - generic [ref=e487]: katha
+          - button "Close" [ref=e488] [cursor=pointer]: ✕
+      - generic [ref=e489]:
+        - generic [ref=e490]:
+          - generic [ref=e494]:
+            - paragraph [ref=e495]: Ines & Rafael
+            - paragraph [ref=e496]: June · Long Beach
+          - generic [ref=e497]:
+            - paragraph [ref=e498]: Selected plate · 075
+            - paragraph [ref=e499]: Rose Whisper
+            - paragraph [ref=e500]: 4×6 Postcard
+        - generic [ref=e501]:
+          - generic [ref=e502]:
+            - paragraph [ref=e503]: Installation
+            - paragraph [ref=e504]: Glam Editorial Installation
+          - generic [ref=e505]:
+            - paragraph [ref=e506]: $1,149
+            - paragraph [ref=e507]: up to 3 hrs · $149 per add’l hour
+        - generic [ref=e508]:
+          - generic [ref=e509]:
+            - generic [ref=e510]: JULY 2026
+            - generic [ref=e511]:
+              - button "Previous month" [ref=e512] [cursor=pointer]: ←
+              - button "Next month" [ref=e513] [cursor=pointer]: →
+          - generic [ref=e514]:
+            - generic [ref=e515]: Su
+            - generic [ref=e516]: Mo
+            - generic [ref=e517]: Tu
+            - generic [ref=e518]: We
+            - generic [ref=e519]: Th
+            - generic [ref=e520]: Fr
+            - generic [ref=e521]: Sa
+          - generic [ref=e522]:
+            - button "2026-07-01 unavailable" [disabled] [ref=e526]: "1"
+            - button "2026-07-02 unavailable" [disabled] [ref=e527]: "2"
+            - button "2026-07-03 unavailable" [disabled] [ref=e528]: "3"
+            - button "2026-07-04 unavailable" [disabled] [ref=e529]: "4"
+            - button "2026-07-05 unavailable" [disabled] [ref=e530]: "5"
+            - button "2026-07-06 unavailable" [disabled] [ref=e531]: "6"
+            - button "2026-07-07 unavailable" [disabled] [ref=e532]: "7"
+            - button "2026-07-08 unavailable" [disabled] [ref=e533]: "8"
+            - button "2026-07-09 unavailable" [disabled] [ref=e534]: "9"
+            - button "2026-07-10 unavailable" [disabled] [ref=e535]: "10"
+            - button "2026-07-11 unavailable" [disabled] [ref=e536]: "11"
+            - button "2026-07-12 unavailable" [disabled] [ref=e537]: "12"
+            - button "2026-07-13 unavailable" [disabled] [ref=e538]: "13"
+            - button "2026-07-14 unavailable" [disabled] [ref=e539]: "14"
+            - button "2026-07-15 unavailable" [disabled] [ref=e540]: "15"
+            - button "2026-07-16 unavailable" [disabled] [ref=e541]: "16"
+            - button "Hold 2026-07-17" [active] [ref=e542]: "17"
+            - button "Hold 2026-07-18" [ref=e544] [cursor=pointer]: "18"
+            - button "2026-07-19 unavailable" [disabled] [ref=e546]: "19"
+            - button "2026-07-20 unavailable" [disabled] [ref=e547]: "20"
+            - button "2026-07-21 unavailable" [disabled] [ref=e548]: "21"
+            - button "2026-07-22 unavailable" [disabled] [ref=e549]: "22"
+            - button "2026-07-23 unavailable" [disabled] [ref=e550]: "23"
+            - button "Hold 2026-07-24" [ref=e551] [cursor=pointer]: "24"
+            - button "Hold 2026-07-25" [ref=e553] [cursor=pointer]: "25"
+            - button "2026-07-26 unavailable" [disabled] [ref=e555]: "26"
+            - button "2026-07-27 unavailable" [disabled] [ref=e556]: "27"
+            - button "2026-07-28 unavailable" [disabled] [ref=e557]: "28"
+            - button "2026-07-29 unavailable" [disabled] [ref=e558]: "29"
+            - button "2026-07-30 unavailable" [disabled] [ref=e559]: "30"
+            - button "Hold 2026-07-31" [ref=e560] [cursor=pointer]: "31"
+          - paragraph [ref=e562]: Open dates only · 7-day minimum notice · set by the studio
+        - generic [ref=e563]:
+          - generic [ref=e564]:
+            - generic: Full name*
+            - textbox [ref=e565]
+          - generic [ref=e567]:
+            - generic: Email*
+            - textbox [ref=e568]
+      - generic [ref=e570]:
+        - generic [ref=e571]:
+          - generic [ref=e572]: Friday, July 17, 2026
+          - generic [ref=e573]: $1,149
+        - button "Secure date & begin design" [disabled] [ref=e574]
+        - paragraph [ref=e575]: Contract, invoice & payment follow via HoneyBook

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gilded Archive · Visual Journey</title>
+  <style>
+    :root {
+      --color-obsidian: #0B0C10;
+      --color-kamagong: #3D2B1F;
+      --color-gilt: #D4AF37;
+      --color-champagne: #C9A57B;
+      --color-moss: #5C6B3E;
+      --color-ecru: #F5ECD7;
+      --color-smoke: #B8B0A8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-obsidian);
+      color: var(--color-ecru);
+      font-family: 'Newsreader', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: hidden;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 0.1rem;
+      color: var(--color-gilt);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      color: var(--color-smoke);
+    }
+
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      aspect-ratio: 16 / 10;
+      background-color: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .slide {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 85%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 4px;
+      background-color: #050507;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .slide-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .slide-image:hover {
+      transform: scale(1.02);
+      cursor: zoom-in;
+    }
+
+    .slide-caption {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      text-align: center;
+      color: var(--color-champagne);
+      font-style: italic;
+      letter-spacing: 0.05rem;
+      max-width: 80%;
+      line-height: 1.5;
+    }
+
+    .controls {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: rgba(11, 12, 16, 0.8);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--color-gilt);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      pointer-events: auto;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--color-gilt);
+      color: var(--color-obsidian);
+      border-color: var(--color-gilt);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .dots-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 1px solid var(--color-smoke);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: var(--color-gilt);
+      border-color: var(--color-gilt);
+      transform: scale(1.2);
+    }
+
+    .info-panel {
+      text-align: center;
+      max-width: 600px;
+      margin-top: 1rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      color: var(--color-smoke);
+      line-height: 1.6;
+    }
+
+    .fullscreen-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(11, 12, 16, 0.98);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    .fullscreen-modal img {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 4px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>GILDED ARCHIVE</h1>
+    <div class="subtitle">Visual Journey & Execution Steps</div>
+  </header>
+
+  <div class="slideshow-container">
+    <!-- Slide 1 -->
+    <div class="slide active" data-index="0">
+      <div class="image-wrapper">
+        <img class="slide-image" src="gallery_settled.png" alt="Gallery Settled" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">1. The "Gallery First" interface settled state, utilizing deep obsidian (#0B0C10) background, ecru layout elements, and zero horizontal scroll.</div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" data-index="1">
+      <div class="image-wrapper">
+        <img class="slide-image" src="gallery_gilded.png" alt="Gallery Gilded" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">2. Visual branding presentation displaying balanced Ecru/Obsidian wordmarks and logo assets in alignment with Gilded Archive law.</div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" data-index="2">
+      <div class="image-wrapper">
+        <img class="slide-image" src="gallery_scrolled_800.png" alt="Gallery Scrolled (800px)" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">3. Smooth scrolling behavior (800px) showing the fanned scattered masonry cards responding gracefully to user viewport depth.</div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" data-index="3">
+      <div class="image-wrapper">
+        <img class="slide-image" src="gallery_scrolled_1600.png" alt="Gallery Scrolled (1600px)" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">4. Deep scrolling state (1600px) revealing pricing tiers integrated cleanly at the page bottom.</div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide" data-index="4">
+      <div class="image-wrapper">
+        <img class="slide-image" src="drawer_open.png" alt="Vault Drawer Open" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">5. Vault Drawer slide-in panel triggered on template click. Features a clean backdrop blur, fanned preview strip, and ThreadWire form fields.</div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide" data-index="5">
+      <div class="image-wrapper">
+        <img class="slide-image" src="form_filled.png" alt="Form Filled State" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">6. The form filled state validating strict client inputs (Name, Email, Date) before activating the CTA trigger button.</div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide" data-index="6">
+      <div class="image-wrapper">
+        <img class="slide-image" src="receipt_state.png" alt="Receipt Confirmed State" onclick="openFullscreen(this.src)">
+      </div>
+      <div class="slide-caption">7. Successful booking completion showing the unique receipt token (KB-{token}), date details, and booking metadata.</div>
+    </div>
+
+    <div class="controls">
+      <button class="nav-btn" onclick="prevSlide()">&#10094;</button>
+      <button class="nav-btn" onclick="nextSlide()">&#10095;</button>
+    </div>
+  </div>
+
+  <div class="dots-container" id="dotsContainer"></div>
+
+  <div class="info-panel">
+    Use the arrows to navigate through the 7 distinct screens and states generated for the Gilded Archive. Click any image to view it in full screen. Press <strong>Left Arrow</strong> or <strong>Right Arrow</strong> keys on your keyboard to navigate.
+  </div>
+
+  <div class="fullscreen-modal" id="fullscreenModal" onclick="closeFullscreen()">
+    <img id="fullscreenImg" src="" alt="Fullscreen image">
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('dotsContainer');
+
+    // Create dots
+    slides.forEach((slide, idx) => {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (idx === 0) dot.classList.add('active');
+      dot.onclick = () => showSlide(idx);
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.dot');
+
+    function showSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      dots[currentSlide].classList.remove('active');
+      
+      currentSlide = (index + slides.length) % slides.length;
+      
+      slides[currentSlide].classList.add('active');
+      dots[currentSlide].classList.add('active');
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'Escape') closeFullscreen();
+    });
+
+    // Fullscreen viewer
+    const modal = document.getElementById('fullscreenModal');
+    const fullImg = document.getElementById('fullscreenImg');
+
+    function openFullscreen(src) {
+      fullImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeFullscreen() {
+      modal.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
