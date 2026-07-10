@@ -38,9 +38,18 @@ The autonomous pipeline is offline-first and zero-SaaS dependent.
 - **Generation**: Invokes the standalone Copilot CLI (`copilot`, BYOK → local GLM-5 proxy) as adversarial critic and code generator.
 - **Verification**: Playwright runs against `localhost:3000` to capture snapshots and verify brand-guard compliance via `npm run guard`.
 
-## 2b. The Council (one voice, three critics — CC chairs)
-- `bash .agents/skill-tiers/scripts/council.sh <run_id> <blob>` collects **codex** (Ollama `qwen2.5-coder:7b`, free/local), **agy** (Antigravity, `Gemini 3.5 Flash (Low)`), and **copilot** (BYOK → GLM-5 via `scratch/copilot-glm5/vertex-proxy.mjs`, needs the proxy running).
-- The reviewed blob is copied to vault `council/intake/`; CC synthesizes the three critiques into `council/verdicts/<run_id>.md` and logs a `council` entry in `wiki/log.md`. Voices never write to the vault; only the chair does.
+## 2b. The Council (rebuilt 2026-07-10 — CC chairs both forms)
+Two council mechanisms share the same voices; both relay verdicts to vault `council/verdicts/` + `wiki/log.md` (only the chair writes to the vault).
+
+- **Blob critique (repo)**: `bash .agents/skill-tiers/scripts/council.sh <run_id> <blob>` — read-only critics on a CC-authored blob.
+- **Deliberation (plugin)**: `/council`, `/council-verify-deps`, `/council-media` via the customized `llm-council-plugin` (source of truth: `scratch/repos/llm-council-plugin/`). 3-phase protocol + Phase 0 prompt restructuring (Fable brief) + Phase 4 vault relay.
+
+**The seats (env pinning in the plugin's `council_env.sh`):**
+- **claude** — chairman + heavy lifter. CAVEAT: headless `claude -p` is bound to an empty-credit Console key until `claude /login` re-binds it to the subscription; the chair role is unaffected (the orchestrating session chairs).
+- **codex** — debugger; `codex exec --oss -m qwen2.5-coder:7b` (local Ollama, zero-cost, auto-started).
+- **google cascade** — code check; first healthy of: `agy` (Gemini 3.5, AI Pro; auto-skipped 30 min after failure — expired Antigravity login needs one interactive `agy` browser login) → `copilot` BYOK → local Vertex proxy `:8788` (Qwen3-coder-480B MaaS on Cloud credits; proxy is a launchd service `com.katha.vertex-proxy`, always on) → `gemini` CLI if installed.
+
+**Doctor**: `/council-verify-deps` (or `bash scratch/repos/llm-council-plugin/scripts/verify-dependencies.sh`) checks and self-heals every layer. Media gen (nano banana / Veo 3 on Cloud credits): `/council-media` → `scripts/media-gen.sh`.
 
 ---
 

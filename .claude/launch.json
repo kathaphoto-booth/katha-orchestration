@@ -12,6 +12,12 @@
         "KATHA_BOOKING_PRD/katha-booking-html"
       ],
       "port": 4321
+    },
+    {
+      "name": "pb-v3",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--workspace", "pb-v3", "--", "-p", "3010"],
+      "port": 3010
     }
   ]
 }
