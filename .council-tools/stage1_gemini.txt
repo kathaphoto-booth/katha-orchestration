@@ -1,0 +1,123 @@
+# Zero-Cost Interim Toolchain for Katha Booth (2-3 Week Bridge)
+
+## Recommended Stack
+
+| Function | Tool | Free Tier Limits | Cost |
+|----------|------|------------------|------|
+| **Client Inbox** | Gmail + labels/filters | Unlimited | $0 |
+| **Invoices + Payments** | **Wave** | Unlimited invoices, unlimited contacts | 2.9% + $0.60/card, $1 ACH |
+| **Contracts + Signatures** | **SignRequest** | 10 docs/month | $0 |
+| **Document Storage** | Google Drive | 15GB | $0 |
+
+---
+
+## Detailed Setup
+
+### 1. Client Inbox (Gmail)
+- **Already connected**: kathabooth@gmail.com
+- **Add**: Canned responses (Settings → Advanced → Enable templates)
+- **Add**: Labels per client/event + filters for auto-sorting
+- **Risk**: Personal domain (`@gmail.com`) affects perceived professionalism, but acceptable for short transition. Deliverability is fine for transactional email.
+
+### 2. Invoices + Payments — Wave
+- **Why**: True free accounting + invoicing, no monthly fee, unlimited invoices
+- **Setup**: Create Wave account → connect Stripe for payments (Wave handles the integration)
+- **Flow**: Send invoice via Wave → client pays online → auto-recorded in Wave ledger
+- **Risk**: Transaction fees (2.9% + $0.60) unavoidable on any free tier. No contracts module.
+
+### 3. Contracts + Signatures — SignRequest
+- **Why**: 10 docs/month free, legally binding e-signatures, audit trail
+- **Setup**: Create SignRequest account → upload PDF contract → add signature fields → send
+- **Flow**: Client signs → both parties receive signed PDF → store in Drive
+- **Alternative**: **Jotform Sign** (10 docs/month, easier UI)
+
+### 4. Contracts — Document Drafting
+- Use Google Docs for contract templates → export to PDF → send via SignRequest
+
+---
+
+## Risks & Mitigations
+
+| Risk | Severity | Mitigation |
+|------|----------|------------|
+| **Signature volume exceeds 10/mo** | Medium | If you have >10 clients in 2-3 weeks, use **DocuSign Free** (3/yr) for overflow, or send PDF + collect typed signature confirmation via email (less formal but legally acceptable for short-term)
+
+
+
+| Risk | Severity | Mitigation |
+|------|----------|------------|
+| **Signature volume exceeds 10/mo** | Medium | If you have >10 clients in 2-3 weeks, use **DocuSign Free** (3/yr) for overflow, or send PDF + collect typed signature confirmation via email (less formal but legally acceptable for short-term) |
+| **Payment tracking fragmentation** | Low | Wave automatically tracks; reconcile with Stripe dashboard weekly |
+| **Gmail deliverability to business domains** | Low | SPF/DKIM/DMARC are Google-managed for @gmail.com — highly deliverable. Risk is perception, not delivery |
+| **No centralized CRM** | Low | Use Google Sheets as lightweight client tracker (name, email, invoice #, contract status, event date) |
+| **Data portability** | Low | Wave exports CSV; SignRequest stores PDFs; easy migration to pb-v3 |
+
+---
+
+## Concrete Workflow
+
+### New Client Onboarding (per client):
+
+```
+1. EMAIL: Client inquiry → kathabooth@gmail.com
+   → Label: "Client/[Name]" + canned response template for quote
+
+2. INVOICE: Create in Wave
+   → Email invoice via Wave (links to Stripe payment page)
+   → Payment auto-recorded
+
+3. CONTRACT: Draft in Google Docs (from template)
+   → Export to PDF
+   → Upload to SignRequest → add signature fields
+   → Send to client
+   → Download signed copy → save to Drive: /Clients/[Name]/Contract_Signed.pdf
+
+4. TRACKING: Update Google Sheets tracker
+   → Row: Client | Invoice Status | Contract Status | Payment Status | Event Date
+```
+
+---
+
+## Tool Accounts to Create Today
+
+| Tool | URL | Account Email |
+|------|-----|---------------|
+| Wave | waveapps.com | kathabooth@gmail.com |
+| SignRequest | signrequest.com | kathabooth@gmail.com |
+| Stripe (for Wave) | stripe.com | kathabooth@gmail.com |
+
+---
+
+## Legal Notes
+
+1. **E-signature legality**: SignRequest complies with ESIGN Act and eIDAS — signatures are legally binding for business contracts in US/EU.
+
+2. **Contract storage**: Keep signed PDFs in Drive with clear naming (`Contract_Signed_2026-07-10_ClientName.pdf`). This satisfies most record-keeping requirements.
+
+3. **Payment records**: Wave maintains transaction history. Export monthly for backup.
+
+4. **Terms of Service**: Ensure contract includes: "Electronic signature constitutes binding agreement per ESIGN Act."
+
+---
+
+## Migration Path to pb-v3
+
+When pb-v3 ships:
+- **Invoices**: Export Wave CSV → import to pb-v3 Supabase
+- **Contracts**: Move PDFs from Drive → pb-v3 storage (Supabase Storage)
+- **Client data**: Export Google Sheets CSV → import to pb-v3 clients table
+- **Email**: Continue using Gmail until pb-v3 email (Resend) is ready, then migrate
+
+---
+
+## Summary
+
+| Function | Tool | Time to Setup |
+|----------|------|---------------|
+| Inbox | Gmail (existing) | 0 min |
+| Invoices + Payments | Wave + Stripe | 15 min |
+| Contracts + Signatures | SignRequest | 10 min |
+| Client Tracker | Google Sheets | 5 min |
+| **Total** | | **~30 min** |
+
+This stack handles all three needs at zero monthly cost, with clear migration path to pb-v3.
