@@ -1,0 +1,225 @@
+#!/usr/bin/env node
+// ──────────────────────────────────────────────────────────────────────
+// compact-run — local /compact for the KATHA_VAULT (zero-SaaS).
+//
+// Diffs the vault's append-mostly memory lane since the last run,
+// compresses the delta with the free local council seat (Ollama
+// qwen2.5-coder:7b, temperature 0, fixed seed), validates the result
+// against a plain-node schema, and emits a ≤~120-token payload any
+// model session can boot from.
+//
+//   bin/compact-run              # compact new delta → run_payload.json
+//   bin/compact-run --dry-run    # compute + print, write nothing
+//   bin/compact-run --status     # show marker + pending delta size
+//
+// Writes ONLY to .memory/handoff/ and wiki/log.md (append). Never
+// touches raw/ (Iron Rule 1). Output is scrubbed for banned legacy
+// names (Iron Rule 8). Pattern kin: bin/openwiki, bin/compile-memory.sh.
+// ──────────────────────────────────────────────────────────────────────
+import fs from 'node:fs';
+import path from 'node:path';
+
+const VAULT = process.env.OPENWIKI_VAULT || '/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge';
+const MEMORY = path.join(VAULT, '.memory', 'memory.md');
+const LOG = path.join(VAULT, 'wiki', 'log.md');
+const HANDOFF = path.join(VAULT, '.memory', 'handoff');
+const STATE = path.join(HANDOFF, '.compact-state.json');
+const PAYLOAD = path.join(HANDOFF, 'run_payload.json');
+
+const OLLAMA = process.env.OLLAMA_HOST || 'http://127.0.0.1:11434';
+const MODEL = process.env.COMPACT_MODEL || 'qwen2.5-coder:7b';
+// The reduce stage reads a small digest but needs the sharpest reasoning
+// (open-vs-resolved reconciliation) — point it at a bigger local model
+// when fidelity matters more than speed (e.g. COMPACT_REDUCE_MODEL=qwen3-coder:latest).
+const REDUCE_MODEL = process.env.COMPACT_REDUCE_MODEL || MODEL;
+const TOKEN_LIMIT = 120; // payload budget (~4 chars/token heuristic)
+const BOOTSTRAP_MEMORY_LINES = 60;
+const BOOTSTRAP_LOG_LINES = 20;
+
+// Iron Rule 8 — banned INTERNAL legacy names must not enter a new artifact.
+const BANNED = /\b(HAM|COMPILED_HAM|thors-hammer|HERMES)\b/g;
+
+const argv = process.argv.slice(2);
+const DRY = argv.includes('--dry-run');
+const STATUS = argv.includes('--status');
+
+function die(msg) { console.error(`compact-run: ${msg}`); process.exit(1); }
+function readLines(p) { return fs.readFileSync(p, 'utf8').split('\n'); }
+function estTokens(s) { return Math.ceil(s.length / 4); }
+function nowStamp() { const d = new Date(); return d.toISOString().replace(/[-:]/g, '').slice(0, 13).replace('T', '-'); }
+function today() { return new Date().toISOString().slice(0, 10); }
+
+if (!fs.existsSync(VAULT)) die(`vault not mounted at ${VAULT}`);
+if (!fs.existsSync(MEMORY) || !fs.existsSync(LOG)) die('memory.md or wiki/log.md missing');
+
+const memLines = readLines(MEMORY);
+const logLines = readLines(LOG);
+const state = fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, 'utf8')) : null;
+
+const memFrom = state ? Math.min(state.memory_lines, memLines.length) : Math.max(0, memLines.length - BOOTSTRAP_MEMORY_LINES);
+const logFrom = state ? Math.min(state.log_lines, logLines.length) : Math.max(0, logLines.length - BOOTSTRAP_LOG_LINES);
+const memDelta = memLines.slice(memFrom).join('\n').trim();
+// Exclude the tool's own `compact |` log blocks from the delta — otherwise
+// each run would feed on the entry the previous run wrote (ouroboros).
+function stripCompactBlocks(lines) {
+  const out = [];
+  let inCompact = false;
+  for (const l of lines) {
+    if (/^## \[/.test(l)) inCompact = /\] compact \|/.test(l);
+    if (!inCompact) out.push(l);
+  }
+  return out;
+}
+const logDelta = stripCompactBlocks(logLines.slice(logFrom)).join('\n').trim();
+
+if (STATUS) {
+  console.log(JSON.stringify({
+    vault: VAULT,
+    previous_run: state?.run_id ?? null,
+    marker: state ? { memory_lines: state.memory_lines, log_lines: state.log_lines, at: state.at } : '(bootstrap pending)',
+    pending_delta_lines: { memory: memLines.length - memFrom, log: logLines.length - logFrom },
+  }, null, 2));
+  process.exit(0);
+}
+
+if (!memDelta && !logDelta) { console.log('compact-run: no new delta since last run — nothing to compact.'); process.exit(0); }
+
+const runId = `compact-${nowStamp()}`;
+const prevId = state?.run_id ?? null;
+
+// ── compression via the free local seat — temperature 0, fixed seed ──
+// Karpathy map-reduce: the 7B model holds schema discipline only on short
+// inputs, so long deltas are chunked and bullet-compressed first (map),
+// then the bullets get the strict-JSON pass (reduce).
+const CHUNK_CHARS = 4000;
+
+async function ollama(messages, { json = false, maxTokens = 400, model = MODEL } = {}) {
+  const res = await fetch(`${OLLAMA}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model,
+      stream: false,
+      ...(json ? { format: 'json' } : {}),
+      options: { temperature: 0, seed: 7, num_predict: maxTokens },
+      messages,
+    }),
+  }).catch((e) => die(`Ollama unreachable at ${OLLAMA} — is it running? (${e.message})`));
+  if (!res.ok) die(`Ollama HTTP ${res.status}`);
+  return (await res.json()).message?.content ?? '';
+}
+
+function chunk(text) {
+  const out = [];
+  const lines = text.split('\n');
+  let cur = '';
+  for (const line of lines) {
+    if (cur.length + line.length > CHUNK_CHARS && cur) { out.push(cur); cur = ''; }
+    cur += line + '\n';
+  }
+  if (cur.trim()) out.push(cur);
+  return out;
+}
+
+async function mapChunk(text, i, n) {
+  return ollama([
+    { role: 'system', content: 'You compress an operations journal. Output at most 5 terse factual bullet lines, each <=100 chars, format "- fact". Keep dates, statuses, ids, metrics. Mark finished work DONE: and unresolved work OPEN:. No prose, no invention.' },
+    { role: 'user', content: `Chunk ${i + 1}/${n}:\n\n${text}` },
+  ], { maxTokens: 220 });
+}
+
+const REDUCE_SCHEMA = '{"summary":["line1","line2","line3"],"open_actions":["..."],"last_metrics":{"key":"value"}}';
+
+async function compress(delta) {
+  const chunks = chunk(delta);
+  const bullets = [];
+  for (let i = 0; i < chunks.length; i++) bullets.push(await mapChunk(chunks[i], i, chunks.length));
+  const digest = bullets.join('\n');
+  return ollama([
+    { role: 'system', content: `You are a ruthless editor for the Katha Booth photo-booth business. Return ONLY a JSON object, exactly this shape: ${REDUCE_SCHEMA}` },
+    { role: 'user', content: `Compressed journal bullets:\n\n${digest}\n\nNow return ONLY the JSON object: summary EXACTLY 3 short factual lines (<=90 chars) describing COMPLETED changes, most recent first; open_actions = the OPEN: bullets that no later DONE: bullet resolves (max 5, <=60 chars) — never leave a real OPEN: item out, never include resolved ones; last_metrics at most 4 short key:value facts. Shape: ${REDUCE_SCHEMA}` },
+  ], { json: true, maxTokens: 400, model: REDUCE_MODEL });
+}
+
+// ── plain-node schema validation (no LangChain, no deps) ──
+function validate(o) {
+  const errs = [];
+  if (!o || typeof o !== 'object') return ['not an object'];
+  if (!Array.isArray(o.summary) || o.summary.length !== 3 || !o.summary.every((s) => typeof s === 'string' && s.length > 0)) {
+    errs.push('summary must be exactly 3 non-empty strings');
+  }
+  if (!Array.isArray(o.open_actions) || !o.open_actions.every((s) => typeof s === 'string')) {
+    errs.push('open_actions must be a string array');
+  }
+  if (!o.last_metrics || typeof o.last_metrics !== 'object' || Array.isArray(o.last_metrics)) {
+    errs.push('last_metrics must be an object');
+  }
+  return errs;
+}
+
+function scrub(s) { return s.replace(BANNED, '[struck-legacy-name]'); }
+
+// trim on a word boundary — mid-word cuts read as corruption
+function cut(s, n) {
+  if (s.length <= n) return s;
+  const c = s.slice(0, n);
+  const sp = c.lastIndexOf(' ');
+  return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[,;:\s]+$/, '');
+}
+
+function trimToBudget(payload) {
+  // deterministic programmatic trims until the payload fits the budget
+  const fit = () => estTokens(JSON.stringify(payload)) <= TOKEN_LIMIT;
+  payload.open_actions = payload.open_actions.slice(0, 5).map((s) => cut(s, 60));
+  const mk = Object.keys(payload.last_metrics).slice(0, 4);
+  payload.last_metrics = Object.fromEntries(mk.map((k) => [cut(k, 24), cut(String(payload.last_metrics[k]), 24)]));
+  if (!fit()) payload.summary = payload.summary.map((s) => cut(s, 90));
+  if (!fit()) payload.open_actions = payload.open_actions.slice(0, 3);
+  if (!fit()) payload.summary = payload.summary.map((s) => cut(s, 60));
+  while (!fit() && Object.keys(payload.last_metrics).length > 1) {
+    const k = Object.keys(payload.last_metrics).pop();
+    delete payload.last_metrics[k];
+  }
+  while (!fit() && payload.open_actions.length > 1) payload.open_actions.pop();
+  return payload;
+}
+
+(async () => {
+  const delta = [memDelta && `── .memory/memory.md (new) ──\n${memDelta}`, logDelta && `── wiki/log.md (new) ──\n${logDelta}`]
+    .filter(Boolean).join('\n\n');
+
+  let parsed = null;
+  for (let attempt = 1; attempt <= 2 && !parsed; attempt++) {
+    const raw = await compress(attempt === 1 ? delta : `${delta}\n\nREMINDER: return VALID JSON exactly per the schema.`);
+    try {
+      const candidate = JSON.parse(raw);
+      const errs = validate(candidate);
+      if (errs.length === 0) parsed = candidate;
+      else if (attempt === 2) die(`schema invalid after retry: ${errs.join('; ')}`);
+    } catch {
+      if (attempt === 2) die('model returned unparseable JSON twice');
+    }
+  }
+
+  let payload = trimToBudget({
+    run_id: runId,
+    previous_run_id: prevId,
+    summary: parsed.summary,
+    open_actions: parsed.open_actions,
+    last_metrics: parsed.last_metrics,
+  });
+  payload = JSON.parse(scrub(JSON.stringify(payload)));
+  const tokens = estTokens(JSON.stringify(payload));
+
+  console.log(JSON.stringify(payload, null, 2));
+  console.log(`\n─ est. ${tokens} tokens (budget ${TOKEN_LIMIT}) · delta: memory +${memLines.length - memFrom} / log +${logLines.length - logFrom} lines`);
+
+  if (DRY) { console.log('dry-run: nothing written.'); return; }
+
+  fs.mkdirSync(HANDOFF, { recursive: true });
+  fs.writeFileSync(PAYLOAD, JSON.stringify(payload, null, 2) + '\n');
+  fs.writeFileSync(STATE, JSON.stringify({ run_id: runId, memory_lines: memLines.length, log_lines: logLines.length, at: new Date().toISOString() }, null, 2) + '\n');
+  // append-only log entry — the wiki's timeline stays the source of truth
+  fs.appendFileSync(LOG, `\n## [${today()}] compact | ${runId}\n\npayload: .memory/handoff/run_payload.json (~${tokens} tok); delta memory +${memLines.length - memFrom} / log +${logLines.length - logFrom} lines; prev: ${prevId ?? 'bootstrap'}\n`);
+  console.log(`written: ${PAYLOAD}\nlogged:  wiki/log.md → compact | ${runId}`);
+})();
