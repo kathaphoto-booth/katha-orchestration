@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--workspace", "pb-v3", "--", "-p", "3010"],
       "port": 3010
+    },
+    {
+      "name": "pb-v3-no-email",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["RESEND_API_KEY=", "npm", "run", "dev", "--workspace", "pb-v3", "--", "-p", "3011"],
+      "port": 3011
     }
   ]
 }

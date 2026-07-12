@@ -23,6 +23,14 @@ export type DispatchResult = {
   detail: string;
 };
 
+/**
+ * Truthful calendar status for the auto-reply. 'open' only when the
+ * available_dates allow-list confirms it at send time; anything else
+ * (no row, closed, query failure, no Supabase) stays 'unknown' and the
+ * email makes no availability claim.
+ */
+export type DateStatus = 'open' | 'unknown';
+
 export type InquiryHandlerOptions = {
   /** Per-app gallery/portal link builder. Receives leadHash and baseUrl, returns full URL. */
   buildGalleryLink: (leadHash: string, baseUrl: string) => string;

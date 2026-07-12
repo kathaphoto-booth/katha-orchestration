@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { InquiryPayload, InquiryHandlerOptions } from './types.js';
+import type { InquiryPayload, InquiryHandlerOptions, DateStatus } from './types.js';
 import { recordLead } from './record-lead.js';
 import { pingHoneyBook } from './ping-honeybook.js';
 import { sendEnrichmentEmail } from './send-enrichment-email.js';
@@ -11,7 +11,9 @@ export async function handleInquiry(
   supabaseAdmin: SupabaseClient | null,
   opts: InquiryHandlerOptions
 ): Promise<NextResponse> {
-  const appUrl = process.env.APP_URL;
+  // `||` not `??`: an empty-string APP_URL (seen once in seeded Vercel env)
+  // must fall through to VERCEL_URL, or email gallery links render relative.
+  const appUrl = process.env.APP_URL || undefined;
   const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
   const baseUrl = appUrl ?? vercelUrl ?? req.nextUrl.origin;
 
@@ -79,10 +81,26 @@ export async function handleInquiry(
     );
   }
 
+  // Truthful date status for the auto-reply — best-effort, never blocks.
+  // Claims 'open' only when the available_dates allow-list confirms it.
+  let dateStatus: DateStatus = 'unknown';
+  if (supabaseAdmin) {
+    try {
+      const { data: dateRow } = await supabaseAdmin
+        .from('available_dates')
+        .select('status')
+        .eq('date', date)
+        .maybeSingle();
+      if (dateRow?.status === 'open') dateStatus = 'open';
+    } catch {
+      // stays 'unknown' — the email then makes no availability claim
+    }
+  }
+
   // Notifications — best-effort, never block capture.
   const notifySettled = await Promise.allSettled([
     pingHoneyBook(payload, leadHash),
-    sendEnrichmentEmail(payload, leadHash, galleryLink),
+    sendEnrichmentEmail(payload, leadHash, galleryLink, dateStatus),
   ]);
   const [honeybookResult, emailResult] = notifySettled.map((r, i) =>
     r.status === 'fulfilled'
