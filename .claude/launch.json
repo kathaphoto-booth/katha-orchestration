@@ -24,6 +24,12 @@
       "runtimeExecutable": "env",
       "runtimeArgs": ["RESEND_API_KEY=", "npm", "run", "dev", "--workspace", "pb-v3", "--", "-p", "3011"],
       "port": 3011
+    },
+    {
+      "name": "scratch-static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4322", "--directory", "/private/tmp/claude-501/-Users-jedg--Desktop-kat-ha-pb/c59f92a1-ecba-44e6-889f-ea35c0c626fd/scratchpad"],
+      "port": 4322
     }
   ]
 }
