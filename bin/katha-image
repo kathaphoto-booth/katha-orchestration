@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# katha-image — CLI for the Katha Vertex AI image pipeline (Cloud Run).
+#
+# Commands:
+#   katha-image vectorize <input.png> [--output <out.svg>]
+#   katha-image generate  "<prompt>"  [--output <out.png>]
+#   katha-image restyle   <input.png> "<style prompt>" [--output <out.png>]
+#
+# Service URLs come from KATHA_VECTORIZE_URL / KATHA_GENERATE_URL (set in
+# .env.local, gitignored). Both may point at the same combined service; the
+# CLI appends the endpoint path. Auth is always a fresh gcloud token —
+# never a static key.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+[ -f "$REPO_ROOT/.env.local" ] && set -a && source "$REPO_ROOT/.env.local" && set +a
+
+: "${KATHA_VECTORIZE_URL:?Set KATHA_VECTORIZE_URL in .env.local}"
+: "${KATHA_GENERATE_URL:?Set KATHA_GENERATE_URL in .env.local}"
+
+usage() { sed -n '3,9p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 1; }
+
+CMD="${1:-}"; shift || usage
+# Cloud Run authenticated invocation requires an OIDC identity token (a raw
+# OAuth access token is rejected with 401 — verified live). Still minted
+# fresh by gcloud per call; never a static key.
+TOKEN="$(gcloud auth print-identity-token)"
+
+# Parse trailing --output
+OUTPUT=""
+ARGS=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --output) OUTPUT="$2"; shift 2 ;;
+    *) ARGS+=("$1"); shift ;;
+  esac
+done
+
+case "$CMD" in
+  vectorize)
+    INPUT="${ARGS[0]:?usage: katha-image vectorize <input.png> [--output <out.svg>]}"
+    OUT="${OUTPUT:-${INPUT%.*}.svg}"
+    HTTP=$(curl -sS -w "%{http_code}" -o "$OUT" \
+      -H "Authorization: Bearer $TOKEN" \
+      -F "image=@$INPUT" \
+      "$KATHA_VECTORIZE_URL/vectorize")
+    ;;
+  generate)
+    PROMPT="${ARGS[0]:?usage: katha-image generate \"<prompt>\" [--output <out.png>]}"
+    OUT="${OUTPUT:-katha-generated.png}"
+    HTTP=$(jq -n --arg p "$PROMPT" '{prompt:$p}' | curl -sS -w "%{http_code}" -o "$OUT" \
+      -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+      -d @- "$KATHA_GENERATE_URL/generate")
+    ;;
+  restyle)
+    INPUT="${ARGS[0]:?usage: katha-image restyle <input.png> \"<style prompt>\" [--output <out.png>]}"
+    PROMPT="${ARGS[1]:?missing style prompt}"
+    OUT="${OUTPUT:-${INPUT%.*}-restyled.png}"
+    HTTP=$(curl -sS -w "%{http_code}" -o "$OUT" \
+      -X POST -H "Authorization: Bearer $TOKEN" \
+      -F "image=@$INPUT" -F "prompt=$PROMPT" \
+      "$KATHA_GENERATE_URL/restyle")
+    ;;
+  --help|-h|help) usage ;;
+  *) echo "unknown command: $CMD" >&2; usage ;;
+esac
+
+if [ "$HTTP" != "200" ]; then
+  echo "error: service returned HTTP $HTTP" >&2
+  cat "$OUT" >&2; echo >&2
+  rm -f "$OUT"
+  exit 1
+fi
+echo "$OUT"
