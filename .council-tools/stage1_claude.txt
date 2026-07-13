@@ -1,0 +1,38 @@
+Verified the free tiers are current. Here's the recommendation.
+
+## TL;DR
+
+Run the interim stack as: **Gmail labels + a Google Sheets pipeline** for the inbox, **Stripe Payment Links** (opened on the same Stripe account pb-v3 will use) for payments with a Google Docs invoice template, and **SignWell free + PandaDoc Free eSign** for contracts (~8 free audit-trailed signatures/month combined). Total fixed cost: $0. Only costs are unavoidable card-processing fees.
+
+## 1. Client inbox — Gmail + Sheets CRM
+
+- Keep `kathabooth@gmail.com` as the single client channel. Create labels `Lead / Booked / Delivered / Archive` and filters that auto-label anything from a Google Form notification or containing "booth" keywords. Enable **Templates** (Settings → Advanced) for your 4–5 canned replies (inquiry response, quote, day-before logistics, gallery delivery).
+- **Google Form → linked Sheet** replaces the HoneyBook contact form: embed/link it wherever leads come from. The Sheet becomes the pipeline tracker — one row per client with columns for event date, status, invoice sent/paid, contract sent/signed. Use filter views instead of separate tabs so nothing gets forked.
+- Before the HoneyBook downgrade bites, use the free **spreadsheet export** to pull every existing client/project into that same Sheet, and Google Contacts import to keep addresses. One Drive folder per client (`Clients/2026-08-15 – Ana Wedding/`) holds the contract PDF, invoice PDF, and gallery links.
+
+## 2. Invoices + payments — Stripe Payment Links (strategic pick)
+
+Since pb-v3 is a Stripe build, **open the production Stripe account now** and run interim payments through it. Every transition-period charge lands in the same account pb-v3 will use — no re-onboarding, unified payout history, and you'll have live Stripe data to test pb-v3 against.
+
+- Flow: Google Docs invoice template → export PDF → email it with a **Stripe Payment Link** (created in the dashboard in ~30 seconds, no code, no monthly fee — just standard 2.9% + 30¢). Log sent/paid in the Sheet manually.
+- Avoid Stripe's hosted *Invoicing* product for now — it adds a per-paid-invoice percentage fee; Payment Links don't.
+- Alternative if you want automatic invoice numbering, reminders, and bookkeeping in one place: [Wave's Starter plan](https://www.waveapps.com/pricing) is genuinely free with unlimited invoices (2.9% + $0.60 card, 1% ACH per [current pricing](https://tech.co/accounting-software/wave-invoicing)) — but it splits your payment history away from the Stripe account pb-v3 will inherit, so I'd only use it if invoice ergonomics matter more than continuity. Note automatic payment reminders are gated to Wave Pro; on free you nudge manually.
+- **Zelle** is the only truly fee-free option, but it has no chargeback protection, no receipts, and no audit trail — acceptable only for repeat clients you trust, and log it in the Sheet yourself.
+
+## 3. Contracts + signatures — SignWell + PandaDoc free tiers
+
+You're right that native Google Docs eSignature is Workspace-only, and a "draw your signature in the Doc" flow has no audit trail — easy to dispute. Use real eSign platforms on free tiers:
+
+- [SignWell free](https://www.signwell.com/pricing/): **3 documents/month**, 1 template, with audit trail — make the template your standard event contract.
+- [PandaDoc Free eSign](https://support.pandadoc.com/en/articles/9715030-pandadoc-free-plan-guide): **5 docs/month (60/year)**, unlimited signatures, up to 5 templates, 2 recipients/doc, email-only sending — no integrations, but you don't need them for 3 weeks.
+- Combined that's ~8 legally solid signatures/month at $0. Author the contract in Google Docs, export PDF, upload, send. Signed copies go back into the client's Drive folder.
+- **Overflow fallback**: email acceptance ("Reply 'I agree' with your full name to this contract PDF") is enforceable under ESIGN/UETA — intent + consent + record retention are what matter, not the signature form. But it's evidentially weaker than a tamper-evident audit trail, so reserve it for low-value bookings and archive the full email thread.
+
+## Risks to flag
+
+- **Deliverability**: free Gmail can't send from a custom domain with proper SPF/DKIM alignment, so anything that looks like bulk mail from `@gmail.com` risks spam-foldering. Keep sends 1:1 (no Sheets mail-merge blasts), and let SignWell/PandaDoc/Stripe send their own notification emails — their domains have strong reputations and their links are less likely to be filtered than a Gmail attachment. Gmail's ~500 recipients/day cap won't bite at your volume.
+- **Legal**: for photo-booth contracts specifically (liability, model release, retainer/cancellation terms), the audit-trail platforms give you signer IP, timestamp, and document hash — meaningfully better in a retainer dispute than a Docs signature image. Never edit a contract Doc after sending; version the PDF.
+- **Payments**: keep every transaction on-platform (Stripe/Wave) for records and 1099-K consistency; mixing Zelle in mid-year fragments your books right before pb-v3 becomes the system of record.
+- **Data continuity**: do the HoneyBook export *first*, this week — Starter-tier feature access can change, and the export is your migration seed data for pb-v3's Supabase import.
+
+Sources: [PandaDoc Free plan guide](https://support.pandadoc.com/en/articles/9715030-pandadoc-free-plan-guide), [PandaDoc free eSign](https://www.pandadoc.com/free-electronic-signature-software/), [SignWell pricing](https://www.signwell.com/pricing/), [SignWell free plan explained](https://www.esign.ai/blog/signwell-free-plan-limitations-and-features), [Wave pricing](https://www.waveapps.com/pricing), [Wave invoicing fees](https://tech.co/accounting-software/wave-invoicing)

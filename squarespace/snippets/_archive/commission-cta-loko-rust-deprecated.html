@@ -1,0 +1,81 @@
+<!--
+  KATHA SNIPPET: Commission CTA
+  ─────────────────────────────────────────────────────────────────────
+  The sacred Loko Rust call-to-action.
+
+  INSTALL:  Squarespace → Edit page → + → Code → paste everything below.
+  EDIT:     Change the href="#" to your actual booking URL (HoneyBook /inquire
+            or kathabooth.com/inquire once the intake funnel goes live).
+  RULE:     ONE per page — scarcity is the point. Never use this as a nav link,
+            hover state, or filter. Reserve for the single booking moment.
+  ─────────────────────────────────────────────────────────────────────
+  Requires Layer 1 (katha-brand-tokens.css) in Code Injection → HEADER.
+-->
+
+<style>
+  .k-cta-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 3rem 0;
+  }
+  .k-cta-block .k-eyebrow {
+    font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--katha-abel-slate, #5A5D5A);
+    font-weight: 500;
+  }
+  .k-cta-block .k-cta-heading {
+    font-family: var(--font-display, 'Fraunces', Georgia, serif);
+    font-variation-settings: "SOFT" 100, "WONK" 1;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    color: var(--text-primary, #241E1A);
+    margin: 0;
+  }
+  .k-cta-block .k-sacred {
+    display: inline-block;
+    font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+    font-size: 0.8125rem;
+    background: var(--katha-loko-rust, #8C382A);
+    color: var(--katha-pina-ecru, #EAE2D5);
+    padding: 1rem 2.25rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 0;
+    transition: opacity 0.3s ease;
+  }
+  .k-cta-block .k-sacred:hover { opacity: 0.88; }
+  .k-calado-line {
+    border: none;
+    height: 12px;
+    width: 120px;
+    background-image: radial-gradient(circle, var(--katha-champagne-heirloom, #C4B59D) 1px, transparent 1.5px);
+    background-size: 10px 12px;
+    background-repeat: repeat-x;
+    background-position: center left;
+    opacity: 0.5;
+    margin: 0;
+  }
+</style>
+
+<div class="k-cta-block">
+  <!-- EDIT: eyebrow line (optional — remove the span tag to hide) -->
+  <span class="k-eyebrow">Ready to begin</span>
+
+  <!-- EDIT: heading text -->
+  <p class="k-cta-heading">Commission your booth architecture.</p>
+
+  <hr class="k-calado-line">
+
+  <!-- EDIT: href → your booking link -->
+  <a class="k-sacred" href="https://book.kathabooth.com" aria-label="Commission Katha Booth — begin your inquiry">
+    Begin your Inquiry
+  </a>
+</div>

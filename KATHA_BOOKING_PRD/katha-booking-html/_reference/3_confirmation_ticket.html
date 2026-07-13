@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katha Photo Booth - Secure Confirmation Ticket</title>
+  
+  <!-- Tailwind Utilities -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts & GSAP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,200..400;1,9..144,200..300&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* Custom local font weights */
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Light.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-SemiBold.otf') format('opentype');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    /* Design Tokens */
+    :root {
+      --color-l0: #110F0D;     /* Kamagong */
+      --color-l1: #1A1714;     /* Dark Abacá */
+      --color-l2: #241F1B;     /* Kape */
+      --color-l3: #2E2722;     /* Lifted Surface */
+      --color-hi: #E8E1D3;     /* Piña Ecru */
+      --color-mut: #A39B8E;    /* Rattan */
+      --color-fnt: #857D71;    /* Capiz Slate */
+      --color-loko: #9A3D2A;   /* Achuete Red */
+      --color-ln: rgba(232, 225, 211, 0.08);
+      
+      --font-display: 'FH Ronaldson Display', 'Fraunces', serif;
+      --font-serif: 'Fraunces', serif;
+      --font-body: 'Outfit', sans-serif;
+      --font-mono: 'Courier Prime', monospace;
+    }
+
+    body {
+      background-color: var(--color-l0);
+      color: var(--color-hi);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    .f-display { font-family: var(--font-display); }
+    .f-serif { font-family: var(--font-serif); }
+    .f-body { font-family: var(--font-body); }
+    .f-mono { font-family: var(--font-mono); }
+
+    /* Perforated lines and ticket stock */
+    .ticket-container {
+      perspective: 1500px;
+    }
+    .ticket-panel {
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      transform-origin: top center;
+    }
+    .perforation-line {
+      background-image: linear-gradient(to right, rgba(44, 37, 35, 0.2) 50%, transparent 50%);
+      background-size: 8px 1px;
+      height: 1px;
+      width: 100%;
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      nav, footer, .screen-only, #ambient-grain {
+        display: none !important;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .ticket-panel {
+        transform: none !important;
+        opacity: 1 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased select-none">
+
+  <!-- Grain overlay -->
+  <div id="ambient-grain" class="fixed inset-0 z-0 pointer-events-none opacity-90" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 220 220\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.03\'/%3E%3C/svg%3E');"></div>
+
+  <!-- Sticky Top Navigation (screen only) -->
+  <nav class="screen-only sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-[rgba(17,15,13,0.95)] backdrop-blur-xl border-b border-[var(--color-ln)]">
+    <div class="flex items-center gap-3">
+      <svg class="h-6 w-auto" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 6C10 6 13 14 10 26" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 16C12 16 19 12 22 8" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 18C15 20 20 23 23 25" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="10" cy="16" r="1.5" fill="#9A3D2A"/>
+      </svg>
+      <span class="f-display text-xl tracking-[0.06em] text-[var(--color-hi)] font-light">Katha</span>
+    </div>
+    <div class="flex items-center gap-6">
+      <span class="f-mono text-[9px] uppercase tracking-[0.18em] text-[var(--color-fnt)]">
+        Ticket Registry Secured
+      </span>
+      <span class="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse"></span>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+    
+    <!-- LEFT COLUMN: CONFIRMATION STATUS & CONTROLS (5 cols) -->
+    <section class="screen-only col-span-1 lg:col-span-5 space-y-8 lg:sticky lg:top-28">
+      
+      <!-- Status Badge & Header -->
+      <div class="space-y-4">
+        <span class="f-mono text-[9.5px] uppercase tracking-[0.24em] text-emerald-500 block">✓ Commission Confirmed</span>
+        <h1 class="f-display text-4xl lg:text-5xl font-light leading-none tracking-tight text-[var(--color-hi)]">
+          Commission <br />Registered & <span class="italic text-[var(--color-mut)]">Secured.</span>
+        </h1>
+        <p class="f-serif italic text-sm text-[var(--color-mut)] font-light leading-relaxed max-w-md">
+          Your reservation slot is fully locked. We have generated a physical museum-grade paper voucher with a unique secured barcode.
+        </p>
+      </div>
+
+      <!-- Action Box -->
+      <div class="bg-[var(--color-l1)] border border-[var(--color-ln)] rounded-sm p-6 space-y-4">
+        <span class="f-mono text-[8px] uppercase tracking-[0.16em] text-[var(--color-fnt)] block border-b border-[var(--color-ln)] pb-2">// Digital Dispatch Desk</span>
+        
+        <div class="space-y-3">
+          <!-- Print Voucher Button -->
+          <button id="print-ticket-btn" class="group relative w-full h-12 border border-[var(--color-ln)] hover:border-[var(--color-hi)] hover:bg-[rgba(255,255,255,0.02)] text-[var(--color-hi)] font-mono uppercase tracking-[0.12em] text-[10px] rounded-sm flex items-center justify-between px-6 transition-all duration-300">
+            <span>Print Physical Ticket Stock</span>
+            <svg class="w-4 h-4 text-[var(--color-mut)] group-hover:text-[var(--color-hi)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.844l4.003-4.003m0 0l4.002 4.003m-4.002-4.003v11.156m-5.917-14.773A9 9 0 0118.3 12.25" /></svg>
+          </button>
+
+          <!-- Email Copy Button -->
+          <button id="email-ticket-btn" class="group relative w-full h-12 bg-transparent hover:bg-[rgba(255,255,255,0.02)] border border-[var(--color-ln)] hover:border-[var(--color-hi)] text-[var(--color-hi)] font-mono uppercase tracking-[0.12em] text-[10px] rounded-sm flex items-center justify-between px-6 transition-all duration-300">
+            <span id="email-btn-text">Email Copy to Inbox</span>
+            <svg class="w-4 h-4 text-[var(--color-mut)] group-hover:text-[var(--color-hi)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0l-7.5-4.615a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+          </button>
+        </div>
+
+        <!-- Success Toast indicator -->
+        <p id="action-toast" class="f-mono text-[8px] text-emerald-500 uppercase tracking-widest text-center h-2 opacity-0 transition-all duration-500">// Email Sent successfully ✓</p>
+      </div>
+
+      <!-- Navigation back home -->
+      <div class="pt-4 border-t border-[var(--color-ln)] flex justify-between items-center select-none">
+        <a href="1_booking_intake.html" class="f-mono text-[8px] uppercase tracking-wider text-[var(--color-mut)] hover:text-[var(--color-hi)] flex items-center gap-2 transition-colors">
+          ← Start New Inquiry Registry
+        </a>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: 3D ACCORDION UNFOLDING TICKET (7 cols) -->
+    <section class="col-span-1 lg:col-span-7 flex flex-col items-center py-6" id="print-area">
+      
+      <div class="ticket-container w-full max-w-[340px] flex flex-col items-center">
+        
+        <!-- TICKET SEGMENT 1 (Top Fold) -->
+        <div id="ticket-fold-1" class="ticket-panel w-full bg-[#F7F5F1] text-[#2C2523] p-6 rounded-t-sm shadow-md border-b-0 border-l border-r border-t border-black/5 select-text relative">
+          
+          <!-- Metadata header -->
+          <div class="flex justify-between items-center f-mono text-[8px] tracking-wider text-[#2C2523]/60 mb-6 pb-2 border-b border-[#2C2523]/10">
+            <span>KATHA COMMEMORATIVE // SECURED VOUCHER</span>
+            <span>SECURED #8D49F03B</span>
+          </div>
+
+          <div class="space-y-4">
+            <span class="f-mono text-[8px] uppercase tracking-widest text-[#9A3D2A] font-bold block">// Secured Coordinates</span>
+            <h2 class="f-display text-2xl font-semibold tracking-tight">Lorenzo & Corazon</h2>
+            
+            <div class="grid grid-cols-2 gap-4 f-mono text-[8.5px] text-[#2C2523]/80 pt-2">
+              <div class="space-y-1 border-l border-[#2C2523]/10 pl-3">
+                <span class="opacity-60 block">REGISTRY DATE</span>
+                <span class="font-bold text-[#2C2523]">OCTOBER 15, 2026</span>
+              </div>
+              <div class="space-y-1 border-l border-[#2C2523]/10 pl-3">
+                <span class="opacity-60 block">VENUE LOCATION</span>
+                <span class="font-bold text-[#2C2523] uppercase">MANILA, PHILIPPINES</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connecting perforation line -->
+          <div class="perforation-line absolute bottom-0 left-0"></div>
+        </div>
+
+        <!-- TICKET SEGMENT 2 (Middle Panel) -->
+        <div id="ticket-fold-2" class="ticket-panel w-full bg-[#F7F5F1] text-[#2C2523] p-6 border-l border-r border-black/5 select-text relative">
+          
+          <div class="space-y-4">
+            <span class="f-mono text-[8px] uppercase tracking-widest text-[#2C2523]/60 font-bold block">// Selected Commission Detail</span>
+            
+            <div class="space-y-3">
+              <div class="flex justify-between items-baseline">
+                <span class="f-serif text-lg font-light">Signature Installation</span>
+                <span class="f-mono text-xs font-bold">$949</span>
+              </div>
+              <p class="f-serif italic text-xs text-[#2C2523]/75 leading-relaxed">
+                Weathered oak booth housing, SLR capture calibration, physical premium fiber paper sheets handed over in the room.
+              </p>
+            </div>
+
+            <div class="perforation-line my-4"></div>
+
+            <div class="space-y-2">
+              <span class="f-mono text-[8px] uppercase tracking-widest text-[#2C2523]/60 font-bold block">// Registered Selections</span>
+              <div class="f-mono text-[8.5px] space-y-1 text-[#2C2523]/80">
+                <div class="flex justify-between"><span>+ Heirloom Bound Guestbook</span><span class="font-bold">✓ Included</span></div>
+                <div class="flex justify-between"><span>+ Overtime Service Hour</span><span class="font-bold">✓ Included</span></div>
+                <div class="flex justify-between"><span>+ Woven Loom Custom Backdrop</span><span class="font-bold">✓ Included</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Connecting perforation line -->
+          <div class="perforation-line absolute bottom-0 left-0"></div>
+        </div>
+
+        <!-- TICKET SEGMENT 3 (Bottom Panel / Barcode) -->
+        <div id="ticket-fold-3" class="ticket-panel w-full bg-[#F7F5F1] text-[#2C2523] p-6 rounded-b-sm shadow-lg border-t-0 border-l border-r border-b border-black/5 select-text relative flex flex-col justify-between items-center text-center">
+          
+          <div class="w-full space-y-6 flex flex-col items-center">
+            
+            <!-- Perforation separator -->
+            <div class="perforation-line mb-4"></div>
+
+            <!-- Mathematical High-contrast Barcode using pure SVG -->
+            <div class="py-2 px-6 bg-white border border-black/5 inline-block">
+              <!-- Recreating highly detailed barcode pattern with SVG rect components -->
+              <svg class="h-10 w-48" viewBox="0 0 160 40" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer margins -->
+                <rect x="0" y="0" width="160" height="40" fill="#FFFFFF"/>
+                <g fill="#2C2523">
+                  <!-- Start pattern -->
+                  <rect x="5" y="2" width="2" height="36"/>
+                  <rect x="8" y="2" width="1" height="36"/>
+                  <rect x="11" y="2" width="3" height="36"/>
+                  <!-- Data block 1 -->
+                  <rect x="16" y="2" width="1" height="36"/>
+                  <rect x="19" y="2" width="2" height="36"/>
+                  <rect x="23" y="2" width="4" height="36"/>
+                  <rect x="29" y="2" width="1" height="36"/>
+                  <rect x="32" y="2" width="3" height="36"/>
+                  <rect x="37" y="2" width="2" height="36"/>
+                  <rect x="41" y="2" width="1" height="36"/>
+                  <rect x="44" y="2" width="4" height="36"/>
+                  <rect x="50" y="2" width="2" height="36"/>
+                  <!-- Data block 2 -->
+                  <rect x="54" y="2" width="1" height="36"/>
+                  <rect x="57" y="2" width="3" height="36"/>
+                  <rect x="62" y="2" width="2" height="36"/>
+                  <rect x="66" y="2" width="4" height="36"/>
+                  <rect x="72" y="2" width="1" height="36"/>
+                  <rect x="75" y="2" width="2" height="36"/>
+                  <rect x="79" y="2" width="3" height="36"/>
+                  <rect x="84" y="2" width="1" height="36"/>
+                  <rect x="87" y="2" width="4" height="36"/>
+                  <rect x="93" y="2" width="2" height="36"/>
+                  <!-- Center divider -->
+                  <rect x="97" y="2" width="1" height="36"/>
+                  <rect x="100" y="2" width="1" height="36"/>
+                  <!-- Data block 3 -->
+                  <rect x="103" y="2" width="3" height="36"/>
+                  <rect x="108" y="2" width="1" height="36"/>
+                  <rect x="111" y="2" width="4" height="36"/>
+                  <rect x="117" y="2" width="2" height="36"/>
+                  <rect x="121" y="2" width="1" height="36"/>
+                  <rect x="124" y="2" width="3" height="36"/>
+                  <rect x="129" y="2" width="2" height="36"/>
+                  <rect x="133" y="2" width="4" height="36"/>
+                  <rect x="139" y="2" width="1" height="36"/>
+                  <rect x="142" y="2" width="2" height="36"/>
+                  <!-- Stop pattern -->
+                  <rect x="146" y="2" width="3" height="36"/>
+                  <rect x="151" y="2" width="1" height="36"/>
+                  <rect x="154" y="2" width="2" height="36"/>
+                </g>
+              </svg>
+            </div>
+            
+            <div class="f-mono text-[7px] tracking-[0.25em] text-[#2C2523]/70 uppercase">
+              * KATHA-8D49F03B-SECURED *
+            </div>
+          </div>
+
+          <div class="pt-6 mt-4 border-t border-[#2C2523]/10 w-full flex items-center justify-between">
+            <svg class="h-4 w-auto opacity-70" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 6C10 6 13 14 10 26" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 16C12 16 19 12 22 8" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 18C15 20 20 23 23 25" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="10" cy="16" r="1.5" fill="#9A3D2A"/>
+            </svg>
+            <span class="f-mono text-[6px] tracking-wider text-[#2C2523]/50">KATHA ATELIER NO. 2026-CF</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Legal Footnotes (screen only) -->
+  <footer class="screen-only max-w-7xl mx-auto px-6 md:px-12 py-12 flex justify-between items-center f-mono text-[7px] text-[var(--color-fnt)] uppercase tracking-[0.16em] border-t border-[var(--color-ln)] select-none">
+    <span>Plate No. 2026-CF // Secured Registration</span>
+    <span>©2026 Katha Atelier Studio</span>
+  </footer>
+
+
+  <script>
+    // 1. GSAP 3D Accordion Unfold on page load (cascading folds from perspective)
+    window.addEventListener('load', () => {
+      // Set initial styles for folded panels
+      gsap.set('#ticket-fold-1', {
+        rotateX: -75,
+        opacity: 0,
+        y: -50,
+        transformOrigin: "bottom center"
+      });
+
+      gsap.set('#ticket-fold-2', {
+        rotateX: 45,
+        opacity: 0,
+        y: -10,
+        transformOrigin: "top center"
+      });
+
+      gsap.set('#ticket-fold-3', {
+        rotateX: -45,
+        opacity: 0,
+        y: 10,
+        transformOrigin: "top center"
+      });
+
+      // Sequential unfold timeline in 3D perspective
+      const tl = gsap.timeline();
+      tl.to('#ticket-fold-1', {
+        rotateX: 0,
+        opacity: 1,
+        y: 0,
+        duration: 1.4,
+        ease: 'power4.out'
+      })
+      .to('#ticket-fold-2', {
+        rotateX: 0,
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power3.out'
+      }, '-=1.0')
+      .to('#ticket-fold-3', {
+        rotateX: 0,
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: 'power3.out'
+      }, '-=1.0');
+    });
+
+    // 2. Print ticket Stock
+    document.getElementById('print-ticket-btn').addEventListener('click', () => {
+      window.print();
+    });
+
+    // 3. Send Email Copy
+    const emailBtn = document.getElementById('email-ticket-btn');
+    const emailText = document.getElementById('email-btn-text');
+    const actionToast = document.getElementById('action-toast');
+
+    emailBtn.addEventListener('click', () => {
+      emailBtn.disabled = true;
+      emailText.textContent = "Dispatching Copy...";
+      
+      setTimeout(() => {
+        emailText.textContent = "Email Dispatched!";
+        actionToast.style.opacity = '1';
+        
+        // Hide toast after 3s
+        setTimeout(() => {
+          actionToast.style.opacity = '0';
+          setTimeout(() => {
+            emailText.textContent = "Email Copy to Inbox";
+            emailBtn.disabled = false;
+          }, 600);
+        }, 3000);
+      }, 1500);
+    });
+  </script>
+</body>
+</html>

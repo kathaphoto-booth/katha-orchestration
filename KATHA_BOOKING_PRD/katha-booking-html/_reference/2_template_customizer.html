@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katha Photo Booth - Design Customizer Studio</title>
+  
+  <!-- Tailwind Utilities -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts & GSAP -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,200..400;1,9..144,200..300&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* Custom local font weights */
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Light.otf') format('opentype');
+      font-weight: 300;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-SemiBold.otf') format('opentype');
+      font-weight: 600;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'FH Ronaldson Display';
+      src: url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    /* Design Tokens */
+    :root {
+      --color-l0: #110F0D;     /* Kamagong */
+      --color-l1: #1A1714;     /* Dark Abacá */
+      --color-l2: #241F1B;     /* Kape */
+      --color-l3: #2E2722;     /* Lifted Surface */
+      --color-hi: #E8E1D3;     /* Piña Ecru */
+      --color-mut: #A39B8E;    /* Rattan */
+      --color-fnt: #857D71;    /* Capiz Slate */
+      --color-loko: #9A3D2A;   /* Achuete Red */
+      --color-ln: rgba(232, 225, 211, 0.08);
+      
+      --font-display: 'FH Ronaldson Display', 'Fraunces', serif;
+      --font-serif: 'Fraunces', serif;
+      --font-body: 'Outfit', sans-serif;
+      --font-mono: 'Courier Prime', monospace;
+    }
+
+    body {
+      background-color: var(--color-l0);
+      color: var(--color-hi);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    .f-display { font-family: var(--font-display); }
+    .f-serif { font-family: var(--font-serif); }
+    .f-body { font-family: var(--font-body); }
+    .f-mono { font-family: var(--font-mono); }
+
+    /* Custom Input fields */
+    .input-field {
+      background: transparent;
+      border-bottom: 1px solid var(--color-fnt);
+      color: var(--color-hi);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      padding: 1.25rem 0 0.25rem 0;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.4s ease;
+    }
+    .input-field:focus {
+      border-color: var(--color-loko);
+    }
+    .input-container {
+      position: relative;
+    }
+    .input-label {
+      position: absolute;
+      left: 0;
+      top: 1.25rem;
+      color: var(--color-fnt);
+      font-size: 0.95rem;
+      font-weight: 300;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .input-field:focus ~ .input-label,
+    .input-field:not(:placeholder-shown) ~ .input-label {
+      top: 0.1rem;
+      font-size: 0.72rem;
+      color: var(--color-loko);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Interactive 3D Perspective Card */
+    #preview-card-container {
+      perspective: 1200px;
+    }
+    #preview-card-inner {
+      transform-style: preserve-3d;
+      will-change: transform;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(154,61,42,0.05);
+      transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Active filter states */
+    .filter-btn.active {
+      background: var(--color-loko);
+      color: var(--color-hi);
+      border-color: var(--color-loko);
+    }
+
+    /* Swatches styling */
+    .palette-swatch.active {
+      outline: 2px solid var(--color-loko);
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body class="antialiased select-none">
+
+  <!-- Grain overlay -->
+  <div class="fixed inset-0 z-0 pointer-events-none opacity-90" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 220 220\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.03\'/%3E%3C/svg%3E');"></div>
+
+  <!-- Sticky Top Navigation -->
+  <nav class="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-[rgba(17,15,13,0.95)] backdrop-blur-xl border-b border-[var(--color-ln)]">
+    <div class="flex items-center gap-3">
+      <svg class="h-6 w-auto" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 6C10 6 13 14 10 26" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M10 16C12 16 19 12 22 8" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M12 18C15 20 20 23 23 25" stroke="#E8E1D3" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="10" cy="16" r="1.5" fill="#9A3D2A"/>
+      </svg>
+      <span class="f-display text-xl tracking-[0.06em] text-[var(--color-hi)] font-light">Katha</span>
+    </div>
+    <div class="flex items-center gap-6">
+      <span class="f-mono text-[9px] uppercase tracking-[0.18em] text-[var(--color-fnt)]">
+        Live Customizer Studio Active
+      </span>
+      <span class="h-2 w-2 rounded-full bg-[var(--color-loko)] shadow-[0_0_8px_rgba(154,61,42,0.6)] animate-pulse"></span>
+    </div>
+  </nav>
+
+  <!-- Two Column Layout -->
+  <main class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-10 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+    
+    <!-- LEFT PANEL: CUSTOMIZATION CONTROLS (5 cols) -->
+    <section class="col-span-1 lg:col-span-5 space-y-10">
+      
+      <!-- Studio Header -->
+      <div class="space-y-3">
+        <span class="f-mono text-[9.5px] uppercase tracking-[0.24em] text-[var(--color-loko)] block">// Studio Customizer V2.0</span>
+        <h1 class="f-display text-4xl lg:text-5xl font-light leading-none tracking-tight text-[var(--color-hi)]">
+          Design Your <br /><span class="italic text-[var(--color-mut)]">Commemorative Card.</span>
+        </h1>
+        <p class="f-serif italic text-sm text-[var(--color-mut)] font-light leading-relaxed max-w-md">
+          Compose the text layers and pick a physical paper hue to formulate your custom print layout templates. Live proof updates instantly.
+        </p>
+      </div>
+
+      <!-- Format Filter Buttons -->
+      <div class="space-y-3">
+        <span class="f-mono text-[8px] uppercase tracking-[0.16em] text-[var(--color-fnt)] block">Layout Format Filter</span>
+        <div class="flex flex-wrap gap-2">
+          <button class="filter-btn active px-4 py-2 border border-[var(--color-ln)] bg-[var(--color-l1)] hover:bg-[var(--color-l2)] text-xs f-mono uppercase tracking-wider rounded-sm transition-all duration-300" data-format="all">All Formats</button>
+          <button class="filter-btn px-4 py-2 border border-[var(--color-ln)] bg-[var(--color-l1)] hover:bg-[var(--color-l2)] text-xs f-mono uppercase tracking-wider rounded-sm transition-all duration-300" data-format="strip">Filmstrip (2×6)</button>
+          <button class="filter-btn px-4 py-2 border border-[var(--color-ln)] bg-[var(--color-l1)] hover:bg-[var(--color-l2)] text-xs f-mono uppercase tracking-wider rounded-sm transition-all duration-300" data-format="postcard">Postcard (4×6)</button>
+        </div>
+      </div>
+
+      <!-- Inputs Container -->
+      <div class="bg-[var(--color-l1)] border border-[var(--color-ln)] rounded-sm p-6 space-y-6">
+        <span class="f-mono text-[8px] uppercase tracking-[0.16em] text-[var(--color-fnt)] block border-b border-[var(--color-ln)] pb-2">// Typography Inscription</span>
+        
+        <div class="space-y-4">
+          <!-- Primary Title -->
+          <div class="input-container">
+            <input type="text" id="title-input" class="input-field" placeholder=" " value="LORENZO & CORAZON" required>
+            <label class="input-label" for="title-input">Primary Title Inscription</label>
+          </div>
+
+          <!-- Secondary Subtitle -->
+          <div class="input-container">
+            <input type="text" id="subtitle-input" class="input-field" placeholder=" " value="OCTOBER 15, 2026 • MANILA" required>
+            <label class="input-label" for="subtitle-input">Secondary Subtitle / Location</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Color Palette Picker -->
+      <div class="bg-[var(--color-l1)] border border-[var(--color-ln)] rounded-sm p-6 space-y-4">
+        <span class="f-mono text-[8px] uppercase tracking-[0.16em] text-[var(--color-fnt)] block border-b border-[var(--color-ln)] pb-2">// Curated Paper Palettes</span>
+        
+        <div class="grid grid-cols-5 gap-3">
+          <!-- Heirloom Piña -->
+          <button class="palette-swatch active flex flex-col items-center justify-center p-2 bg-[var(--color-l2)] rounded-sm transition-all" data-palette="pina" style="border: 1px solid var(--color-ln);">
+            <div class="w-8 h-8 rounded-full bg-[#F5EFE6] border border-black/10"></div>
+            <span class="f-mono text-[7px] text-[var(--color-hi)] mt-2">Piña</span>
+          </button>
+
+          <!-- The Void -->
+          <button class="palette-swatch flex flex-col items-center justify-center p-2 bg-[var(--color-l2)] rounded-sm transition-all" data-palette="void" style="border: 1px solid var(--color-ln);">
+            <div class="w-8 h-8 rounded-full bg-[#110F0D] border border-white/10"></div>
+            <span class="f-mono text-[7px] text-[var(--color-mut)] mt-2">Void</span>
+          </button>
+
+          <!-- Achuete Red -->
+          <button class="palette-swatch flex flex-col items-center justify-center p-2 bg-[var(--color-l2)] rounded-sm transition-all" data-palette="achuete" style="border: 1px solid var(--color-ln);">
+            <div class="w-8 h-8 rounded-full bg-[#9A3D2A] border border-black/10"></div>
+            <span class="f-mono text-[7px] text-[var(--color-mut)] mt-2">Achuete</span>
+          </button>
+
+          <!-- Moss Patina -->
+          <button class="palette-swatch flex flex-col items-center justify-center p-2 bg-[var(--color-l2)] rounded-sm transition-all" data-palette="moss" style="border: 1px solid var(--color-ln);">
+            <div class="w-8 h-8 rounded-full bg-[#4E5B48] border border-black/10"></div>
+            <span class="f-mono text-[7px] text-[var(--color-mut)] mt-2">Moss</span>
+          </button>
+
+          <!-- Satin Champagne -->
+          <button class="palette-swatch flex flex-col items-center justify-center p-2 bg-[var(--color-l2)] rounded-sm transition-all" data-palette="champagne" style="border: 1px solid var(--color-ln);">
+            <div class="w-8 h-8 rounded-full bg-[#DCCBB5] border border-black/10"></div>
+            <span class="f-mono text-[7px] text-[var(--color-mut)] mt-2">Satin</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Proceed CTA Button -->
+      <a href="3_confirmation_ticket.html" class="group relative w-full h-14 bg-[var(--color-loko)] hover:bg-[#a9432f] active:scale-[0.98] text-[var(--color-hi)] font-mono uppercase tracking-[0.14em] text-xs rounded-sm flex items-center justify-between pl-6 pr-4 transition-all duration-300 shadow-xl block">
+        <span>Finalize Custom Design</span>
+        <span class="w-8 h-8 rounded-sm bg-white/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:translate-x-0.5">
+          <svg class="w-4 h-4 text-[var(--color-hi)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </span>
+      </a>
+
+    </section>
+
+    <!-- RIGHT PANEL: INTERACTIVE REAL-TIME PREVIEW STAGE (7 cols) -->
+    <section class="col-span-1 lg:col-span-7 flex flex-col items-center justify-center space-y-6 relative min-h-[400px]">
+      <span class="f-mono text-[8px] uppercase tracking-[0.18em] text-[var(--color-fnt)] absolute top-0 left-0">// Live Vector Proof Stage</span>
+      
+      <!-- Interactive Container with 3D Perspective -->
+      <div id="preview-card-container" class="w-full flex justify-center items-center py-8">
+        
+        <!-- Inner Card with customizable background colors -->
+        <!-- Starts in Heirloom Piña palette -->
+        <div id="preview-card-inner" class="bg-[#F5EFE6] text-[#2C2523] p-6 rounded-[2px] transition-all flex flex-col justify-between" style="width: 320px; height: 480px;">
+          
+          <!-- Grid of Photo Slots (Postcard by default, 3 slots) -->
+          <div id="photo-slots-container" class="grid grid-cols-1 gap-3 w-full">
+            <div class="slot-box bg-[#E8E1D3]/50 border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 01 // 35mm Capture</span>
+            </div>
+            <div class="slot-box bg-[#E8E1D3]/50 border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 02 // 35mm Capture</span>
+            </div>
+            <div class="slot-box bg-[#E8E1D3]/50 border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 03 // 35mm Capture</span>
+            </div>
+          </div>
+
+          <!-- Bottom Branding & Typography Zone -->
+          <div class="border-t border-black/5 pt-4 text-center space-y-2 flex flex-col items-center justify-end">
+            <!-- Signature leaf-feather K logomark in SVG -->
+            <svg class="h-5 w-auto mb-1 opacity-80 transition-all" id="print-logomark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 6C10 6 13 14 10 26" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 16C12 16 19 12 22 8" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 18C15 20 20 23 23 25" stroke="#2C2523" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="10" cy="16" r="1.5" fill="#9A3D2A"/>
+            </svg>
+            <h2 id="card-title" class="f-display text-xl tracking-[0.06em] font-medium transition-all text-center">LORENZO & CORAZON</h2>
+            <p id="card-subtitle" class="f-mono text-[7.5px] uppercase tracking-[0.15em] opacity-60 transition-all text-center">OCTOBER 15, 2026 • MANILA</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Interactive help text -->
+      <p class="f-mono text-[7.5px] text-[var(--color-fnt)] uppercase tracking-[0.14em] text-center select-none animate-pulse">
+        ✦ Hover & Move Mouse to tilt print stock in 3D space ✦
+      </p>
+
+    </section>
+
+  </main>
+
+  <!-- Legal Footnotes -->
+  <footer class="max-w-7xl mx-auto px-6 md:px-12 py-12 flex justify-between items-center f-mono text-[7px] text-[var(--color-fnt)] uppercase tracking-[0.16em] border-t border-[var(--color-ln)] select-none">
+    <span>Plate No. 2026-CF // Live Proofing</span>
+    <span>©2026 Katha Atelier Studio</span>
+  </footer>
+
+
+  <script>
+    // Constants
+    const PALETTES = {
+      pina: {
+        bg: '#F5EFE6',
+        text: '#2C2523',
+        sub: '#2C2523',
+        slot: '#E8E1D3',
+        stroke: '#2C2523'
+      },
+      void: {
+        bg: '#110F0D',
+        text: '#E8E1D3',
+        sub: '#A39B8E',
+        slot: '#241F1B',
+        stroke: '#E8E1D3'
+      },
+      achuete: {
+        bg: '#9A3D2A',
+        text: '#F5EFE6',
+        sub: '#E8E1D3',
+        slot: '#7A2E1F',
+        stroke: '#F5EFE6'
+      },
+      moss: {
+        bg: '#4E5B48',
+        text: '#F5EFE6',
+        sub: '#DCCBB5',
+        slot: '#3A4437',
+        stroke: '#F5EFE6'
+      },
+      champagne: {
+        bg: '#DCCBB5',
+        text: '#2C2523',
+        sub: '#5C554C',
+        slot: '#C2B19D',
+        stroke: '#2C2523'
+      }
+    };
+
+    // State
+    let activeFormat = 'all';
+    let activePalette = 'pina';
+
+    // DOM Elements
+    const titleInput = document.getElementById('title-input');
+    const subtitleInput = document.getElementById('subtitle-input');
+    const cardTitle = document.getElementById('card-title');
+    const cardSubtitle = document.getElementById('card-subtitle');
+    const cardInner = document.getElementById('preview-card-inner');
+    const cardContainer = document.getElementById('preview-card-container');
+    const slotsContainer = document.getElementById('photo-slots-container');
+    const printLogomark = document.getElementById('print-logomark');
+
+    // 1. Title/Subtitle updates
+    titleInput.addEventListener('input', (e) => {
+      cardTitle.textContent = e.target.value || "LORENZO & CORAZON";
+    });
+    subtitleInput.addEventListener('input', (e) => {
+      cardSubtitle.textContent = e.target.value || "OCTOBER 15, 2026 • MANILA";
+    });
+
+    // 2. Color Palette Swaps
+    document.querySelectorAll('.palette-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        document.querySelectorAll('.palette-swatch').forEach(s => {
+          s.classList.remove('active');
+          s.style.borderColor = 'var(--color-ln)';
+        });
+        swatch.classList.add('active');
+        swatch.style.borderColor = 'var(--color-loko)';
+
+        activePalette = swatch.getAttribute('data-palette');
+        const p = PALETTES[activePalette];
+
+        // Animate the card colors using GSAP
+        gsap.to(cardInner, {
+          backgroundColor: p.bg,
+          color: p.text,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+
+        gsap.to(cardSubtitle, {
+          color: p.sub,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+
+        gsap.to('.slot-box', {
+          backgroundColor: p.slot,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+
+        // Update SVGs
+        gsap.to(printLogomark.querySelectorAll('path'), {
+          stroke: p.stroke,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+      });
+    });
+
+    // 3. Layout Format Swaps
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        activeFormat = btn.getAttribute('data-format');
+
+        // Transitions for Layout aspect ratios
+        if (activeFormat === 'strip') {
+          // Adjust cardInner dimensions for Filmstrip (2x6)
+          gsap.to(cardInner, {
+            width: '180px',
+            height: '520px',
+            padding: '16px',
+            duration: 0.8,
+            ease: 'power3.inOut'
+          });
+
+          // Inject 4 smaller slots stacked
+          slotsContainer.className = "grid grid-cols-1 gap-2 w-full";
+          slotsContainer.innerHTML = `
+            <div class="slot-box border border-black/10 aspect-[1/1] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}"></div>
+            <div class="slot-box border border-black/10 aspect-[1/1] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}"></div>
+            <div class="slot-box border border-black/10 aspect-[1/1] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}"></div>
+            <div class="slot-box border border-black/10 aspect-[1/1] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}"></div>
+          `;
+          cardTitle.style.fontSize = '12px';
+          cardSubtitle.style.fontSize = '6px';
+        } else {
+          // Postcard or all (4x6 Aspect Ratio default)
+          gsap.to(cardInner, {
+            width: '320px',
+            height: '480px',
+            padding: '24px',
+            duration: 0.8,
+            ease: 'power3.inOut'
+          });
+
+          // Inject 3 landscape slots
+          slotsContainer.className = "grid grid-cols-1 gap-3 w-full";
+          slotsContainer.innerHTML = `
+            <div class="slot-box border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 01 // 35mm Capture</span>
+            </div>
+            <div class="slot-box border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 02 // 35mm Capture</span>
+            </div>
+            <div class="slot-box border border-black/10 aspect-[4/3] flex items-center justify-center rounded-[1px] relative overflow-hidden" style="background-color: ${PALETTES[activePalette].slot}">
+              <span class="f-mono text-[7px] text-black/35 uppercase tracking-widest absolute bottom-2 right-2">Slot 03 // 35mm Capture</span>
+            </div>
+          `;
+          cardTitle.style.fontSize = '20px';
+          cardSubtitle.style.fontSize = '7.5px';
+        }
+      });
+    });
+
+    // 4. GSAP 3D Tile Tilt (Damped Strictly to Max 5° Deceleration over 1.2s)
+    cardContainer.addEventListener('mousemove', (e) => {
+      const rect = cardContainer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Normalized coordinates: -0.5 to 0.5
+      const xc = (x / rect.width) - 0.5;
+      const yc = 0.5 - (y / rect.height);
+      
+      // Clamped to strictly max 5 degrees tilt (5 deg multiplier)
+      const rotateY = xc * 10; // maximum -5 to +5 deg
+      const rotateX = yc * 10; // maximum -5 to +5 deg
+      
+      gsap.to(cardInner, {
+        rotateY: rotateY,
+        rotateX: rotateX,
+        transformPerspective: 1200,
+        duration: 0.3,
+        ease: 'power3.out'
+      });
+    });
+
+    cardContainer.addEventListener('mouseleave', () => {
+      // Return to flat state with heavily-damped 1.2s power3.out deceleration
+      gsap.to(cardInner, {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 1.2,
+        ease: 'power3.out'
+      });
+    });
+  </script>
+</body>
+</html>

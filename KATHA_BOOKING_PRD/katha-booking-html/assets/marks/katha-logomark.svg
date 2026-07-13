@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 230" fill="currentColor" aria-hidden="true">
+  <!-- Katha logomark — brush-drawn botanical K (Jed, 2026-07-04).
+       Five leaf strokes; organic taper; renders in any ink via currentColor. -->
+  <!-- back stem leaf: rises from the joint to the upper-left tip -->
+  <path d="M62 158
+           C 48 128, 40 96, 44 64
+           C 47 40, 54 18, 66 4
+           C 60 26, 58 44, 61 66
+           C 64 92, 70 118, 80 142
+           C 74 150, 67 155, 62 158 Z
+           M66 4 C 52 20, 42 44, 40 66 C 38 92, 44 124, 58 152 L 66 146 C 55 120, 50 92, 52 66 C 54 44, 59 22, 66 4 Z"/>
+  <!-- upper leaf, steep — points up-right -->
+  <path d="M76 96
+           C 84 68, 98 40, 118 16
+           C 124 10, 130 6, 136 4
+           C 128 18, 120 34, 112 52
+           C 104 70, 94 88, 82 102
+           C 79 100, 77 98, 76 96 Z"/>
+  <!-- upper leaf, broad — points right -->
+  <path d="M84 108
+           C 104 92, 128 78, 154 70
+           C 160 68, 166 68, 170 70
+           C 156 78, 142 88, 128 98
+           C 114 108, 100 114, 88 116
+           C 86 113, 85 110, 84 108 Z"/>
+  <!-- the leg — dominant sweep down-right, sharp tip -->
+  <path d="M66 122
+           C 84 128, 104 140, 122 156
+           C 144 176, 162 198, 176 222
+           C 178 225, 179 227, 180 230
+           C 160 214, 140 198, 120 180
+           C 100 162, 80 144, 62 130
+           C 63 127, 64 124, 66 122 Z
+           M66 122 C 88 132, 112 150, 134 172 C 152 190, 168 210, 180 230 C 172 212, 158 192, 140 172 C 120 150, 94 130, 70 118 Z"/>
+  <!-- small counter-leaf, lower-left -->
+  <path d="M54 160
+           C 44 166, 34 174, 26 184
+           C 21 190, 17 196, 15 202
+           C 24 196, 33 189, 42 180
+           C 48 174, 53 168, 57 162
+           C 56 161, 55 160, 54 160 Z"/>
+</svg>

@@ -153,7 +153,7 @@ if [[ "$COUNCIL_INCLUDE_AGY" == "1" ]]; then
   if [[ "$agy_rc" -eq 0 && -s "$OUT/agy.out" ]]; then
     agy_status="OK"
   else
-    echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc; re-run agy directly with --log-file <path> for diagnostics)" >> "$OUT/agy.out"
+    echo "ABSENT: agy voice failed or produced no output (rc=$agy_rc). Known cause (2026-07-04): Antigravity service login expired — GCP ADC auth succeeds but the code-assist token source reports 'You are not logged into Antigravity', so print-mode emits an empty PlannerResponse with rc=0. Fix: run 'agy' interactively once and complete the browser login. Diagnose: re-run with --log-file <path> and grep 'not logged into'." >> "$OUT/agy.out"
     # RESOURCE_EXHAUSTED/429 was confirmed via --log-file (2026-06-25/26), not
     # plain stdout/stderr — agy's internal Go logger writes there separately
     # from the process streams council.sh captures, so this grep may be a
@@ -176,46 +176,76 @@ copilot_rc=0
 : > "$OUT/copilot.out"
 : > "$OUT/copilot.err"
 COUNCIL_INCLUDE_COPILOT="${COUNCIL_INCLUDE_COPILOT:-1}"
-# 2026-06-27: the `gh copilot` extension this used to target was sunset
-# Oct 2025. Replaced with the standalone `copilot` CLI (npm @github/copilot),
-# installed and confirmed live this session (already authenticated via the
-# existing gh keyring — no extra login step). No --model flag: every named
-# model (including gpt-5-mini, the account's own auto-mode default) fails
-# identically with "not available" when passed via --model — confirmed live
-# this session this is an account-level model-access policy gate, not a
-# naming problem, so pinning a name here would just break the voice. Omitting
-# --model lets the CLI's own auto-mode pick (confirmed live: it already picks
-# gpt-5-mini, tagged model_picker_price_category="low" — the cheap goal is
-# already met without a flag that doesn't actually work on this account).
+# 2026-06-27 (2664c28): the `gh copilot` extension this used to target was
+# sunset Oct 2025. Replaced with the standalone `copilot` CLI (npm
+# @github/copilot). At the time, --model was omitted deliberately: every
+# named model failed identically with "not available" via GitHub's own
+# auto-mode routing (an account-level policy gate, not a naming problem), so
+# the voice ran on whatever GitHub's auto-mode picked (gpt-5-mini) — chosen
+# for cost, not capability.
+#
+# 2026-07-04 (Jed, explicit): superseded. This voice now targets GLM-5 via
+# BYOK, routed through a local proxy (`scratch/copilot-glm5/vertex-proxy.mjs`,
+# started with `start-proxy.sh`) that injects a fresh gcloud ADC token
+# upstream to Vertex `zai-org/glm-5-maas` — bypassing GitHub's account-level
+# model gate entirely (BYOK mode doesn't use GitHub auth for inference; see
+# `copilot help providers`). The proxy has its own gemini-flash-latest
+# fallback if GLM-5 is cold/gated, so this voice degrades gracefully upstream
+# — but it still needs the proxy PROCESS itself running locally, which this
+# script does not start (deliberately: a read-only critique collector should
+# not have the side effect of spawning a persistent, port-listening cloud
+# client). If the proxy isn't up, the reachability pre-flight below marks
+# this voice ABSENT with an actionable message instead of hanging on -p.
 COPILOT_BIN="${COPILOT_BIN:-copilot}"
+COPILOT_PROVIDER_BASE_URL="${COPILOT_PROVIDER_BASE_URL:-http://127.0.0.1:8788/v1}"
+COPILOT_PROVIDER_TYPE="${COPILOT_PROVIDER_TYPE:-openai}"
+COPILOT_MODEL="${COPILOT_MODEL:-zai-org/glm-5-maas}"
 if [[ "$COUNCIL_INCLUDE_COPILOT" == "1" ]]; then
   copilot_status="ABSENT"
-  # Pre-flight: `copilot --version` is fast/safe and fails when the binary is
-  # genuinely absent. Bounded by run_with_timeout (council review finding 1
-  # from the old design, still applies): an UNBOUNDED probe that hung would
+  # Pre-flight 1: `copilot --version` is fast/safe and fails when the binary
+  # is genuinely absent. Bounded by run_with_timeout (council review finding
+  # 1 from the old design, still applies): an UNBOUNDED probe that hung would
   # abort the whole script under set -e BEFORE the codex/agy quorum check
   # below — breaking the "copilot can't regress the 2-voice baseline"
   # invariant even with the quorum line itself untouched.
   if run_with_timeout 15 "$COPILOT_BIN" --version < /dev/null >/dev/null 2>&1; then
-    set +e
-    # --allow-all-tools is required for non-interactive mode (the standalone
-    # CLI is a full coding agent — without it, a permission-confirmation
-    # prompt with no TTY to answer hangs forever). --deny-tool denials take
-    # precedence over --allow-all-tools (per the CLI's own documented
-    # permission model), so write/shell stay blocked — preserving the same
-    # "no write surface" contract codex (-s read-only) and agy (no
-    # --sandbox/--add-dir) already have; this voice is a critic, not an
-    # executor. < /dev/null guards the same stdin-hang class found in
-    # codex's invocation (2026-06-26).
-    run_with_timeout "$TIMEOUT" "$COPILOT_BIN" -p "$PROMPT" \
-      --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
-      < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
-    copilot_rc=$?
-    set -e
-    redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"
-    rm -f "$OUT/.copilot.raw" "$OUT/.copilot.raw.err"
-    if [[ "$copilot_rc" -eq 0 && -s "$OUT/copilot.out" ]]; then copilot_status="OK"; else
-      echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
+    # Pre-flight 2: the GLM-5 proxy is a separate local process this script
+    # depends on but doesn't own. A plain GET is a valid liveness probe (the
+    # proxy answers any non-POST with 200 "vertex-proxy up" — see
+    # vertex-proxy.mjs). Bounded the same way as pre-flight 1, and for the
+    # same reason: avoid a blind -p call that would otherwise hang trying to
+    # reach a dead localhost port.
+    if run_with_timeout 5 curl -sf -o /dev/null "$COPILOT_PROVIDER_BASE_URL" < /dev/null; then
+      set +e
+      # --allow-all-tools is required for non-interactive mode (the standalone
+      # CLI is a full coding agent — without it, a permission-confirmation
+      # prompt with no TTY to answer hangs forever). --deny-tool denials take
+      # precedence over --allow-all-tools (per the CLI's own documented
+      # permission model), so write/shell stay blocked — preserving the same
+      # "no write surface" contract codex (-s read-only) and agy (no
+      # --sandbox/--add-dir) already have; this voice is a critic, not an
+      # executor. < /dev/null guards the same stdin-hang class found in
+      # codex's invocation (2026-06-26). The COPILOT_PROVIDER_* / COPILOT_MODEL
+      # exports above activate BYOK for this process only (not exported
+      # globally), routing through the GLM-5 proxy instead of GitHub's model
+      # routing.
+      run_with_timeout "$TIMEOUT" env \
+        COPILOT_PROVIDER_BASE_URL="$COPILOT_PROVIDER_BASE_URL" \
+        COPILOT_PROVIDER_TYPE="$COPILOT_PROVIDER_TYPE" \
+        COPILOT_MODEL="$COPILOT_MODEL" \
+        "$COPILOT_BIN" -p "$PROMPT" \
+        --allow-all-tools --deny-tool=write --deny-tool=shell --silent --log-level error \
+        < /dev/null > "$OUT/.copilot.raw" 2> "$OUT/.copilot.raw.err"
+      copilot_rc=$?
+      set -e
+      redact < "$OUT/.copilot.raw" > "$OUT/copilot.out"; redact < "$OUT/.copilot.raw.err" > "$OUT/copilot.err"
+      rm -f "$OUT/.copilot.raw" "$OUT/.copilot.raw.err"
+      if [[ "$copilot_rc" -eq 0 && -s "$OUT/copilot.out" ]]; then copilot_status="OK"; else
+        echo "ABSENT: copilot voice failed or produced no output (rc=$copilot_rc)" >> "$OUT/copilot.out"
+      fi
+    else
+      copilot_rc=$?
+      echo "ABSENT: GLM-5 proxy unreachable at $COPILOT_PROVIDER_BASE_URL — run 'bash scratch/copilot-glm5/start-proxy.sh' first" >> "$OUT/copilot.out"
     fi
   else
     copilot_rc=$?   # reflect the pre-flight's real failure rc, not a misleading 0 (council review finding 6)
@@ -240,6 +270,23 @@ jq -n \
   > "$OUT/council.json"
 
 echo "council: codex=$codex_status agy=$agy_status copilot=$copilot_status -> $OUT/council.json"
+
+# --- Vault intake copy (2026-07-04 rebuild, vault CLAUDE.md "Council lane") ---
+# One vault, one intake/output: the redacted blob is filed into the vault's
+# council/intake/ so the chaired verdict (written by CC to council/verdicts/)
+# always has its reviewed input beside it. Best-effort: an unmounted SSD must
+# not fail the council run itself (the forensic copy in .orchestration/ above
+# is the primary record).
+VAULT_COUNCIL="${VAULT_COUNCIL:-/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/council}"
+if [[ -d "$VAULT_COUNCIL" ]]; then
+  mkdir -p "$VAULT_COUNCIL/intake"
+  cp "$OUT/input.txt" "$VAULT_COUNCIL/intake/${RUN}_input.txt" 2>/dev/null \
+    && echo "council: intake filed -> $VAULT_COUNCIL/intake/${RUN}_input.txt" \
+    || echo "council: WARN vault intake copy failed (verdict chair should attach input manually)" >&2
+else
+  echo "council: WARN vault council lane unavailable at $VAULT_COUNCIL (SSD unmounted?)" >&2
+fi
+
 if [[ "$codex_status" == "ABSENT" && "$agy_status" == "ABSENT" ]]; then
   echo "BOTH voices ABSENT — nothing for CC to chair." >&2
   exit 1
