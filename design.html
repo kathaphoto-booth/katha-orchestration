@@ -1,0 +1,642 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Katha Booth — The Gilded Archive · Booking Experience & Design System</title>
+<!--
+  Katha Booth — THE GILDED ARCHIVE
+  Single-file, self-contained preview of the full booking experience + the
+  implemented design system. Supersedes KATHA_BOOKING_PRD/katha-booking-html/design.html.
+  Tokens mirror pb-v3/app/globals.css @theme (the source of truth). Renders
+  standalone (open in a browser) and publishes as a claude.ai artifact; external
+  font @import degrades gracefully to serif fallbacks under the artifact CSP.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Courier+Prime:wght@400;700&family=Newsreader:ital,opsz,wght@0,6..72,200..600;1,6..72,200..500&family=Outfit:wght@300;400;500;600&display=swap');
+
+  :root {
+    /* ── Surface ladder ── */
+    --l0:#110F0D; --l1:#181512; --l2:#201B16; --l3:#28221B;
+    /* ── Ink ── */
+    --ink:#F5EFE6; --hi:#E4DACA; --mut:#A89C8A; --fnt:#8C8477; /* Capiz Slate lifted 2026-07-13 — AA on l0/l1 */
+    /* ── The sacred accent ── */
+    --gilt:#DCCBB5; --gilt-dark:#8A7350; --gilt-low:rgba(220,203,181,.12);
+    --moss:#4E5B48; --moss-hi:#8FA283;
+    /* ── Architecture ── */
+    --ln:rgba(245,239,230,.12); --ln2:rgba(245,239,230,.38); /* 3:1 composited boundaries */ --glass:rgba(245,239,230,.04);
+    --shadow:rgba(0,0,0,.85);
+    /* ── Type scale (fluid, senior floor) ── */
+    --fs-eyebrow:11px; --fs-meta:13px; --fs-label:1rem;
+    --fs-body:clamp(1rem,.96rem + .2vw,1.0625rem);
+    --fs-lede:clamp(1.125rem,1.05rem + .4vw,1.25rem);
+    --fs-title:clamp(1.5rem,1.2rem + 1.6vw,2rem);
+    --fs-display:clamp(2rem,1.4rem + 3vw,3rem);
+    /* ── Touch ── */
+    --touch:44px; --touch-lg:48px; --field-h:56px; --tap-gap:12px;
+    /* ── Fonts (FH Ronaldson Display → Newsreader fallback externally) ── */
+    --f-display:'Newsreader',Georgia,serif;
+    --f-body:'Cormorant Garamond',Georgia,serif;
+    --f-mono:'Courier Prime','Courier New',monospace;
+    --f-sans:'Outfit',system-ui,sans-serif;
+  }
+
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  /* Focus law — 2px Piña ring, 3px offset, every interactive element */
+  :focus-visible { outline:2px solid var(--ink); outline-offset:3px; }
+  body {
+    margin:0; background:var(--l0); color:var(--ink);
+    font-family:var(--f-sans); font-size:var(--fs-body); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3 { font-family:var(--f-display); font-weight:300; letter-spacing:-.01em; margin:0; }
+  a { color:inherit; }
+
+  .grain {
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.85;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+  .wrap { position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:0 clamp(20px,5vw,48px); }
+  .eyebrow { font-family:var(--f-mono); font-size:var(--fs-meta); letter-spacing:.22em; text-transform:uppercase; color:var(--fnt); display:flex; align-items:center; gap:14px; }
+  .eyebrow::after { content:''; height:1px; width:44px; background:var(--ln); }
+  .meta { font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--mut); }
+
+  /* ── Header ── */
+  header {
+    position:sticky; top:0; z-index:20; background:rgba(17,15,13,.82); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--ln);
+  }
+  header .bar { display:flex; align-items:center; justify-content:space-between; padding:18px clamp(20px,5vw,48px); }
+  .wordmark { font-family:var(--f-display); font-size:22px; letter-spacing:.02em; }
+  .wordmark b { font-weight:400; }
+  .wordmark span { color:var(--gilt); }
+  nav.toc { display:flex; gap:26px; font-family:var(--f-mono); font-size:var(--fs-meta); letter-spacing:.14em; text-transform:uppercase; }
+  nav.toc a { color:var(--mut); text-decoration:none; padding:6px 0; border-bottom:1px solid transparent; transition:.3s; }
+  nav.toc a:hover { color:var(--ink); border-color:var(--gilt); }
+  @media(max-width:720px){ nav.toc{display:none;} }
+
+  /* ── Hero ── */
+  .hero { padding:clamp(64px,10vw,140px) 0 clamp(40px,6vw,80px); }
+  .hero h1 { font-size:clamp(46px,8vw,104px); line-height:1.02; letter-spacing:-.02em; margin:28px 0; }
+  .hero h1 em { font-family:var(--f-body); font-style:italic; font-weight:300; color:var(--hi); padding-left:.6em; }
+  .hero .lede { font-family:var(--f-body); font-style:italic; font-size:var(--fs-lede); color:var(--mut); max-width:560px; }
+  .hero .stats { display:flex; flex-wrap:wrap; gap:40px; margin-top:44px; padding-top:28px; border-top:1px solid var(--ln); }
+  .hero .stats div span { display:block; font-family:var(--f-display); font-size:32px; color:var(--hi); }
+  .hero .stats div small { font-family:var(--f-mono); font-size:var(--fs-meta); letter-spacing:.14em; text-transform:uppercase; color:var(--fnt); }
+
+  section.band { padding:clamp(48px,7vw,96px) 0; border-top:1px solid var(--ln); }
+  .band > .wrap > .eyebrow { margin-bottom:18px; }
+  .band h2 { font-size:var(--fs-display); max-width:16ch; margin-bottom:14px; }
+  .band .intro { font-family:var(--f-body); font-style:italic; font-size:var(--fs-lede); color:var(--mut); max-width:60ch; margin-bottom:40px; }
+
+  /* ══════════ Booking experience ══════════ */
+  .stage { display:grid; grid-template-columns:220px 1fr; gap:0; border:1px solid var(--ln); background:var(--l1); border-radius:2px; overflow:hidden; }
+  @media(max-width:840px){ .stage{ grid-template-columns:1fr; } }
+  .steps { border-right:1px solid var(--ln); background:var(--l0); padding:8px; }
+  @media(max-width:840px){ .steps{ display:flex; overflow-x:auto; border-right:none; border-bottom:1px solid var(--ln); } }
+  .step-btn {
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    color:var(--mut); font-family:var(--f-sans); font-size:var(--fs-body); padding:14px 16px; min-height:var(--touch); border-radius:2px; transition:.25s; white-space:nowrap;
+  }
+  .step-btn:hover { color:var(--ink); background:var(--l1); }
+  .step-btn.on { color:var(--ink); background:var(--gilt-low); }
+  .step-btn .num { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; border:1px solid var(--ln2); font-family:var(--f-mono); font-size:var(--fs-meta); flex-shrink:0; }
+  .step-btn.on .num { border-color:var(--gilt); color:var(--gilt); }
+  .panel { padding:clamp(24px,4vw,44px); min-height:440px; }
+  .panel[hidden]{ display:none; }
+  .panel h3 { font-size:var(--fs-title); color:var(--hi); margin-bottom:6px; }
+  .panel .sub { font-family:var(--f-body); font-style:italic; color:var(--mut); font-size:var(--fs-body); margin-bottom:24px; }
+
+  /* weekend strip */
+  .night { border:1px solid var(--ln); border-radius:2px; margin-bottom:10px; overflow:hidden; }
+  .night-head { display:flex; align-items:center; justify-content:space-between; width:100%; background:none; border:none; cursor:pointer; color:var(--ink); padding:0 18px; min-height:var(--touch-lg); font-family:var(--f-sans); }
+  .night-head:hover { background:var(--l2); }
+  .night-head .d { display:flex; align-items:baseline; gap:14px; }
+  .night-head .d small { font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--fnt); }
+  .night-head .d strong { font-family:var(--f-display); font-weight:300; font-size:var(--fs-lede); }
+  .shelf { display:flex; gap:10px; padding:14px 18px; border-top:1px solid var(--ln); }
+  .chip {
+    flex:1; min-height:var(--touch); border:1px solid var(--ln2); border-radius:2px; background:none; cursor:pointer;
+    color:var(--ink); font-family:var(--f-sans); font-size:var(--fs-body); padding:8px 12px; transition:.25s; text-align:center;
+  }
+  .chip small { display:block; font-family:var(--f-mono); font-size:var(--fs-eyebrow); letter-spacing:.1em; text-transform:uppercase; color:var(--fnt); margin-top:3px; }
+  .chip:hover:not(:disabled){ border-color:var(--mut); }
+  .chip.on { border-color:var(--gilt); background:var(--gilt-low); color:var(--gilt); }
+  .chip.on small { color:var(--gilt); }
+  .chip:disabled { opacity:.4; cursor:not-allowed; }
+  .chip.req small { color:var(--moss-hi); }
+
+  /* tiers */
+  .tiers { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:560px){ .tiers{ grid-template-columns:1fr; } }
+  .tier { position:relative; border:1px solid var(--ln); border-radius:2px; background:var(--l2); padding:24px; cursor:pointer; transition:.3s; min-height:var(--touch-lg); font:inherit; color:inherit; text-align:left; width:100%; }
+  .tier[aria-pressed="true"] { border-color:var(--gilt); background:var(--gilt-low); }
+  .tier:hover { border-color:var(--ln2); background:var(--l3); transform:translateY(-3px); }
+  .tier.flag { border-color:rgba(228,218,202,.35); }
+  .tier.flag::before { content:'Flagship'; position:absolute; top:0; right:0; font-family:var(--f-mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--l0); background:var(--gilt); padding:5px 11px; }
+  .tier.off { opacity:.4; cursor:not-allowed; }
+  .tier h4 { font-family:var(--f-display); font-weight:300; font-size:26px; color:var(--hi); margin:14px 0 6px; }
+  .tier .price { font-family:var(--f-display); font-size:30px; }
+  .tier .hrs { font-family:var(--f-mono); font-size:var(--fs-meta); letter-spacing:.1em; text-transform:uppercase; color:var(--mut); }
+  .tier ul { list-style:none; padding:0; margin:14px 0 0; }
+  .tier li { font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--mut); display:flex; gap:8px; margin-bottom:5px; }
+  .tier li span { color:var(--gilt); }
+
+  /* form */
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:var(--fs-label); color:var(--mut); margin-bottom:6px; }
+  .field label i { color:var(--gilt); font-style:normal; }
+  .field input, .field textarea {
+    width:100%; min-height:var(--field-h); background:transparent; border:1px solid var(--ln2); border-radius:2px;
+    padding:0 16px; color:var(--ink); font-family:var(--f-sans); font-size:var(--fs-body); transition:.3s;
+  }
+  .field textarea { min-height:auto; padding:12px 16px; }
+  .field input:focus, .field textarea:focus { border-color:var(--gilt); }
+  .field .help { font-size:var(--fs-meta); color:var(--fnt); margin-top:5px; }
+  .choices { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+  .cc { border:1px solid var(--ln2); border-radius:2px; background:none; cursor:pointer; color:var(--ink); font-family:var(--f-sans); font-size:var(--fs-body); padding:12px; min-height:var(--touch-lg); text-align:left; transition:.25s; }
+  .cc:hover { border-color:var(--mut); }
+  .cc.on { border-color:var(--gilt); background:var(--gilt-low); }
+  .contract { border-left:2px solid var(--gilt); padding:2px 0 2px 14px; font-size:var(--fs-meta); color:var(--mut); margin-top:20px; }
+  .legal-flag { font-family:var(--f-mono); font-size:var(--fs-eyebrow); letter-spacing:.12em; text-transform:uppercase; color:var(--gilt-dark); margin-top:6px; }
+
+  /* customizer */
+  .cz { display:grid; grid-template-columns:1fr 300px; gap:24px; align-items:start; }
+  @media(max-width:680px){ .cz{ grid-template-columns:1fr; } }
+  .stepper { display:flex; align-items:center; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+  .stepper .s { display:flex; align-items:center; gap:8px; font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--mut); }
+  .stepper .s .num { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:50%; border:1px solid var(--ln2); color:var(--fnt); }
+  .stepper .s.on .num { border-color:var(--gilt); color:var(--gilt); }
+  .stepper .s.done .num { border-color:var(--moss-hi); color:var(--moss-hi); }
+  .stepper .rail { width:16px; height:1px; background:var(--ln2); }
+  .cz-body { min-height:230px; }
+  .proof { position:relative; display:flex; justify-content:center; }
+  .proof svg { max-width:100%; max-height:440px; width:auto; height:auto; display:block; box-shadow:0 24px 60px var(--shadow); }
+  .fmt { display:flex; gap:8px; margin-bottom:12px; }
+  .fmt button { flex:1; min-height:var(--touch); border:1px solid var(--ln2); border-radius:2px; background:none; cursor:pointer; color:var(--mut); font-family:var(--f-mono); font-size:var(--fs-meta); transition:.25s; }
+  .fmt button[aria-checked="true"] { border-color:var(--gilt); color:var(--gilt); background:var(--gilt-low); }
+  .actionbar { display:flex; gap:12px; margin-top:24px; }
+  .btn-back { padding:0 20px; min-height:var(--touch-lg); border:1px solid var(--ln2); border-radius:2px; background:none; color:var(--mut); font-family:var(--f-sans); font-size:var(--fs-body); cursor:pointer; transition:.25s; }
+  .btn-back:hover { color:var(--ink); }
+  .btn-primary { flex:1; min-height:var(--touch-lg); border:none; border-radius:2px; background:var(--gilt); color:var(--l0); font-family:var(--f-sans); font-weight:500; font-size:var(--fs-body); cursor:pointer; transition:.25s; }
+  .btn-primary:hover { filter:brightness(1.05); }
+  .swatch-row { display:flex; align-items:center; gap:12px; width:100%; border:1px solid var(--ln2); border-radius:2px; background:none; cursor:pointer; padding:0 14px; min-height:var(--touch-lg); margin-bottom:8px; transition:.25s; }
+  .swatch-row:hover { border-color:var(--mut); }
+  .swatch-row.on { border-color:var(--gilt); background:var(--gilt-low); }
+  .swatch-row .aa { width:36px; height:36px; border:1px solid var(--ln2); border-radius:2px; display:flex; align-items:center; justify-content:center; font-family:var(--f-body); flex-shrink:0; }
+  .swatch-row .nm { flex:1; text-align:left; color:var(--ink); font-size:var(--fs-body); }
+  .swatch-row .ck { color:var(--gilt); }
+
+  /* portal confirmation */
+  .confirm { border:1px solid var(--gilt); border-radius:2px; background:var(--gilt-low); padding:26px; }
+  .confirm .tag { font-family:var(--f-mono); font-size:var(--fs-meta); letter-spacing:.2em; text-transform:uppercase; color:var(--gilt); display:flex; align-items:center; gap:10px; }
+  .confirm .tag .dot { width:7px; height:7px; border-radius:50%; background:var(--moss-hi); box-shadow:0 0 8px rgba(143,162,131,.5); }
+  .confirm h4 { font-family:var(--f-display); font-weight:300; font-size:26px; color:var(--hi); margin:12px 0 6px; }
+
+  /* ══════════ Design system ══════════ */
+  .grid-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+  .swatchcard { border:1px solid var(--ln); border-radius:2px; overflow:hidden; background:var(--l1); }
+  .swatchcard .chipfill { height:88px; }
+  .swatchcard .info { padding:12px 14px; }
+  .swatchcard .info b { font-family:var(--f-display); font-weight:400; font-size:var(--fs-body); display:block; color:var(--hi); }
+  .swatchcard .info code { font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--mut); }
+  .swatchcard .info small { display:block; font-size:var(--fs-meta); color:var(--fnt); margin-top:4px; }
+
+  .typerow { display:flex; align-items:baseline; gap:20px; padding:16px 0; border-bottom:1px solid var(--ln); }
+  .typerow code { font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--gilt); min-width:130px; flex-shrink:0; }
+  .typerow .sample { color:var(--ink); }
+
+  .touchgrid { display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end; }
+  .touchgrid .t { text-align:center; }
+  .touchgrid .box { background:var(--gilt-low); border:1px dashed var(--ln2); border-radius:2px; }
+  .touchgrid code { display:block; font-family:var(--f-mono); font-size:var(--fs-meta); color:var(--mut); margin-top:8px; }
+
+  .laws { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+  .law { border:1px solid var(--ln); border-radius:2px; padding:22px; background:var(--l1); }
+  .law h4 { font-family:var(--f-display); font-weight:400; font-size:var(--fs-lede); color:var(--hi); margin:0 0 8px; }
+  .law p { font-size:var(--fs-meta); color:var(--mut); margin:0; }
+  .law .k { font-family:var(--f-mono); font-size:var(--fs-eyebrow); letter-spacing:.14em; text-transform:uppercase; color:var(--gilt); }
+
+  footer { border-top:1px solid var(--ln); padding:48px 0 64px; margin-top:40px; }
+  footer .wrap { display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px; align-items:baseline; }
+  footer .meta { max-width:56ch; }
+
+  @media(prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } html{ scroll-behavior:auto; } }
+</style>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <div class="bar">
+    <div class="wordmark"><b>katha</b> <span>·</span></div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#experience">Booking</a>
+      <a href="#palette">Palette</a>
+      <a href="#type">Type</a>
+      <a href="#primitives">Primitives</a>
+      <a href="#laws">Laws</a>
+    </nav>
+    <div class="meta">The Gilded Archive</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ══ Hero ══ -->
+  <section class="hero">
+    <p class="eyebrow">Design system · Booking experience · Los Angeles &amp; Orange County</p>
+    <h1>The frame<br><em>your night</em><br>lives in<span style="color:var(--gilt)">.</span></h1>
+    <p class="lede">A senior-accessible booking pipeline dressed in weathered oak and satin champagne — every surface usable by a 60-year-old on any device, and not one line of red in the whole system.</p>
+    <div class="stats">
+      <div><span>5</span><small>Print stocks · no red</small></div>
+      <div><span>≥16px</span><small>Essential text floor</small></div>
+      <div><span>≥44px</span><small>Every touch target</small></div>
+      <div><span>AA</span><small>Contrast, verified</small></div>
+    </div>
+  </section>
+
+  <!-- ══ Booking experience ══ -->
+  <section class="band" id="experience">
+    <p class="eyebrow">The velvet rope</p>
+    <h2>The full booking experience.</h2>
+    <p class="intro">Request the Night, end to end: pick a weekend + time, choose the tier, tell us about the night, design the print with a live proof, and land on the registry. Click through it.</p>
+
+    <div class="stage">
+      <div class="steps" role="tablist" aria-label="Booking steps">
+        <button class="step-btn on" data-step="0" role="tab" aria-selected="true"><span class="num">1</span>Pick the night</button>
+        <button class="step-btn" data-step="1" role="tab" aria-selected="false"><span class="num">2</span>Choose the tier</button>
+        <button class="step-btn" data-step="2" role="tab" aria-selected="false"><span class="num">3</span>Tell us about it</button>
+        <button class="step-btn" data-step="3" role="tab" aria-selected="false"><span class="num">4</span>Design the print</button>
+        <button class="step-btn" data-step="4" role="tab" aria-selected="false"><span class="num">5</span>On the registry</button>
+      </div>
+
+      <!-- Step 1: weekend strip -->
+      <div class="panel" data-panel="0">
+        <h3>Pick a night, then a time.</h3>
+        <p class="sub">We install three nights a week. Booked slots stay visible but inert; "under request" is still open — first acceptance holds it.</p>
+        <div class="night">
+          <button class="night-head" data-night="fri" aria-expanded="true"><span class="d"><small>Fri</small><strong>Aug 14</strong></span><span aria-hidden="true">–</span></button>
+          <div class="shelf" data-shelf="fri" role="radiogroup" aria-label="Time on Fri Aug 14">
+            <button class="chip on" role="radio" aria-checked="true">Afternoon<small>open</small></button>
+            <button class="chip req" role="radio" aria-checked="false">Evening<small>under request</small></button>
+          </div>
+        </div>
+        <div class="night">
+          <button class="night-head" data-night="sat" aria-expanded="false"><span class="d"><small>Sat</small><strong>Aug 15</strong></span><span aria-hidden="true">+</span></button>
+          <div class="shelf" data-shelf="sat" role="radiogroup" aria-label="Time on Sat Aug 15" hidden>
+            <button class="chip" disabled role="radio" aria-checked="false">Afternoon<small>spoken for</small></button>
+            <button class="chip" role="radio" aria-checked="false">Evening<small>open</small></button>
+          </div>
+        </div>
+        <div class="night">
+          <button class="night-head" data-night="sun" aria-expanded="false"><span class="d"><small>Sun</small><strong>Aug 16</strong></span><span aria-hidden="true">+</span></button>
+          <div class="shelf" data-shelf="sun" role="radiogroup" aria-label="Time on Sun Aug 16" hidden>
+            <button class="chip" role="radio" aria-checked="false">Afternoon<small>open</small></button>
+            <button class="chip" role="radio" aria-checked="false">Evening<small>open</small></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: tiers — REAL catalog from pb-v3/lib/content.json (truthful counts, M5).
+           Never invent names, prices, or counts here: 3 open + 1 visible-but-unavailable. -->
+      <div class="panel" data-panel="1" hidden>
+        <h3>Three installations open. One operator.</h3>
+        <p class="sub">Priced as line items, not mysteries. Unavailable tiers stay legible and labelled.</p>
+        <div class="tiers">
+          <button class="tier" type="button" aria-pressed="false">
+            <div class="price">$949</div><div class="hrs">up to 3 hrs</div>
+            <h4>Editorial Installation</h4>
+            <ul><li><span>·</span>Oak wood DSLR installation</li><li><span>·</span>Professional grade photos</li><li><span>·</span>Print service ($149/extra hr)</li></ul>
+          </button>
+          <button class="tier flag" type="button" aria-pressed="false">
+            <div class="price">$1,149</div><div class="hrs">up to 3 hrs</div>
+            <h4>Glam Editorial Installation</h4>
+            <ul><li><span>·</span>Monochrome skin-soothing photos</li><li><span>·</span>Oak wood DSLR installation</li><li><span>·</span>Print service ($149/extra hr)</li></ul>
+          </button>
+          <button class="tier" type="button" aria-pressed="false">
+            <div class="price">$549</div><div class="hrs">up to 4 hrs</div>
+            <h4>Katha Booth Installation</h4>
+            <ul><li><span>·</span>2×6 prints</li><li><span>·</span>Unlimited photos &amp; dynamic GIFs</li><li><span>·</span>Print service ($149/extra hr)</li></ul>
+          </button>
+          <button class="tier off" type="button" disabled>
+            <div class="price">$749</div><div class="hrs">up to 3 hrs</div>
+            <h4>Architectural Installation</h4>
+            <ul><li><span>·</span>Currently unavailable — stays visible</li><li><span>·</span>Choice of 2×6 or 4×6 prints</li></ul>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: intake -->
+      <div class="panel" data-panel="2" hidden>
+        <h3>Almost on the registry.</h3>
+        <p class="sub">Six details so we can review your night — plain language, first invalid field focused, nothing marketing.</p>
+        <div class="field"><label>Name <i>·</i></label><input value="Ana Reyes"></div>
+        <div class="field"><label>Phone <i>·</i></label><input value="(559) 555-0100"><p class="help">For confirming logistics — never marketing.</p></div>
+        <label style="display:block;color:var(--mut);margin-bottom:8px;font-size:var(--fs-label)">Event type</label>
+        <div class="choices" style="margin-bottom:18px">
+          <button class="cc on">Wedding</button><button class="cc">Reception</button><button class="cc">Birthday</button><button class="cc">Corporate</button>
+        </div>
+        <label style="display:block;color:var(--mut);margin-bottom:8px;font-size:var(--fs-label)">Guest estimate</label>
+        <div class="choices">
+          <button class="cc">Under 50</button><button class="cc">50–100</button><button class="cc on">100–200</button><button class="cc">200+</button>
+        </div>
+        <p class="contract">Reviewed by one of the two of us. Answer within 24 hours.</p>
+        <p class="legal-flag">A1 contract line gated in code (lib/flags.ts, default off) until founder legal review —
+          the gated copy reads: &ldquo;The night is secured with a $99 retainer once we accept — non-refundable,
+          with the balance due 14 days before your event. Date changes need 20 days' notice.&rdquo;</p>
+      </div>
+
+      <!-- Step 4: customizer -->
+      <div class="panel" data-panel="3" hidden>
+        <h3>Design the print.</h3>
+        <p class="sub">Stepped controls, the live proof always visible. Simple view auto-enables on touch / small screens.</p>
+        <div class="stepper" id="czStepper">
+          <div class="s on"><span class="num">1</span>Plate</div><span class="rail"></span>
+          <div class="s"><span class="num">2</span>Paper</div><span class="rail"></span>
+          <div class="s"><span class="num">3</span>Inscription</div><span class="rail"></span>
+          <div class="s"><span class="num">4</span>Finalize</div>
+        </div>
+        <div class="cz">
+          <div>
+            <div class="cz-body" id="czBody"><!-- filled by JS --></div>
+            <div class="actionbar">
+              <button class="btn-back" id="czBack" hidden>Back</button>
+              <button class="btn-primary" id="czNext">Next</button>
+            </div>
+          </div>
+          <div>
+            <div class="fmt" id="fmtToggle" role="radiogroup" aria-label="Print format">
+              <button role="radio" aria-checked="true" data-fmt="strip">2×6 Strip</button>
+              <button role="radio" aria-checked="false" data-fmt="postcard-vertical">4×6 Vertical</button>
+              <button role="radio" aria-checked="false" data-fmt="postcard">6×4 Landscape</button>
+            </div>
+            <!-- Proof geometry is DATA-DRIVEN from pb-v3/lib/layouts.js (LOCKED
+                 MEASUREMENT SPEC — viewBox units = px @300 DPI; 60u = 0.2in).
+                 Never hand-draw slot rectangles here. -->
+            <div class="proof" id="proofWrap"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: portal -->
+      <div class="panel" data-panel="4" hidden>
+        <h3>Noted on your registry.</h3>
+        <p class="sub">The magic-link portal carries the tier + slot legibly and never re-asks the date.</p>
+        <div class="confirm">
+          <div class="tag"><span class="dot"></span>Registry · Fri Aug 14, Evening</div>
+          <h4>Received. Your request is on the registry.</h4>
+          <p style="font-size:var(--fs-body);color:var(--mut);margin:6px 0 10px">We confirm within 24 hours — reviewed by one of the two of us.</p>
+          <p class="meta" style="color:var(--mut)">// Request KATHA-a1b2c3d4 · pending review · Glam Editorial Installation · $1,149 · Heirloom Piña paper</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Palette ══ -->
+  <section class="band" id="palette">
+    <p class="eyebrow">No red exists in this system</p>
+    <h2>The palette.</h2>
+    <p class="intro">A surface ladder from Kamagong void to Kape, Piña-Ecru ink, and a single sacred accent — Satin Champagne gilt. Five print stocks, moss reserved for state, never text.</p>
+
+    <h3 style="font-size:var(--fs-lede);color:var(--mut);margin-bottom:14px">Surfaces &amp; ink</h3>
+    <div class="grid-cards" id="paletteCore"></div>
+
+    <h3 style="font-size:var(--fs-lede);color:var(--mut);margin:36px 0 14px">Print stocks</h3>
+    <div class="grid-cards" id="paletteStocks"></div>
+  </section>
+
+  <!-- ══ Type ══ -->
+  <section class="band" id="type">
+    <p class="eyebrow">The senior floor, fluid across devices</p>
+    <h2>Type &amp; scale.</h2>
+    <p class="intro">FH Ronaldson Display over Newsreader for headlines, Cormorant for body, Courier Prime for mono eyebrows. Essential text never below 16px; eyebrows are decorative only.</p>
+    <div id="typeScale"></div>
+
+    <h3 style="font-size:var(--fs-lede);color:var(--mut);margin:40px 0 18px">Touch &amp; spacing</h3>
+    <div class="touchgrid">
+      <div class="t"><div class="box" style="width:44px;height:44px"></div><code>--touch 44</code></div>
+      <div class="t"><div class="box" style="width:48px;height:48px"></div><code>--touch-lg 48</code></div>
+      <div class="t"><div class="box" style="width:56px;height:56px"></div><code>--field-h 56</code></div>
+      <div class="t"><div class="box" style="width:12px;height:44px"></div><code>--tap-gap 12</code></div>
+    </div>
+  </section>
+
+  <!-- ══ Primitives ══ -->
+  <section class="band" id="primitives">
+    <p class="eyebrow">components/ui/*</p>
+    <h2>Accessible primitives.</h2>
+    <p class="intro">Seven building blocks every surface inherits — labelled, aria-wired, ≥44px, palette-agnostic. Here they are, live.</p>
+    <div class="grid-cards" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
+      <div class="law"><span class="k">Field</span><div style="margin-top:12px"><div class="field" style="margin:0"><label>Venue / city <i>·</i></label><input placeholder="Where's the night?"></div></div></div>
+      <div class="law"><span class="k">ChoiceCard</span><div class="choices" style="margin-top:12px"><button class="cc on">Selected</button><button class="cc">Option</button></div></div>
+      <div class="law"><span class="k">SlotChip · radiogroup</span><div class="shelf" style="padding:12px 0 0;border:none"><button class="chip on">Afternoon<small>open</small></button><button class="chip" disabled>Evening<small>spoken for</small></button></div></div>
+      <div class="law"><span class="k">Swatch</span><div style="margin-top:12px"><div class="swatch-row on"><span class="aa" style="background:#F5EFE6;color:#2C2523">Aa</span><span class="nm">Heirloom Piña</span><span class="ck">✓</span></div></div></div>
+      <div class="law"><span class="k">Stepper</span><div class="stepper" style="margin:12px 0 0"><div class="s done"><span class="num">✓</span></div><span class="rail"></span><div class="s on"><span class="num">2</span></div><span class="rail"></span><div class="s"><span class="num">3</span></div></div></div>
+      <div class="law"><span class="k">ActionBar · one gilt CTA</span><div class="actionbar" style="margin-top:12px"><button class="btn-back">Back</button><button class="btn-primary">Finalize</button></div></div>
+    </div>
+  </section>
+
+  <!-- ══ Laws ══ -->
+  <section class="band" id="laws">
+    <p class="eyebrow">Non-negotiable</p>
+    <h2>The laws.</h2>
+    <div class="laws">
+      <div class="law"><span class="k">Senior floor</span><h4>≥16px, ≥44px, AA</h4><p>Essential text ≥16px, targets ≥44px (48px primary), contrast ≥4.5:1 — verified programmatically over the token pairs.</p></div>
+      <div class="law"><span class="k">One gilt CTA</span><h4>Single intent per view</h4><p>Satin Champagne is the only high-intent accent, and exactly one gilt primary appears per viewport (law D2).</p></div>
+      <div class="law"><span class="k">No red</span><h4>Zero red in the system</h4><p>Errors speak in ink + a gilt rule, never a red flash. There is no red token to reach for.</p></div>
+      <div class="law"><span class="k">Motion</span><h4>Tilt ≤6°, inert under reduce</h4><p>Damped return ≥1.2s; prefers-reduced-motion force-reveals everything — no opacity:0 traps.</p></div>
+      <div class="law"><span class="k">Focus</span><h4>Piña ring, 3px offset</h4><p>2px Piña-Ecru outline, 3px offset, on every interactive element — both button variants, always visible.</p></div>
+      <div class="law"><span class="k">Grain &amp; data</span><h4>Perf-gated texture</h4><p>The feTurbulence grain is decoupled from accessibility — dropped under prefers-reduced-data, never a legibility barrier.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="wordmark"><b>katha</b> <span>·</span></div>
+    <p class="meta">The Gilded Archive · Request the Night · Los Angeles &amp; Orange County. Tokens mirror <code>pb-v3/app/globals.css</code>. This page supersedes the prior <code>design.html</code>.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ── Booking step tabs (APG tabs: click + arrow-key roving tabindex) ──
+  var stepBtns = Array.prototype.slice.call(document.querySelectorAll('.step-btn'));
+  var panels = document.querySelectorAll('.panel');
+  function selectTab(b){
+    var n = b.dataset.step;
+    stepBtns.forEach(function(x){
+      var on = x===b;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-selected', on);
+      x.tabIndex = on ? 0 : -1;
+    });
+    panels.forEach(function(p){ p.hidden = p.dataset.panel !== n; });
+  }
+  stepBtns.forEach(function(b, i){
+    b.id = 'tab-' + b.dataset.step;
+    b.setAttribute('aria-controls', 'panel-' + b.dataset.step);
+    b.tabIndex = i === 0 ? 0 : -1;
+    b.addEventListener('click', function(){ selectTab(b); });
+    b.addEventListener('keydown', function(e){
+      var j = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % stepBtns.length;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + stepBtns.length) % stepBtns.length;
+      else if (e.key === 'Home') j = 0;
+      else if (e.key === 'End') j = stepBtns.length - 1;
+      if (j >= 0){ e.preventDefault(); stepBtns[j].focus(); selectTab(stepBtns[j]); }
+    });
+  });
+  panels.forEach(function(p){
+    p.setAttribute('role', 'tabpanel');
+    p.id = 'panel-' + p.dataset.panel;
+    p.setAttribute('aria-labelledby', 'tab-' + p.dataset.panel);
+  });
+
+  // ── Tier cards: selectable, one at a time; unavailable stays inert ──
+  var tierBtns = document.querySelectorAll('.tier:not([disabled])');
+  tierBtns.forEach(function(t){
+    t.addEventListener('click', function(){
+      tierBtns.forEach(function(x){ x.setAttribute('aria-pressed', x===t); });
+    });
+  });
+
+  // ── Weekend strip: one shelf open at a time ──
+  document.querySelectorAll('.night-head').forEach(function(h){
+    h.addEventListener('click', function(){
+      var id = h.dataset.night;
+      var open = h.getAttribute('aria-expanded') === 'true';
+      document.querySelectorAll('.night-head').forEach(function(x){
+        var isThis = x===h;
+        var willOpen = isThis && !open;
+        x.setAttribute('aria-expanded', willOpen);
+        x.querySelector('span[aria-hidden]').textContent = willOpen ? '–' : '+';
+        document.querySelector('[data-shelf="'+x.dataset.night+'"]').hidden = !willOpen;
+      });
+    });
+  });
+  // slot chip select (within a shelf)
+  document.querySelectorAll('.shelf').forEach(function(sh){
+    sh.querySelectorAll('.chip').forEach(function(c){
+      c.addEventListener('click', function(){
+        if (c.disabled) return;
+        sh.querySelectorAll('.chip').forEach(function(x){ x.classList.toggle('on', x===c); x.setAttribute('aria-checked', x===c); });
+      });
+    });
+  });
+
+  // ── Customizer live proof ──
+  var PLATES = [
+    {name:'Loom Oak', sName:'AMARA & SEBASTIAN', sSub:'OCTOBER · LONG BEACH'},
+    {name:'Bituin', sName:'RENZO & CAMILLE', sSub:'NOVEMBER · CARSON'},
+    {name:'Calado Piña', sName:'MARISOL & DIEGO', sSub:'SEPTEMBER · PASADENA'}
+  ];
+  var PAPERS = [
+    {key:'pina', name:'Heirloom Piña', bg:'#F5EFE6', ink:'#2C2523', sub:'#2C2523', slot:'#E8E1D3'},
+    {key:'sepia', name:'Sepia Bone', bg:'#E9DFCC', ink:'#2C2523', sub:'#5A564E', slot:'#DCCBB5'},
+    {key:'void', name:'The Void', bg:'#110F0D', ink:'#E8E1D3', sub:'#A39B8E', slot:'#241F1B'},
+    {key:'moss', name:'Moss Patina', bg:'#4E5B48', ink:'#F5EFE6', sub:'#DCCBB5', slot:'#3A4437'},
+    {key:'champagne', name:'Satin Champagne', bg:'#DCCBB5', ink:'#2C2523', sub:'#5C554C', slot:'#C2B19D'}
+  ];
+  var STEPS = ['Plate','Paper','Inscription','Finalize'];
+  var cz = { step:0, plate:0, paper:0, fmt:'strip', name:'AMARA & SEBASTIAN', sub:'OCTOBER · LONG BEACH' };
+  var body = document.getElementById('czBody');
+  var back = document.getElementById('czBack');
+  var next = document.getElementById('czNext');
+  var stepperEls = document.querySelectorAll('#czStepper .s');
+
+  // ── LOCKED MEASUREMENT SPEC — verbatim DEFAULT_LAYOUT entries from
+  // pb-v3/lib/layouts.js. viewBox units = px @300 DPI (60u = 0.2in).
+  // strip-3 (2"×6"), pv-2 (4"×6"), pc-L (6"×4", ASYMMETRIC pedestal).
+  var PROOF = {
+    'strip': { vb:{w:600,h:1800}, nameFS:44, subFS:24,
+      slots:[{x:60,y:150,w:480,h:380},{x:60,y:570,w:480,h:380},{x:60,y:990,w:480,h:380}],
+      textZone:{x:60,y:1410,w:480,h:330} },
+    'postcard-vertical': { vb:{w:1200,h:1800}, nameFS:64, subFS:34,
+      slots:[{x:60,y:150,w:1080,h:590},{x:60,y:780,w:1080,h:590}],
+      textZone:{x:60,y:1410,w:1080,h:330} },
+    'postcard': { vb:{w:1800,h:1200}, nameFS:64, subFS:34,
+      slots:[{x:100,y:100,w:750,h:450},{x:100,y:650,w:750,h:450},{x:950,y:650,w:750,h:450}],
+      textZone:{x:950,y:100,w:750,h:450} }
+  };
+
+  // Render purely from data. Text centers on the PEDESTAL (textZone.x + w/2)
+  // — never vb.w/2: pc-L's pedestal center is 1325, not 900.
+  function renderProof(){
+    var L = PROOF[cz.fmt], tz = L.textZone, p = PAPERS[cz.paper];
+    var cx = tz.x + tz.w/2;
+    var nameY = tz.y + tz.h*0.46, subY = tz.y + tz.h*0.72;
+    var name = (cz.name || PLATES[cz.plate].sName), sub = (cz.sub || PLATES[cz.plate].sSub);
+    var slots = L.slots.map(function(s){
+      return '<rect x="'+s.x+'" y="'+s.y+'" width="'+s.w+'" height="'+s.h+'" fill="'+p.slot+'"/>';
+    }).join('');
+    document.getElementById('proofWrap').innerHTML =
+      '<svg viewBox="0 0 '+L.vb.w+' '+L.vb.h+'" role="img" aria-label="Live proof of '+PLATES[cz.plate].name+' on '+p.name+' paper">'+
+      '<rect width="'+L.vb.w+'" height="'+L.vb.h+'" fill="'+p.bg+'"/>'+slots+
+      '<text x="'+cx+'" y="'+nameY+'" text-anchor="middle" font-family="Georgia,serif" font-size="'+L.nameFS+'" letter-spacing="'+(L.nameFS*0.02)+'" fill="'+p.ink+'">'+name+'</text>'+
+      '<text x="'+cx+'" y="'+subY+'" text-anchor="middle" font-family="\'Courier Prime\',monospace" font-size="'+L.subFS+'" letter-spacing="'+(L.subFS*0.08)+'" fill="'+p.sub+'">'+sub+'</text>'+
+      '</svg>';
+  }
+
+  document.querySelectorAll('#fmtToggle [data-fmt]').forEach(function(b){
+    b.addEventListener('click', function(){
+      cz.fmt = b.dataset.fmt;
+      document.querySelectorAll('#fmtToggle [data-fmt]').forEach(function(x){ x.setAttribute('aria-checked', x===b); });
+      renderProof();
+    });
+  });
+
+  function paint(){
+    renderProof();
+    stepperEls.forEach(function(s,i){ s.className = 's' + (i<cz.step?' done':'') + (i===cz.step?' on':''); s.querySelector('.num').textContent = i<cz.step?'✓':(i+1); });
+    back.hidden = cz.step===0;
+    next.textContent = cz.step===3 ? 'Finalize design' : 'Next';
+  }
+  function render(){
+    var h='';
+    if(cz.step===0){
+      h='<div class="choices">'+PLATES.map(function(p,i){return '<button class="cc'+(i===cz.plate?' on':'')+'" data-plate="'+i+'">'+p.name+'<small style="display:block;font-family:var(--f-mono);font-size:var(--fs-eyebrow);color:var(--fnt);margin-top:3px">Signature</small></button>';}).join('')+'</div>';
+    } else if(cz.step===1){
+      h=PAPERS.map(function(p,i){return '<button class="swatch-row'+(i===cz.paper?' on':'')+'" data-paper="'+i+'"><span class="aa" style="background:'+p.bg+';color:'+p.ink+'">Aa</span><span class="nm">'+p.name+'</span>'+(i===cz.paper?'<span class="ck">✓</span>':'')+'</button>';}).join('');
+    } else if(cz.step===2){
+      h='<div class="field"><label>Names</label><input id="czN" value="'+cz.name+'"></div><div class="field"><label>Date line</label><input id="czS" value="'+cz.sub+'"></div>';
+    } else {
+      h='<p style="font-family:var(--f-body);font-style:italic;color:var(--mut);font-size:var(--fs-lede)">Your print: '+ (cz.name||PLATES[cz.plate].sName) +' — '+PLATES[cz.plate].name+' on '+PAPERS[cz.paper].name+' paper. You can go back and change anything.</p>';
+    }
+    body.innerHTML = h;
+    if(cz.step===0) body.querySelectorAll('[data-plate]').forEach(function(b){ b.onclick=function(){ cz.plate=+b.dataset.plate; cz.name=PLATES[cz.plate].sName; cz.sub=PLATES[cz.plate].sSub; render(); paint(); }; });
+    if(cz.step===1) body.querySelectorAll('[data-paper]').forEach(function(b){ b.onclick=function(){ cz.paper=+b.dataset.paper; render(); paint(); }; });
+    if(cz.step===2){ body.querySelector('#czN').oninput=function(e){ cz.name=e.target.value; paint(); }; body.querySelector('#czS').oninput=function(e){ cz.sub=e.target.value; paint(); }; }
+    paint();
+  }
+  next.onclick=function(){ if(cz.step<3){ cz.step++; render(); } };
+  back.onclick=function(){ if(cz.step>0){ cz.step--; render(); } };
+  render();
+
+  // ── Palette cards ──
+  var CORE = [
+    ['Kamagong','#110F0D','l0 · page void'],['Kamagong Lift','#181512','l1 · section'],
+    ['Oiled Oak','#201B16','l2 · card'],['Kape','#28221B','l3 · raised'],
+    ['Piña Ecru','#F5EFE6','ink · primary'],['Bone','#E4DACA','hi · headlines'],
+    ['Rattan','#A89C8A','mut · secondary'],['Capiz Slate','#8C8477','fnt · meta, base only (lifted — AA on l0/l1)'],
+    ['Satin Champagne','#DCCBB5','gilt · the sacred accent'],['Lifted Moss','#8FA283','state, never text']
+  ];
+  var STOCKS = [
+    ['Heirloom Piña','#F5EFE6'],['Sepia Bone','#E9DFCC'],['The Void','#110F0D'],['Moss Patina','#4E5B48'],['Satin Champagne','#DCCBB5']
+  ];
+  function card(name,hex,note){ return '<div class="swatchcard"><div class="chipfill" style="background:'+hex+'"></div><div class="info"><b>'+name+'</b><code>'+hex+'</code>'+(note?'<small>'+note+'</small>':'')+'</div></div>'; }
+  document.getElementById('paletteCore').innerHTML = CORE.map(function(c){return card(c[0],c[1],c[2]);}).join('');
+  document.getElementById('paletteStocks').innerHTML = STOCKS.map(function(c){return card(c[0],c[1],'print stock');}).join('');
+
+  // ── Type scale ──
+  var TS = [
+    ['--fs-display','48px','FH Ronaldson Display','var(--f-display)','48px'],
+    ['--fs-title','32px','Section titles','var(--f-display)','32px'],
+    ['--fs-lede','20px','Lede / intro','var(--f-body)','20px'],
+    ['--fs-body','17px','Body & interactive','var(--f-sans)','17px'],
+    ['--fs-label','16px','Field labels','var(--f-sans)','16px'],
+    ['--fs-meta','13px','Secondary','var(--f-mono)','13px'],
+    ['--fs-eyebrow','11px','Decorative eyebrow','var(--f-mono)','11px']
+  ];
+  document.getElementById('typeScale').innerHTML = TS.map(function(t){
+    return '<div class="typerow"><code>'+t[0]+' · '+t[1]+'</code><span class="sample" style="font-family:'+t[3]+';font-size:'+t[4]+'">'+t[2]+'</span></div>';
+  }).join('');
+})();
+</script>
