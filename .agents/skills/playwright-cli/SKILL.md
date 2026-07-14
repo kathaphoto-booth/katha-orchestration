@@ -1,8 +1,7 @@
 ---
 name: playwright-cli
-description: Automates browser interactions for testing and validating your own web applications using playwright-cli. Use when you need terminal-first browser control for navigation, form filling, screenshots, tracing, bound browser sessions, debugging, or generating Playwright test code. Only use against applications you own or have explicit authorization to test.
+description: "Automates browser interactions for testing and validating your own web applications using playwright-cli. Use when you need terminal-first browser control for navigation, form filling, screenshots, tracing, bound browser sessions, debugging, or generating Playwright test code. Only use against applications you own or have explicit authorization to test."
 ---
-
 # Browser Automation with playwright-cli
 
 > Comprehensive CLI-driven browser automation — navigate, interact, mock, debug, record, and generate tests without writing a single script file.
@@ -186,34 +185,3 @@ playwright-cli open --config=config.json    # Use config file
 playwright-cli open --extension             # Connect via extension
 ```
 
-## Guide Index
-
-### Getting Started
-
-| What you're doing | Guide |
-|---|---|
-| Core browser interaction | [core-commands.md](core-commands.md) |
-| Generating test code | [test-generation.md](test-generation.md) |
-| Screenshots, video, PDF | [screenshots-and-media.md](screenshots-and-media.md) |
-
-### Testing & Debugging
-
-| What you're doing | Guide |
-|---|---|
-| Tracing and debugging | [tracing-and-debugging.md](tracing-and-debugging.md) |
-| Network mocking & interception | [request-mocking.md](request-mocking.md) |
-| Running custom Playwright code | [running-custom-code.md](running-custom-code.md) |
-
-### State & Sessions
-
-| What you're doing | Guide |
-|---|---|
-| Cookies, localStorage, auth state | [storage-and-auth.md](storage-and-auth.md) |
-| Multi-session management | [session-management.md](session-management.md) |
-
-### Advanced
-
-| What you're doing | Guide |
-|---|---|
-| Device & environment emulation | [device-emulation.md](device-emulation.md) |
-| Complex multi-step workflows | [advanced-workflows.md](advanced-workflows.md) |

@@ -1,0 +1,49 @@
+## Verdict
+
+**Pivot now: launch the funnel with full marketing effort, park the CRM build. Close bookings in HoneyBook and treat that as the design, not a compromise.**
+
+## Reasoning
+
+The math isn't close. The funnel is 90% done and E2E-verified; the CRM is 15% done with "5–7 days" remaining — which for solo-operator estimates on contracts e-sign + Stripe invoicing (the two features you least want to rush, legally and financially) means 2–3 weeks of real calendar time. During those weeks the funnel earns nothing and the marketing arsenal sits idle.
+
+HoneyBook's carrying cost is roughly $40–80/month. One photo booth booking is worth $500+. If deferring the CRM three months costs ~$200 in HoneyBook fees but the funnel books even two extra events in that window, the pivot pays for a year of HoneyBook. The CRM replacement is a cost-reduction project; the funnel is a revenue project. Revenue projects win when you have zero of it flowing through your own pipe.
+
+The "risk" of bookings closing in HoneyBook is actually the strongest argument *for* the pivot: it means your launch scope shrinks. You don't need e-sign, Stripe, or a client inbox to go live — HoneyBook already does contracts and payments fine, pipes email to your Gmail, and you already hardened the lead-form handoff (commit `27a78e8`). The funnel's only job is to get a qualified, date-checked lead into that machine. And parallel is a trap for one person: you'd ship both things slower and market neither.
+
+One more benefit of deferring: after 2–3 months of real bookings you'll know exactly which HoneyBook features you actually use, so the CRM you eventually build will be smaller and better-specified than the one you'd build today from speculation.
+
+## Pre-launch checklist
+
+**Technical (blockers):**
+1. **Run the full E2E flow on the production domain**, not localhost — prod Supabase, prod Resend. Verify SPF/DKIM/DMARC on the Resend sending domain so booking notifications don't land in spam (a missed lead notification is the single worst failure mode).
+2. **Make lead capture survive email failure.** If Resend errors, the selection must still be written to Supabase and surfaced somewhere you'll see it (retry, or at minimum a daily "unnotified leads" check). Never let a lead depend on one email delivery.
+3. **Define the HoneyBook handoff seam explicitly**: after a client submits a selection, what creates the HoneyBook project — automation or you, and within what SLA? Write it down; this is the crack leads fall through.
+4. **Mobile Safari pass.** Photo booth traffic is overwhelmingly Instagram → iPhone. Test the vault drawer and date picker on iOS specifically; check gallery LCP on throttled 4G.
+5. **Instrument the funnel steps** (gallery view → date check → drawer open → selection submit) with even basic analytics. You can't do conversion marketing on a funnel you can't measure drop-off in.
+6. **Error states**: date unavailable, double submit, validation. Each needs a next action ("that date's taken — here are open nearby dates"), not a dead end.
+
+**Conversion (pre-launch, cheap):**
+7. Pricing visible before contact info is asked (see lever 2).
+8. An auto-reply that sells (see lever 4) — write it before launch, not after the first lead.
+9. One real testimonial + real event photos on the funnel entry page.
+
+**Parking `feat/crm-replacement-v1` safely:**
+- Your working tree has uncommitted material (`.claude/settings.json`, `.council/`, `.council-tools/`, `openwiki/`, `package-lock.json`). Sort it: commit what belongs to the branch as a `WIP: park CRM replacement at ~15%` commit; move anything that's actually orchestration/vault tooling to where it lives.
+- Tag the parked state: `git tag park/crm-replacement-2026-07-11` and push branch + tag to the remote so it survives anything local.
+- Write a short re-entry note (vault `.memory/` per your governance, e.g. a handoff file): what's scaffolded, what's not, the next three tasks, and any decisions already made. Future-you re-enters in 20 minutes instead of half a day.
+- Set a concrete re-evaluation trigger, not a vague "later": e.g. **revisit the CRM once the funnel has produced 10 bookings or on Oct 1, whichever comes first.**
+- Branch launch/marketing work fresh off `feat/orchestration-layer-v1`.
+
+## Top 5 conversion levers for a photo-booth funnel
+
+1. **Lead with the date check, not the gallery.** You already built the date gate — make "Is your date open?" the hero CTA. Availability is the one question every event planner has, the answer creates urgency that's *true* (one operator, one date), and a date-entered visitor is 10x more qualified than a browser. Show honest scarcity: "2 Saturdays left in October."
+
+2. **Publish package prices with a three-tier anchor.** Event shoppers compare 3–5 vendors from their phone in one sitting; "inquire for pricing" gets you silently dropped from the shortlist. Three packages, anchor the top one high, badge the middle one "most booked." You filter out budget mismatches before they cost you a reply, which matters more for a solo operator than for anyone.
+
+3. **Capture the email at the date-check step, before the full selection flow.** "Enter your email and we'll hold your result" — now every drop-off is a remarketable lead instead of an anonymous session. A photo booth decision cycle is days-to-weeks; a two-email follow-up sequence to date-checkers will out-earn any on-page copy change.
+
+4. **Auto-reply that carries the sale in the first 5 minutes.** Speed-to-lead is the strongest single predictor of booking a local event vendor, and you physically can't answer during events. The instant email (SMS if you can) must include: confirmation of their date's status, the package PDF/link, one real event gallery matching their event type, and a specific promise ("personal reply by 9pm tonight"). It's a salesperson, not a receipt.
+
+5. **Let them lock the date inside the funnel with a small deposit** — even if it's just a HoneyBook payment link for a $50–100 refundable hold. The gap between "inquiry sent" and "contract signed" is where local-event leads die to competitors. If payment-at-hold isn't ready at launch, ship the free version: "soft-hold your date for 48 hours" with an automated expiry email. Shrinking time-to-commitment beats every copy tweak on the page.
+
+The through-line: your funnel's unfair advantage over every competitor's Wix contact form is that it can *answer questions and create commitment instantly* — availability, price, proof, hold. Every lever above is a version of that. Launch it, point the marketing arsenal at it, and build the CRM later with real booking data telling you what it needs to be.

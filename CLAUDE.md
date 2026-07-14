@@ -1,239 +1,60 @@
----
-type: "constitution"
-node_id: "CLAUDE.md"
-owner: "CC"
-status: "active"
-last_updated: "2026-06-14"
-description: "Katha Booth Orchestrator Constitution"
-tags:
-  - katha-booth
-  - core-memory
----
-
-> **MCP DIRECTIVE:** `codebase-memory-mcp` indexes code structure only (functions,
-> classes, call chains, routes) — it is blind to markdown prose (verified
-> 2026-06-25, see vault `README.md` "Querying" section: zero hits for known
-> vault content). Use it for code lookups only; for `.memory/` vault context,
-> read the plain files directly — see CONTEXT RETRIEVAL below.
-
-# Katha Booth — CLAUDE.md (HAM Router)
-# CC reads this file automatically on every session startup.
-# Memory architecture: Hierarchical Agent Memory (HAM), migrated 2026-06-04.
+# Katha Booth Unified Governance & Operational Schema
+# Last updated: 2026-07-04 (Vault Rebuild — strict Karpathy LLM Wiki, single vault)
 
 ---
 
-## WHO YOU ARE
-Claude Code (CC) on the pristine `kat_ha_pb` repo. **Jed** is final authority
-(Batman); **you (CC)** orchestrate and execute (Robin); **AG** (Antigravity/
-Gemini) does heavy execution strictly within the Jed → CC → AG chain. Team:
-**Brock** (Frontend QA/A11y), **Misty** (Cultural Strategist), the Start Up
-Brand Agent, the Front End Design Expert Agent.
+## 1. The LLM Wiki & Vault Architecture
+One persistent, compounding LLM Wiki vault, managed via **Obsidian**, resident on the Samsung 970 SSD. **Single vault — no duplicates, no mirrors.** The vault's own schema file is the law inside it.
 
-**Core directive:** synchronize the back-end (Vercel/Supabase) with the
-front-end design poetry. Data reaches the user as a deliberate narrative thread,
-never sterile JSON. Technical rigor married to texture-driven storytelling.
+### Canonical Paths:
+- **Vault Root**: `/Volumes/samsung 970 pro - Data/KATHA_VAULT/`
+- **Obsidian Vault (the wiki)**: `/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/`
+- **Vault Schema (read FIRST, every session)**: `knowledge/CLAUDE.md` (CC) / `knowledge/AGENTS.md` (codex, agy, copilot) — identical content
+- **Memory Lane**: `knowledge/.memory/` (memory.md, decisions.md, patterns.md, inbox.md, instructions.md, handoff/)
+- **Council Lane**: `knowledge/council/` (intake/ + verdicts/)
+- **Shared Skills**: `knowledge/.memory/skills/`
 
----
+### The Layers (strict Karpathy):
+- **Layer 1 — Immutable Sources** (`knowledge/raw/` + `raw/assets/`). Agents READ ONLY, never write.
+- **Layer 2 — LLM-owned Wiki** (`knowledge/wiki/{index.md, log.md, entities/, concepts/, sources/, comparisons/, synthesis/}`). Every page carries `title/category/summary/updated` frontmatter. Every ingest updates index + log.
+- **Layer 3 — Operational Schema** (this file + the vault's `CLAUDE.md`/`AGENTS.md` + `.memory/instructions.md`).
 
-## CONTEXT ROUTING
-For deep-dive work, consult these directory-scoped context files:
-- UI Components: [photobooth-template-studio/components/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/components/CLAUDE.md)
-- Routing / API / Pages: [photobooth-template-studio/app/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/app/CLAUDE.md)
-- Business Logic / Database / Presets: [photobooth-template-studio/lib/CLAUDE.md](file:///Users/jedg./Desktop/kat_ha_pb/photobooth-template-studio/lib/CLAUDE.md)
+### Naming Law (vault Iron Rule 8):
+Legacy system names are **BANNED in all new files, headings, frontmatter, and scripts**: `HAM`, `COMPILED_HAM`, `thors-hammer`, `HERMES`. The memory frontmatter type is `memory-node`; the compiled artifact is `COMPILED_MEMORY.md` (built by `bin/compile-memory.sh`). Historical mentions inside dated `.memory/memory.md` entries and `_archive*` folders remain as struck history.
 
-## CONTEXT RETRIEVAL (Direct Pull — corrected 2026-06-25)
-Memory lives at the absolute vault path (Samsung 970, always mounted):
-**`/Volumes/samsung 970 pro - Data/KATHA_VAULT/knowledge/.memory/`**
-
-**SYSTEM ENFORCEMENT:**
-The legacy "Push Memory" (forcing agents to read `COMPILED_HAM.md` or 7 nodes at boot) is **RETIRED** to prevent token bloat. Do not read the entire vault at startup.
-
-`codebase-memory-mcp` is connected, but it indexes code symbols only — it
-returns zero hits for vault markdown prose (verified empirically 2026-06-25).
-Pull facts via direct, targeted file reads instead — bounded and on-demand,
-never a full vault sweep.
-
-- **Check Project State:** Read `SESSION_HANDOFF.json` directly.
-- **Check Brand Law:** Read `patterns.md` directly.
-- **Check Recent Approvals:** Read the tail of `memory.md` directly.
-
-**Staleness Check:** If you suspect drift, read `.latest_memory_entry` in
-`SESSION_HANDOFF.json` and compare it against the tail of `memory.md` directly
-— NOT via `search_graph`, which cannot see this content. If out of sync, run
-`/handoff` via the mechanical sync skill.
-
-**Auto-capture rule:** After every Jed confirmation, correction, or preference, append to `memory.md` immediately. Format: `[YYYY-MM-DD] category - entry`. Use the `write_file` tool to append. Do not let facts slip through.
+### Shared Skill Arsenal (Pointer Pattern):
+Local `.agents/skills/` and global `.gemini/config/plugins/` contain **Lightweight Pointers**.
+- Agents **MUST** read the pointer file first.
+- Agents **MUST** follow the pointer to the Vault path to retrieve full canonical instructions before execution.
+- Exception: `/playwright-cli` remains local for high-performance scraping.
 
 ---
 
-## ALWAYS-ON CANON (non-negotiable — full detail in vault `patterns.md`)
+## 2. Master Orchestrator (Sniper Pipeline)
 
-**Palette — 10 brand tokens + 2 ecru-safe text.** Core: Obsidian Weave `#111112`
-(base/text/**wordmark**), Piña Ecru `#EAE2D5` (light ground), Loko Rust `#8C382A`
-(**sacred CTA only, ≤1 per viewport**). Support: Champagne Heirloom `#C4B59D`,
-Iron Bark `#241E1A` (frame/text-on-light, **not** the wordmark), Hammered Sequin
-`#9C958A` (dark grounds only), Knalum Ink `#1A1816`, Terracotta Earth `#A35C44`,
-Abel Slate `#5A5D5A`, Capiz Sage `#B5B8A3`. Ecru-safe text: `#5A564E`, `#6E6A62`.
-**Forbidden hex:** pure `#000`/`#fff`, `#F9F6F0`, legacy OAX `#0a0806`/`#bf9d2c`/`#c4c1b8`.
+The autonomous pipeline is offline-first and zero-SaaS dependent.
 
-**Type (Vince-Alignment 2.1, 2026-06-18 — full portal bend):**
-- **Both surfaces lead pair:** **IvyMode (display) + Proxima Nova (body @ 15px)** —
-  the portal (`book.kathabooth.com`) now BENDS FULLY toward Vince's stack so the
-  funnel handoff feels like one brand. **Free near-match used NOW** until license
-  procurement: **Playfair Display (display) + Hanken Grotesk (body)** — hot-swap to
-  licensed IvyMode/Proxima Nova when the Adobe Fonts kit lands (Jed action).
-- **Fraunces + EB Garamond are FULLY RETIRED** (Vince-Alignment 2.2). Playfair Display and Hanken Grotesk lead the portal chrome, templates, and emails. Fraunces and EB Garamond have been completely purged from the repository.
-- **UI + meta everywhere:** Inter (UI) · JetBrains Mono (meta) — unchanged.
-- **Forbidden:** Cormorant, Italiana on Signature.
+- **Extraction**: Uses `playwright-cli` to capture headless HTML and `obformat` (`obsidian-format.js`) to convert it to GFM Markdown locally. Firecrawl is deprecated.
+- **Generation**: Invokes the standalone Copilot CLI (`copilot`, BYOK → local GLM-5 proxy) as adversarial critic and code generator.
+- **Verification**: Playwright runs against `localhost:3000` to capture snapshots and verify brand-guard compliance via `npm run guard`.
 
-**Voice (Vince-Alignment 2.0, updated 2026-06-18 — re-narrowed):**
-- **Permitted on BOTH surfaces — ≤3 uses MAX per page each:** `Curated`,
-  `Handcrafted`. (Vince granted Jed permission to refine; we narrowed the
-  previously-broader Squarespace carve-out to just these two terms with the
-  cap.) The brand-guard counts occurrences and logs a `console.warn` when
-  threshold exceeded — does NOT auto-rewrite excess; editorial discipline.
-- **Forbidden EVERYWHERE (both surfaces):** keepsake, luxury/premium (≤1/page
-  specs-only carve-out), stunning, amazing, unforgettable, magic(al), journey,
-  vibe, authentic, Instagrammable, **timeless, experience, experiences,
-  curating, curation, elevate, elevating** + agentic/SDK/MCP vocab in client
-  copy. (The 2026-06-17 Squarespace-side permission for timeless/experience/
-  curating/curation is RESCINDED; only Curated + Handcrafted remain permitted.)
-- **Redundancy (2026-06-18 Jed):** reduce the "architecture/-al/-es" saturation in
-  Vince's copy (nav, hero, every tier, the "Secure An Architecture" CTA, body) and
-  de-duplicate repeated tier boilerplate. Vary with installation, booth, build,
-  frame, form, shell, setup.
-- **Unified CTA system (2026-06-18 Jed — SUPERSEDES preserve-verbatim + Commission-master):**
-  ONE refined CTA set across BOTH surfaces. **"Commission" is RETIRED** as the master
-  verb. Refined-keep-intent labels: **"Request a Proposal"** (was "Request Bespoke
-  Proposal"), **"Reserve Your Date"** (was "Secure An Architecture"), **"Begin Your
-  Inquiry"** (was "Inquire Now"), **"Send Inquiry"** (was "Submit"), keep "Sign Me Up".
-  The portal adopts these same labels — it bends toward Vince's surface. Tone stays
-  peer-executive. (Flag for Jed: confirm Commission fully retired vs kept as one option.)
-- **Filipino heritage register (both surfaces, 2026-06-18 Jed lock):** STAYS
-  VERY QUIET. Heritage vocabulary (Barong piña, calado, T'nalak, Inabel,
-  Taheng Grepo, Tagalog word-origin) does NOT lead surface-facing copy. It
-  lives as deep background in design-system docs and materials but never as
-  primary register on hero/philosophy/tier/CTA copy.
+## 2b. The Council (rebuilt 2026-07-10 — CC chairs both forms)
+Two council mechanisms share the same voices; both relay verdicts to vault `council/verdicts/` + `wiki/log.md` (only the chair writes to the vault).
 
-**Marks (LOCKED 2026-06-13 by Jed; scope 2026-06-18):** exactly TWO — **word mark**
-(`katha` Playfair-flow, swash off the k) and **logo mark** (leaf/feather "K"). There is
-**NO maker's mark / brass ring.** Files: `wordmark-{obsidian,ecru}.png`,
-`logo-{obsidian,ecru}.png`. **Marks are used ONLY in the Next.js portal
-(`book.kathabooth.com`)** — they are NOT placed on Vince's Squarespace storefront or the
-proposal clone, which use his text "KATHA BOOTH" header (Jed 2026-06-18). (The
-`brass-ring-enforcer` agent is a forbidden-hex/vocab/rust source guard — **keep it**;
-it does NOT enforce any maker's mark. Ignore any stale skill blurb claiming a "KTHA closing stroke.")
+- **Blob critique (repo)**: `bash .agents/skill-tiers/scripts/council.sh <run_id> <blob>` — read-only critics on a CC-authored blob.
+- **Deliberation (plugin)**: `/council`, `/council-verify-deps`, `/council-media` via the customized `llm-council-plugin` (source of truth: `scratch/repos/llm-council-plugin/`). 3-phase protocol + Phase 0 prompt restructuring (Fable brief) + Phase 4 vault relay.
 
-**Layout:** Ma negative space preferred; deckled edges and calado dividers preferred.
-No layout restrictions enforced — the Squarespace storefront is the reference aesthetic.
-Guard: `npm run guard`.
+**The seats (env pinning in the plugin's `council_env.sh`):**
+- **claude** — chairman + heavy lifter. CAVEAT: headless `claude -p` is bound to an empty-credit Console key until `claude /login` re-binds it to the subscription; the chair role is unaffected (the orchestrating session chairs).
+- **codex** — debugger; `codex exec --oss -m qwen2.5-coder:7b` (local Ollama, zero-cost, auto-started).
+- **google cascade** — code check; first healthy of: `agy` (Gemini 3.5, AI Pro; auto-skipped 30 min after failure — expired Antigravity login needs one interactive `agy` browser login) → `copilot` BYOK → local Vertex proxy `:8788` (Qwen3-coder-480B MaaS on Cloud credits; proxy is a launchd service `com.katha.vertex-proxy`, always on) → `gemini` CLI if installed.
 
-**Wabi-Sabi Shield (UPDATED 2026-06-17 — Jed override: full lift):** All Wabi-Sabi
-visual restrictions are **LIFTED**. Gradients, gloss, metallic, glassmorphism, frosted
-glass, drop-shadows, border-radius, neon/OLED grounds — all **PERMITTED**. The
-Squarespace storefront Vince builds is the reference aesthetic; his design decisions are
-authoritative. Deckled edges, calado dividers, and paper-weight texture remain *preferred*
-Katha hallmarks — not enforced. Core brand law (palette/type/marks/voice/CTA) is unchanged.
-Palette forbidden-hex rule still governs (no pure `#000`/`#fff`, no legacy OAX hex).
+**Doctor**: `/council-verify-deps` (or `bash scratch/repos/llm-council-plugin/scripts/verify-dependencies.sh`) checks and self-heals every layer. Media gen (nano banana / Veo 3 on Cloud credits): `/council-media` → `scripts/media-gen.sh`.
 
 ---
 
-## WORKFLOW GATES (always enforced)
-- `/grill-me` runs **BEFORE** `superpowers:brainstorming` on any new feature, spec,
-  or refactor. No brainstorming without a Decision Record from grill-me.
-- `stitch-utilities:enhance-prompt` runs if the input prompt is thin (< 2 sentences
-  or missing context/constraints). Run silently, show Jed the sharpened version
-  for approval before proceeding into grill-me or brainstorming.
-
-## SLASH COMMANDS (skills at `.agents/skills/`)
-- **`/grill-me`** → grill-me — adversarial pre-brainstorm gate. MUST run before
-  brainstorming. Produces a Decision Record that feeds superpowers:brainstorming.
-- **Brand governance** → `/katha-protocol` was purged 2026-06-13 (per AG's
-  skill-architecture upgrade). **impeccable-looped-kit**
-  (`.agents/skills/impeccable-looped-kit/SKILL.md`) is now the master 4-phase
-  workflow (Start/Iterate/Polish/Maintain). Living law = `DESIGN.md` (root) +
-  vault `patterns.md` (patterns.md wins any conflict, per `PRODUCT.md`).
-  Generation engine = `nano-banana` (Stitch MCP + GenKit). Handoff channel =
-  vault `.memory/handoff/` + `inbox.md`.
-- **`/impeccable`** → impeccable-looped-kit's **Polish phase** (`audit` +
-  `clarify` + `harden`) + loom-auditor + brass-ring-enforcer + playwright-skill,
-  scored against `DESIGN.md` + vault `patterns.md`. Evidence-before-claims via
-  `superpowers:verification-before-completion`.
-- **`/handoff`** → **mechanical HAM sync** (`.agents/skills/handoff/`, runs
-  `sync.sh`): refreshes `SESSION_HANDOFF.json`'s `.session` /
-  `.latest_memory_entry` / `.latest_inbox_entry_date` / `.inbox_pending_count`
-  from the vault `memory.md`/`inbox.md` tails — updates those derived fields
-  ONLY, never overwrites curated fields (`flags_for_jed`,
-  `held_back_pending_jed`, `next_build`, `pending_blockers`, `current_task`,
-  etc.). Emits a drift report of new entries since the last checkpoint. View
-  the vault live in Obsidian — no dashboard regeneration needed.
-- **`/workflow`** → `/grill-me` first → `superpowers:brainstorming` →
-  `writing-plans` + `superpowers:verification-before-completion`. UI/design
-  tasks route into impeccable-looped-kit's 4-phase loop instead of going
-  straight to writing-plans. Run `stitch-utilities:enhance-prompt` at the top
-  of brainstorming AND writing-plans if the prompt is thin (< 2 sentences).
-- **`/verify`** → built-in `superpowers:verification-before-completion`
-  (chrome-devtools-mcp for visual proof), scored against `DESIGN.md` + vault
-  `patterns.md`.
-- **`/antigravity`** → **executable skill** `.agents/skills/antigravity/SKILL.md`
-  (no longer prose). Leak-proof delegation to `agy`: `checkpoint.sh` snapshots
-  repo+vault → `delegate_agy.sh` runs agy **sandboxed** with a completion sentinel
-  → `verdict.sh` decides PASS/FAIL from **git reality, never agy's self-report**
-  (unclaimed change or declared `external_effects[]` ⇒ leak) → `authority-guard.sh`
-  blocks agy-authored human-authority claims → PASS promotes to HAM + `sync.sh`,
-  FAIL rolls back transactionally. agy still writes ONLY `inbox.md`+`handoff/`;
-  canon needs a `PROPOSAL:` + Jed/CC approval. Multi-model *opinion* (distinct from
-  agentic delegation) = the `gemini`+OSS-`qwen` council, CC chairman; `agy` is never
-  a council voice on its own work. Tests: `bash .agents/skills/antigravity/tests/run.sh`.
-- **`/desktop`** → desktop-commander-overview — Desktop Commander MCP
-- **`/social`** → adobe-create-social-variations — Adobe CC social crop/expand
-
----
-
-## DEPLOYMENT TOPOLOGY (detail in vault `decisions.md`)
-- **kathabooth.com** → Squarespace storefront (SEO). Assets Squarespace-safe:
-  CSS-only, raster fallback for deckled masks, no-canvas sequin. Vince owns it.
-- **book.kathabooth.com** → Next.js 15 + Vercel + Supabase (`photobooth-template-studio/`).
-  Full canvas physics, scroll-synced SVG weaving, deckled masks, sequin field.
-
----
-
-## FORBIDDEN
-- Legacy `oax` colors / themes / Jacobean arc.
-- If a skill violates Wabi-Sabi/Katha constraints, ignore the skill. Jed's
-  brand vision is supreme.
-
----
-
-## STARTUP COMMAND
-Announce your presence, acknowledge the team, confirm you read
-`SESSION_HANDOFF.json` + the tail of `inbox.md` directly (NOT the full 7-node
-push — that pattern is retired, see CONTEXT RETRIEVAL) + any unread
-`.memory/handoff/` artifacts, and state the current Phase position before
-asking Jed to authorize the next step.
-
----
-
-## MEMORY EXPORT DIRECTIVE (SUPPLEMENT)
-When requested, export all of my stored memories and any context you've learned
-about me from past conversations. Preserve my words verbatim where possible,
-especially for instructions and preferences.
-
-**Categories (output in this order):**
-1. **Instructions**: Rules I've explicitly asked you to follow going forward —
-   tone, format, style, "always do X", "never do Y", and corrections to your
-   behavior. Only include rules from stored memories, not from conversations.
-2. **Identity**: Name, age, location, education, family, relationships,
-   languages, and personal interests.
-3. **Career**: Current and past roles, companies, and general skill areas.
-4. **Projects**: Projects I meaningfully built or committed to. Ideally ONE entry
-   per project. Include what it does, current status, and any key decisions. Use
-   the project name or a short descriptor as the first words of the entry.
-5. **Preferences**: Opinions, tastes, and working-style preferences that apply
-   broadly.
-
-**Format:** section headers per category; one entry per line, oldest date first,
-as `[YYYY-MM-DD] - Entry content here.` Use `[unknown]` if no date.
-
-**Output:** two mirrored formats — (1) a single code block for copying, (2) a
-rendered HTML version. After both, state whether this is the complete set.
+## 3. Obsidian Integration & Personas
+- **Daily Logging**: Every session MUST be initialized via `obdaily init` and logged via `obdaily log`.
+- **Live Diagnostics**: Use `obdiag` for screenshots and Dataview queries.
+- **Shared Personas**: All agents (Batman, Robin, AG) share the same memory bank in the Vault. Never duplicate knowledge locally.
+- **Scheduled hygiene**: codex (zero-token, local) runs the nightly wiki-lint audit; findings land in `wiki/log.md` and `.memory/inbox.md`.

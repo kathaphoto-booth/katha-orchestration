@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Katha Booth — Availability Registry · Admin</title>
+<meta name="description" content="Private availability admin portal for Katha Booth. Mark the nights the studio is open." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,200..500;1,9..144,200..400&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============ LOCAL DISPLAY FACE (self-hosted OTF) ============ */
+  @font-face { font-family:'FH Ronaldson Display'; src:url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Light.otf') format('opentype'); font-weight:300; font-style:normal; font-display:swap; }
+  @font-face { font-family:'FH Ronaldson Display'; src:url('./fonts/fh-ronaldson/FHRonaldsonDisplayTest-Regular.otf') format('opentype'); font-weight:400; font-style:normal; font-display:swap; }
+
+  /* ============ TOKENS (Roasted Archive — canonical) ============ */
+  :root{
+    --l0:#110F0D; --l1:#1A1714; --l2:#241F1B; --l3:#2E2722;
+    --hi:#E8E1D3; --mut:#A39B8E; --fnt:#857D71;
+    --loko:#9A3D2A; --loko-hover:#a9432f; --ok:#10B981;
+    --ln:rgba(232,225,211,0.08); --ln-strong:rgba(232,225,211,0.16);
+    --f-display:'FH Ronaldson Display','Fraunces',serif;
+    --f-serif:'Fraunces',serif;
+    --f-body:'Outfit',sans-serif;
+    --f-mono:'Courier Prime',monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--l0); color:var(--hi);
+    font-family:var(--f-body); font-weight:300; line-height:1.6;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  ::selection{background:var(--loko); color:var(--hi);}
+
+  /* Focus law: Piña Ecru ring, never Achuete */
+  :focus{outline:none;}
+  :focus-visible{outline:2px solid var(--hi); outline-offset:3px;}
+
+  .skip{position:absolute; left:-9999px; top:0; z-index:100; background:var(--l2); color:var(--hi);
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; padding:10px 16px;}
+  .skip:focus{left:12px; top:12px;}
+
+  /* ============ ATMOSPHERE ============ */
+  .grain{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.9;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");}
+  .wrap{position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column;}
+
+  /* ============ NAV ============ */
+  nav{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between;
+    padding:16px clamp(14px,4vw,40px); background:rgba(17,15,13,.86); backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--ln);}
+  .nav-mark{display:flex; align-items:center; gap:12px;}
+  .nav-mark span{font-family:var(--f-display); font-size:19px; letter-spacing:.06em; font-weight:400;}
+  .nav-meta{font-family:var(--f-mono); font-size:8.5px; text-transform:uppercase; letter-spacing:.18em; color:var(--fnt);}
+
+  /* ============ LAYOUT ============ */
+  main{flex:1; width:100%; max-width:880px; margin:0 auto; padding:34px clamp(14px,4vw,40px) 48px;}
+  .eyebrow{font-family:var(--f-mono); font-size:9px; text-transform:uppercase; letter-spacing:.28em; color:var(--loko); margin:0 0 14px;}
+  .title{font-family:var(--f-display); font-weight:300; font-size:clamp(26px,4.5vw,40px); line-height:1.08; letter-spacing:-.015em; margin:0 0 12px;}
+  .lead{font-family:var(--f-serif); font-style:italic; font-weight:300; color:var(--mut); font-size:15px; margin:0; max-width:52ch;}
+
+  .checking{font-family:var(--f-mono); font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--fnt); padding:40px 0;}
+
+  /* ============ SIGNED-OUT CARD ============ */
+  .auth-card{max-width:460px; margin:6vh auto 0; background:var(--l1); border:1px solid var(--ln); border-radius:3px; padding:34px 30px 30px;}
+  .field{position:relative; margin:30px 0 26px;}
+  .field input{width:100%; background:transparent; border:none; border-bottom:1px solid var(--fnt); color:var(--hi);
+    font-family:var(--f-body); font-weight:300; font-size:15px; padding:8px 0; transition:border-color .4s;}
+  .field input:focus{border-color:var(--loko); outline:none;}
+  .field input:focus-visible{outline:none;}
+  .field label{position:absolute; left:0; top:8px; color:var(--mut); pointer-events:none; font-size:15px; transition:all .3s cubic-bezier(.16,1,.3,1);}
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{top:-13px; font-size:11px; font-family:var(--f-mono); letter-spacing:.1em; text-transform:uppercase; color:var(--mut);}
+
+  .btn-primary{width:100%; min-height:54px; background:var(--loko); color:var(--hi); border:none; border-radius:3px;
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    display:flex; align-items:center; justify-content:space-between; padding:0 12px 0 22px; cursor:pointer; transition:background .3s,transform .1s;}
+  .btn-primary:hover{background:var(--loko-hover);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{opacity:.55; cursor:default;}
+  .btn-primary .arw{width:32px; height:32px; border-radius:2px; background:rgba(255,255,255,.1); display:flex; align-items:center; justify-content:center; flex:none;}
+
+  .auth-msg{margin:18px 0 0; padding:10px 0 10px 12px; font-size:13px; color:var(--hi); line-height:1.5; border-left:2px solid var(--loko);}
+  .auth-msg.sent{border-left-color:var(--ok);}
+
+  /* ============ ERROR BANNER ============ */
+  [hidden]{display:none !important;}
+  .err-banner{display:flex; align-items:center; gap:12px; background:var(--l1); border:1px solid var(--ln-strong);
+    border-left:2px solid var(--loko); border-radius:2px; padding:12px 8px 12px 16px; margin:0 0 20px; color:var(--hi); font-size:13.5px; line-height:1.5;}
+  .err-banner span{flex:1;}
+  .err-x{flex:none; min-width:44px; min-height:44px; background:transparent; border:none; color:var(--mut);
+    font-family:var(--f-body); font-size:20px; line-height:1; cursor:pointer; border-radius:2px;}
+  .err-x:hover{color:var(--hi);}
+
+  /* ============ ADMIN HEADER ============ */
+  .admin-head{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:26px;}
+  .who{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .who-email{font-family:var(--f-mono); font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--mut); word-break:break-all;}
+  .btn-ghost{min-height:44px; font-family:var(--f-mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--hi);
+    background:transparent; border:1px solid var(--ln-strong); border-radius:2px; padding:10px 18px; cursor:pointer; transition:border-color .3s,background .3s;}
+  .btn-ghost:hover{border-color:var(--hi); background:rgba(255,255,255,.02);}
+  .btn-ghost:disabled{opacity:.5; cursor:default;}
+
+  /* ============ CALENDAR ============ */
+  .cal-card{background:var(--l1); border:1px solid var(--ln); border-radius:3px; padding:22px 20px 18px;}
+  .cal-toolbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px;}
+  .month-label{font-family:var(--f-display); font-weight:300; font-size:clamp(19px,3vw,24px); letter-spacing:-.01em; margin:0; text-align:center; flex:1;}
+  .nav-btn{width:44px; height:44px; flex:none; display:flex; align-items:center; justify-content:center;
+    background:transparent; border:1px solid var(--ln-strong); border-radius:2px; color:var(--hi); cursor:pointer; transition:border-color .3s,background .3s;}
+  .nav-btn:hover{border-color:var(--hi); background:rgba(255,255,255,.02);}
+
+  .cal7{display:grid; grid-template-columns:repeat(7,1fr); gap:6px;}
+  .wd-row{margin-bottom:8px;}
+  .wd-row span{text-align:center; font-family:var(--f-mono); font-size:8px; letter-spacing:.18em; text-transform:uppercase; color:var(--mut);}
+
+  .day{position:relative; min-height:52px; padding:2px; border:1px solid var(--ln); border-radius:2px; background:transparent;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; touch-action:manipulation;
+    transition:border-color .3s, background .3s;}
+  .day:focus-visible{position:relative; z-index:2;}
+  .day .num{font-family:var(--f-mono); font-size:13px; color:var(--mut); opacity:.75;}
+  .day.pad{border:none; background:transparent; cursor:default; pointer-events:none;}
+  .day.closed:hover{border-color:var(--ln-strong); background:rgba(255,255,255,.02);}
+  .day.open{border-color:rgba(232,225,211,.45); background:var(--l2);}
+  .day.open .num{color:var(--hi); opacity:1;}
+  .day.booked{border-color:var(--loko); background:var(--l1);}
+  .day.booked .num{color:var(--mut); opacity:1;}
+  .day.past{opacity:.35; cursor:default;}
+  .day.pending{opacity:.7;}
+  .day.sel{border-color:var(--hi); background:var(--l2);}
+  .day.today .num{border-bottom:1px solid var(--fnt); padding-bottom:1px;}
+  .day .dot{position:absolute; top:5px; right:5px; width:6px; height:6px; border-radius:50%; background:var(--ok);
+    box-shadow:0 0 6px rgba(16,185,129,.5); animation:pulse 2.4s ease-in-out infinite;}
+  .day .bk{position:absolute; bottom:4px; left:0; right:0; text-align:center; font-family:var(--f-mono);
+    font-size:6.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--mut);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+
+  .cal-note{margin:16px 2px 4px; font-family:var(--f-mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--mut);
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+  .cal-note.err{border-left:2px solid var(--loko); padding-left:10px; text-transform:none; letter-spacing:.04em; font-size:11px; color:var(--hi);}
+
+  /* ============ DAY ACTION PANEL ============ */
+  .day-panel{margin-top:16px; background:var(--l2); border:1px solid var(--ln-strong); border-radius:2px; padding:14px 14px 12px;}
+  .dp-title{margin:0 0 12px; font-family:var(--f-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--hi);}
+  .dp-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .btn-act{min-height:44px; padding:0 16px; background:transparent; border:1px solid var(--ln-strong); border-radius:2px;
+    font-family:var(--f-mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--hi); cursor:pointer; transition:border-color .3s,background .3s;}
+  .btn-act:hover{border-color:var(--hi); background:rgba(255,255,255,.02);}
+  .btn-act.danger{border-color:var(--loko);}
+  .btn-act.danger:hover{border-color:var(--loko-hover); background:rgba(154,61,42,.08);}
+  .btn-act.quiet{color:var(--mut); border-color:var(--ln);}
+
+  .status-line{min-height:18px; margin:14px 2px 0; font-family:var(--f-mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ok);}
+
+  /* ============ LEGEND · BULK · NOTE ============ */
+  .legend-row{display:flex; gap:20px; flex-wrap:wrap; margin:22px 0 0; font-family:var(--f-mono); font-size:8.5px;
+    letter-spacing:.1em; text-transform:uppercase; color:var(--mut);}
+  .lg{display:inline-flex; align-items:center; gap:8px;}
+  .lg-chip{position:relative; width:20px; height:20px; flex:none; border-radius:2px; border:1px solid var(--ln); background:transparent;}
+  .lg-chip.open{border-color:rgba(232,225,211,.45); background:var(--l2);}
+  .lg-chip.open::after{content:''; position:absolute; top:3px; right:3px; width:5px; height:5px; border-radius:50%; background:var(--ok);}
+  .lg-chip.booked{border-color:var(--loko);}
+
+  .bulk-row{margin:22px 0 0;}
+  .model-note{margin:18px 0 0; font-family:var(--f-mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--fnt); line-height:1.9;}
+  .model-note b{color:var(--mut); font-weight:400;}
+
+  footer{padding:26px clamp(14px,4vw,40px); border-top:1px solid var(--ln); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    font-family:var(--f-mono); font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:var(--fnt);}
+
+  noscript p{font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; color:var(--hi); border-left:2px solid var(--loko); padding-left:12px; margin:30px 0;}
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:520px){
+    .admin-head{flex-direction:column;}
+    .auth-card{margin-top:3vh; padding:26px 20px 24px;}
+  }
+  @media(max-width:380px){
+    main{padding-left:0; padding-right:0;}
+    .auth-card,.admin-head,.err-banner,.legend-row,.bulk-row,.model-note,.checking{margin-left:12px; margin-right:12px;}
+    .cal-card{border-left:none; border-right:none; border-radius:0; padding-left:2px; padding-right:2px;}
+    .cal7{gap:1px;}
+    .day{min-height:48px;}
+    .day-panel,.cal-note,.status-line{margin-left:8px; margin-right:8px;}
+  }
+
+  /* ============ REDUCED MOTION ============ */
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <nav>
+    <div class="nav-mark">
+      <svg class="k-mark" width="26" height="31" viewBox="0 0 190 230" fill="#E8E1D3" role="img" aria-label="Katha logomark">
+        <path d="M62 158 C 48 128, 40 96, 44 64 C 47 40, 54 18, 66 4 C 74 22, 72 44, 70 66 C 68 94, 72 122, 82 146 C 75 152, 67 156, 62 158 Z"/>
+        <path d="M76 96 C 84 68, 98 40, 118 16 C 124 10, 130 6, 136 4 C 130 22, 122 40, 112 56 C 103 72, 92 88, 82 100 C 79 99, 77 97, 76 96 Z"/>
+        <path d="M84 108 C 104 92, 128 78, 154 70 C 160 68, 166 68, 170 70 C 158 80, 144 90, 129 99 C 115 107, 100 113, 88 116 C 86 113, 85 110, 84 108 Z"/>
+        <path d="M66 122 C 88 130, 112 148, 134 170 C 152 188, 168 208, 180 230 C 158 216, 136 199, 115 180 C 96 162, 78 145, 62 130 C 63 127, 64 124, 66 122 Z"/>
+        <path d="M54 160 C 44 166, 34 174, 26 184 C 21 190, 17 196, 15 202 C 24 196, 33 189, 42 180 C 48 174, 53 168, 57 162 C 56 161, 55 160, 54 160 Z"/>
+      </svg>
+      <span>Katha</span>
+    </div>
+    <div class="nav-meta">Availability Registry · Admin</div>
+  </nav>
+
+  <main id="main">
+
+    <noscript><p>This admin portal requires JavaScript to reach the availability registry. Enable JavaScript and reload.</p></noscript>
+
+    <p id="checking" class="checking">Checking session…</p>
+
+    <div id="errBanner" class="err-banner" role="alert" hidden>
+      <span id="errMsg"></span>
+      <button id="errDismiss" class="err-x" type="button" aria-label="Dismiss error">&times;</button>
+    </div>
+
+    <!-- ============ SIGNED OUT ============ -->
+    <section id="authView" hidden aria-labelledby="authTitle">
+      <div class="auth-card">
+        <p class="eyebrow">// Availability Registry</p>
+        <h1 class="title" id="authTitle">Keeper of the calendar.</h1>
+        <p class="lead">Sign in with the studio email to mark the nights Katha is open. A magic link will be sent — no password.</p>
+        <form id="authForm" novalidate>
+          <div class="field">
+            <input id="email" name="email" type="email" placeholder=" " autocomplete="email" inputmode="email" required />
+            <label for="email">Studio Email</label>
+          </div>
+          <button id="sendBtn" type="submit" class="btn-primary">Send Magic Link
+            <span class="arw" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8E1D3" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+          </button>
+          <p id="authMsg" class="auth-msg" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ SIGNED IN ============ -->
+    <section id="adminView" hidden aria-labelledby="adminTitle">
+      <header class="admin-head">
+        <div>
+          <p class="eyebrow">// Availability Registry</p>
+          <h1 class="title" id="adminTitle">Open the nights.</h1>
+          <p class="lead">Click a day to open it. Click an open or booked day for more actions. Every change writes straight to the registry.</p>
+        </div>
+        <div class="who">
+          <span id="whoEmail" class="who-email"></span>
+          <button id="signOutBtn" class="btn-ghost" type="button">Sign out</button>
+        </div>
+      </header>
+
+      <div class="cal-card">
+        <div class="cal-toolbar">
+          <button id="prevBtn" class="nav-btn" type="button" aria-label="Previous month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8E1D3" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <h2 id="monthLabel" class="month-label" aria-live="polite"></h2>
+          <button id="nextBtn" class="nav-btn" type="button" aria-label="Next month">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8E1D3" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <div class="cal7 wd-row" aria-hidden="true">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div id="grid" class="cal7"></div>
+
+        <p id="calNote" class="cal-note" hidden>
+          <span id="calNoteText"></span>
+          <button id="retryBtn" class="btn-ghost" type="button" hidden>Retry</button>
+        </p>
+
+        <div id="dayPanel" class="day-panel" hidden>
+          <p id="panelTitle" class="dp-title"></p>
+          <div class="dp-actions">
+            <button id="actBook" class="btn-act" type="button">Mark booked</button>
+            <button id="actReopen" class="btn-act" type="button">Re-open</button>
+            <button id="actClose" class="btn-act danger" type="button">Close date</button>
+            <button id="actCancel" class="btn-act quiet" type="button">Cancel</button>
+          </div>
+        </div>
+
+        <p id="statusLine" class="status-line" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="legend-row">
+        <span class="lg"><span class="lg-chip" aria-hidden="true"></span> Closed — default, not requestable</span>
+        <span class="lg"><span class="lg-chip open" aria-hidden="true"></span> Open — clients may request</span>
+        <span class="lg"><span class="lg-chip booked" aria-hidden="true"></span> Booked — date is held</span>
+      </div>
+
+      <div class="bulk-row">
+        <button id="bulkBtn" class="btn-ghost" type="button">Open all Saturdays this month</button>
+      </div>
+
+      <p class="model-note">Allow-list model — clients can only request <b>open</b> dates at least 7 days out. Past days are locked here; closed days never appear selectable to clients.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>Availability Registry — Admin</span>
+    <span>Plate No. 2026-CF · ©2026 Katha Booth</span>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ============ CONFIG (anon key only — RLS is the gate; NO service_role anywhere) ============ */
+  var SUPABASE_URL = 'https://hvvomiyskizxzhyytcfd.supabase.co';
+  var SUPABASE_ANON_KEY = 'sb_publishable_kDKUaI-kblRcUZgyiX-k7A_F91IqaQC'; /* LIVE-VERIFIED 2026-07-04: legacy JWT anon key is REJECTED (PGRST301) — publishable key only */
+  var REJECT_MSG = "Writes rejected — this account isn't on the admins list.";
+
+  /* ============ ELEMENTS ============ */
+  function $(id) { return document.getElementById(id); }
+  var els = {
+    checking: $('checking'),
+    errBanner: $('errBanner'), errMsg: $('errMsg'), errDismiss: $('errDismiss'),
+    authView: $('authView'), authForm: $('authForm'), email: $('email'), sendBtn: $('sendBtn'), authMsg: $('authMsg'),
+    adminView: $('adminView'), whoEmail: $('whoEmail'), signOutBtn: $('signOutBtn'),
+    prevBtn: $('prevBtn'), nextBtn: $('nextBtn'), monthLabel: $('monthLabel'),
+    grid: $('grid'), calNote: $('calNote'), calNoteText: $('calNoteText'), retryBtn: $('retryBtn'),
+    dayPanel: $('dayPanel'), panelTitle: $('panelTitle'),
+    actBook: $('actBook'), actReopen: $('actReopen'), actClose: $('actClose'), actCancel: $('actCancel'),
+    statusLine: $('statusLine'), bulkBtn: $('bulkBtn')
+  };
+
+  /* ============ STATE ============ */
+  var sb = null;
+  var session = null;
+  var dates = new Map();        // 'YYYY-MM-DD' -> { status: 'open'|'booked', note }
+  var loaded = false;
+  var loadingDates = false;
+  var pending = new Set();      // iso dates with an in-flight write
+  var panelIso = null;          // date whose action panel is open
+  var statusTimer = null;
+  var boot = new Date();
+  var view = { y: boot.getFullYear(), m: boot.getMonth() };
+
+  /* ============ LOCAL DATE HELPERS (never toISOString, never new Date('YYYY-MM-DD')) ============ */
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function isoOf(y, m, d) { return y + '-' + pad2(m + 1) + '-' + pad2(d); }       // m is 0-based
+  function todayIso() { var t = new Date(); return isoOf(t.getFullYear(), t.getMonth(), t.getDate()); }
+  function fromIso(iso) { var p = iso.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function human(iso) { return fromIso(iso).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); }
+  function humanShort(iso) { return fromIso(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }); }
+
+  /* ============ MESSAGING ============ */
+  function setStatus(msg) {
+    els.statusLine.textContent = msg;
+    if (statusTimer) clearTimeout(statusTimer);
+    if (msg) statusTimer = setTimeout(function () { els.statusLine.textContent = ''; }, 6000);
+  }
+  function showError(msg) { els.errMsg.textContent = msg; els.errBanner.hidden = false; }
+  function clearError() { els.errBanner.hidden = true; els.errMsg.textContent = ''; }
+  function errText(error) {
+    if (error && (error.code === '42501' || /row-level security/i.test(error.message || ''))) return REJECT_MSG;
+    return 'Write failed — ' + (error && error.message ? error.message : 'unknown error') + '.';
+  }
+  function setAuthMsg(msg, isError) {
+    els.authMsg.textContent = msg;
+    els.authMsg.hidden = !msg;
+    els.authMsg.classList.toggle('sent', !isError);
+  }
+  function setCalNote(kind, msg) {
+    if (!kind) { els.calNote.hidden = true; els.retryBtn.hidden = true; return; }
+    els.calNote.hidden = false;
+    els.calNote.classList.toggle('err', kind === 'error');
+    els.calNoteText.textContent = msg;
+    els.retryBtn.hidden = kind !== 'error';
+  }
+
+  /* ============ RENDER ============ */
+  function render() {
+    els.monthLabel.textContent = new Date(view.y, view.m, 1)
+      .toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    renderGrid();
+    renderPanel();
+  }
+
+  function renderGrid() {
+    var grid = els.grid;
+    var active = document.activeElement;
+    var focusIso = (active && active.classList && active.classList.contains('day') && active.dataset) ? active.dataset.iso : null;
+    grid.textContent = '';
+    if (!loaded) return;
+
+    var first = new Date(view.y, view.m, 1).getDay();          // 0 = Sunday
+    var dim = new Date(view.y, view.m + 1, 0).getDate();       // days in month
+    var tIso = todayIso();
+    var frag = document.createDocumentFragment();
+
+    for (var i = 0; i < first; i++) {
+      var padCell = document.createElement('div');
+      padCell.className = 'day pad';
+      padCell.setAttribute('aria-hidden', 'true');
+      frag.appendChild(padCell);
+    }
+    for (var d = 1; d <= dim; d++) {
+      var iso = isoOf(view.y, view.m, d);
+      var rec = dates.get(iso);
+      var st = rec ? rec.status : 'closed';
+      var isPast = iso < tIso;
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day ' + (isPast ? 'past' : st);
+      btn.dataset.iso = iso;
+      if (iso === tIso) btn.classList.add('today');
+      if (pending.has(iso)) btn.classList.add('pending');
+      if (panelIso === iso) btn.classList.add('sel');
+      btn.setAttribute('aria-pressed', String(!isPast && st === 'open'));
+      var word = isPast ? (rec ? st + ', past' : 'past') : st;
+      btn.setAttribute('aria-label', human(iso) + ' — ' + word);
+      if (isPast) btn.disabled = true;
+      if (!isPast && (st === 'open' || st === 'booked')) btn.setAttribute('aria-expanded', String(panelIso === iso));
+
+      var num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = d;
+      btn.appendChild(num);
+
+      if (!isPast && st === 'open') {
+        var dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.setAttribute('aria-hidden', 'true');
+        btn.appendChild(dot);
+      }
+      if (st === 'booked') {
+        var bk = document.createElement('span');
+        bk.className = 'bk';
+        bk.setAttribute('aria-hidden', 'true');
+        bk.textContent = 'BOOKED';
+        btn.appendChild(bk);
+      }
+      frag.appendChild(btn);
+    }
+    grid.appendChild(frag);
+
+    if (focusIso) {
+      var nb = grid.querySelector('button[data-iso="' + focusIso + '"]');
+      if (nb) nb.focus();
+    }
+  }
+
+  function renderPanel() {
+    var rec = panelIso ? dates.get(panelIso) : null;
+    if (!panelIso || !rec) { els.dayPanel.hidden = true; return; }
+    els.panelTitle.textContent = human(panelIso) + ' · ' + (rec.status === 'open' ? 'OPEN' : 'BOOKED');
+    els.actBook.hidden = rec.status !== 'open';
+    els.actReopen.hidden = rec.status !== 'booked';
+    els.dayPanel.hidden = false;
+  }
+
+  function openPanel(iso) {
+    panelIso = iso;
+    render();
+    var firstAct = els.actBook.hidden ? els.actReopen : els.actBook;
+    firstAct.focus();
+  }
+  function closePanel(returnFocus) {
+    var iso = panelIso;
+    panelIso = null;
+    render();
+    if (returnFocus && iso) {
+      var btn = els.grid.querySelector('button[data-iso="' + iso + '"]');
+      if (btn) btn.focus();
+    }
+  }
+
+  /* ============ DATA ============ */
+  function loadDates() {
+    if (!sb || loadingDates || loaded) return;
+    loadingDates = true;
+    setCalNote('loading', 'Loading the registry…');
+    sb.from('available_dates').select('date,status,note').then(function (res) {
+      loadingDates = false;
+      if (res.error) {
+        setCalNote('error', 'Could not load availability — ' + res.error.message);
+        return;
+      }
+      dates = new Map();
+      (res.data || []).forEach(function (r) { dates.set(r.date, { status: r.status, note: r.note || null }); });
+      loaded = true;
+      setCalNote(null);
+      render();
+    }, function (err) {
+      loadingDates = false;
+      setCalNote('error', 'Could not load availability — ' + (err && err.message ? err.message : 'network error'));
+    });
+  }
+
+  /* Optimistic write with rollback. next: 'open' | 'booked' | null (null = delete row). */
+  async function write(iso, next) {
+    if (!sb || pending.has(iso)) return;
+    var prev = dates.has(iso) ? { status: dates.get(iso).status, note: dates.get(iso).note } : null;
+
+    if (next) dates.set(iso, { status: next, note: prev ? prev.note : null });
+    else dates.delete(iso);
+    pending.add(iso);
+    render();
+
+    var failed = false, msg = '';
+    try {
+      if (next === null) {
+        var del = await sb.from('available_dates').delete().eq('date', iso).select('date');
+        if (del.error) { failed = true; msg = errText(del.error); }
+        else if (!del.data || del.data.length === 0) { failed = true; msg = REJECT_MSG; }
+      } else if (prev) {
+        var upd = await sb.from('available_dates')
+          .update({ status: next, updated_at: new Date().toISOString() })
+          .eq('date', iso).select('date');
+        if (upd.error) { failed = true; msg = errText(upd.error); }
+        else if (!upd.data || upd.data.length === 0) { failed = true; msg = REJECT_MSG; }
+      } else {
+        var ins = await sb.from('available_dates').upsert({ date: iso, status: next });
+        if (ins.error) { failed = true; msg = errText(ins.error); }
+      }
+    } catch (err) {
+      failed = true; msg = 'Write failed — ' + (err && err.message ? err.message : 'network error') + '.';
+    }
+
+    pending.delete(iso);
+    if (failed) {
+      if (prev) dates.set(iso, prev); else dates.delete(iso);
+      render();
+      setStatus('');
+      showError(msg);
+    } else {
+      render();
+      var verb = next === null ? 'closed' : (next === 'open' ? (prev ? 're-opened' : 'opened') : 'marked booked');
+      setStatus(humanShort(iso) + ' ' + verb + '.');
+    }
+  }
+
+  async function bulkOpenSaturdays() {
+    if (!sb || !loaded) return;
+    clearError();
+    var dim = new Date(view.y, view.m + 1, 0).getDate();
+    var tIso = todayIso();
+    var targets = [];
+    for (var d = 1; d <= dim; d++) {
+      if (new Date(view.y, view.m, d).getDay() !== 6) continue;   // Saturday
+      var iso = isoOf(view.y, view.m, d);
+      if (iso < tIso) continue;                                    // never touch the past
+      if (dates.has(iso)) continue;                                // never touch open or booked
+      targets.push(iso);
+    }
+    if (targets.length === 0) {
+      setStatus('No Saturdays to open — all are past or already set.');
+      return;
+    }
+    targets.forEach(function (iso) { dates.set(iso, { status: 'open', note: null }); pending.add(iso); });
+    els.bulkBtn.disabled = true;
+    render();
+
+    var failed = false, msg = '';
+    try {
+      var res = await sb.from('available_dates').upsert(targets.map(function (date) { return { date: date, status: 'open' }; }));
+      if (res.error) { failed = true; msg = errText(res.error); }
+    } catch (err) {
+      failed = true; msg = 'Write failed — ' + (err && err.message ? err.message : 'network error') + '.';
+    }
+    targets.forEach(function (iso) { pending.delete(iso); });
+    els.bulkBtn.disabled = false;
+    if (failed) {
+      targets.forEach(function (iso) { dates.delete(iso); });
+      render();
+      showError(msg);
+    } else {
+      render();
+      setStatus(targets.length + (targets.length === 1 ? ' Saturday' : ' Saturdays') + ' opened.');
+    }
+  }
+
+  /* ============ AUTH ============ */
+  function applySession(s) {
+    session = s;
+    els.checking.hidden = true;
+    if (s && s.user) {
+      els.authView.hidden = true;
+      els.adminView.hidden = false;
+      els.whoEmail.textContent = s.user.email || 'signed in';
+      render();
+      loadDates();
+    } else {
+      els.authView.hidden = false;
+      els.adminView.hidden = true;
+      loaded = false;
+      loadingDates = false;
+      panelIso = null;
+      dates = new Map();
+    }
+  }
+
+  async function sendLink(e) {
+    e.preventDefault();
+    clearError();
+    var email = els.email.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setAuthMsg('Enter a valid email address.', true);
+      return;
+    }
+    els.sendBtn.disabled = true;
+    setAuthMsg('Sending magic link…', true);
+    try {
+      var res = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.href } });
+      if (res.error) setAuthMsg('Could not send the link — ' + res.error.message, true);
+      else setAuthMsg('Magic link sent to ' + email + ' — open it on this device to sign in.', false);
+    } catch (err) {
+      setAuthMsg('Could not send the link — ' + (err && err.message ? err.message : 'network error'), true);
+    }
+    els.sendBtn.disabled = false;
+  }
+
+  async function signOut() {
+    if (!sb) return;
+    clearError();
+    els.signOutBtn.disabled = true;
+    try {
+      var res = await sb.auth.signOut();
+      if (res.error) showError('Sign-out failed — ' + res.error.message);
+    } catch (err) {
+      showError('Sign-out failed — ' + (err && err.message ? err.message : 'network error'));
+    }
+    els.signOutBtn.disabled = false;
+  }
+
+  /* ============ EVENTS ============ */
+  els.errDismiss.addEventListener('click', clearError);
+  els.authForm.addEventListener('submit', sendLink);
+  els.signOutBtn.addEventListener('click', signOut);
+  els.retryBtn.addEventListener('click', function () { loaded = false; loadingDates = false; loadDates(); });
+  els.bulkBtn.addEventListener('click', bulkOpenSaturdays);
+
+  els.prevBtn.addEventListener('click', function () {
+    view.m -= 1; if (view.m < 0) { view.m = 11; view.y -= 1; }
+    panelIso = null; render();
+  });
+  els.nextBtn.addEventListener('click', function () {
+    view.m += 1; if (view.m > 11) { view.m = 0; view.y += 1; }
+    panelIso = null; render();
+  });
+
+  els.grid.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button.day') : null;
+    if (!btn || btn.disabled || !btn.dataset.iso) return;
+    var iso = btn.dataset.iso;
+    if (pending.has(iso)) return;
+    clearError();
+    var rec = dates.get(iso);
+    if (!rec) {                       // closed → open (one step, optimistic)
+      panelIso = null;
+      write(iso, 'open');
+    } else if (panelIso === iso) {    // second click toggles the panel shut
+      closePanel(true);
+    } else {                          // open/booked → action panel
+      openPanel(iso);
+    }
+  });
+
+  els.actBook.addEventListener('click', function () {
+    var iso = panelIso; closePanel(false); if (iso) write(iso, 'booked');
+  });
+  els.actReopen.addEventListener('click', function () {
+    var iso = panelIso; closePanel(false); if (iso) write(iso, 'open');
+  });
+  els.actClose.addEventListener('click', function () {
+    var iso = panelIso; closePanel(false); if (iso) write(iso, null);
+  });
+  els.actCancel.addEventListener('click', function () { closePanel(true); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && panelIso) closePanel(true);
+  });
+
+  /* ============ INIT ============ */
+  function init() {
+    if (!window.supabase || !window.supabase.createClient) {
+      els.checking.hidden = true;
+      els.authView.hidden = false;
+      els.sendBtn.disabled = true;
+      showError('Could not load the Supabase library — check your connection and reload.');
+      return;
+    }
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    sb.auth.onAuthStateChange(function (_event, s) {
+      // Defer: no supabase calls directly inside the auth callback (lock contention).
+      setTimeout(function () { applySession(s); }, 0);
+    });
+    sb.auth.getSession().then(function (res) {
+      applySession(res && res.data ? res.data.session : null);
+    }, function () {
+      applySession(null);
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

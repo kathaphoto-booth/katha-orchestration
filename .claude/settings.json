@@ -9,8 +9,49 @@
       "Bash(bash .agents/skills/antigravity/scripts/council.sh*)",
       "Bash(bash .agents/skills/antigravity/scripts/self_eval.sh*)",
       "Bash(bash scripts/agy-tier-run.sh*)",
-      "Bash(bash bin/compile-ham.sh*)",
-      "mcp__ccd_session__mark_chapter"
+      "Bash(bash bin/compile-memory.sh*)",
+      "mcp__ccd_session__mark_chapter",
+      "mcp__Claude_Preview__preview_screenshot",
+      "mcp__Claude_Preview__preview_console_logs",
+      "mcp__Claude_Preview__preview_logs",
+      "mcp__Claude_Preview__preview_list",
+      "mcp__Claude_Preview__preview_network",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__list_console_messages",
+      "mcp__firecrawl__firecrawl_search",
+      "mcp__codebase-memory-mcp__index_status",
+      "mcp__codebase-memory-mcp__search_graph",
+      "mcp__obsidian__list-available-vaults",
+      "mcp__9fd95b9a-9b8a-4746-9cf4-44150c6bb7e3__list_tables",
+      "mcp__37852756-7e31-4a88-ab1b-79860bc5d45b__search_files",
+      "mcp__computer-use__screenshot",
+      "Bash(ollama list)",
+      "Bash(ollama list *)",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__visualize__show_widget",
+      "Bash(npm run guard)",
+      "mcp__firecrawl__firecrawl_scrape",
+      "Bash(npx tsc --noEmit)",
+      "mcp__Claude_Browser__read_console_messages",
+      "mcp__Claude_Browser__preview_logs",
+      "mcp__Claude_Browser__preview_list",
+      "mcp__Claude_Browser__read_network_requests",
+      "mcp__Claude_Browser__read_page",
+      "mcp__Claude_Browser__get_page_text"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/daily-wiki-audit.sh",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

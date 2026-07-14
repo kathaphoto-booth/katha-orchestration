@@ -1,0 +1,5 @@
+agents:
+  - AGY
+  - Codex
+  - GH_Copilot
+use_parallel_tool_calls: true

@@ -1,0 +1,10 @@
+{
+  "name": "katha-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "pb-v3",
+    "photobooth-template-studio"
+  ]
+}

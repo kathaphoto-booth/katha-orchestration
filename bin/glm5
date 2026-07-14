@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Command GLM-5 for a task directly from the CLI
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+exec node "$DIR/../photobooth-template-studio/scripts/glm5.js" "$@"
